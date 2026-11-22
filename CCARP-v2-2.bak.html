@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCARP – Luyện thi Claude Certified Architect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+try{var t=localStorage.getItem('ccarp-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}
+</script>
+<style>
+:root{
+  --bg:#0B1220;--bg2:#0F1B34;--surface:#111B2F;--surface2:#16223C;--ink:#E6EDF7;--muted:#98A8C2;
+  --line:rgba(150,175,215,.15);--line2:rgba(150,175,215,.30);
+  --accent:#4FB8FF;--accent2:#8B7CFF;--on-accent:#06101F;
+  --ok:#34D399;--ok-soft:rgba(52,211,153,.13);--bad:#FB7185;--bad-soft:rgba(251,113,133,.13);--warn:#FBBF24;--warn-soft:rgba(251,191,36,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.28),0 10px 28px rgba(0,0,0,.16);
+  --t1:#5BB4F5;--t2:#F3A64C;--t3:#40CDBA;--t4:#8EA0FF;--t5:#C08CFF;--t6:#F58CC0;--t7:#D9B98A;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F3F6FA;--bg2:#E8EEF8;--surface:#FFFFFF;--surface2:#F2F5FA;--ink:#18212F;--muted:#586980;
+  --line:#DFE5EE;--line2:#C6D0DF;
+  --accent:#1B6FD6;--accent2:#6A4FD8;--on-accent:#FFFFFF;
+  --ok:#0B8F61;--ok-soft:#E1F4EB;--bad:#CF3450;--bad-soft:#FCE7EB;--warn:#A86400;--warn-soft:#FDF0D8;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06);
+  --t1:#0A6BB5;--t2:#A45A06;--t3:#0B7D6E;--t4:#3F4FC9;--t5:#7B3FCE;--t6:#B2367A;--t7:#85622F;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.6 "IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh;
+  background:radial-gradient(1000px 520px at 88% -12%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 60%),linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.muted{color:var(--muted)}
+code{font-family:"IBM Plex Mono",Consolas,monospace;font-size:.88em;padding:1px 5px;border-radius:5px;background:var(--surface2);border:1px solid var(--line)}
+kbd{font-family:"IBM Plex Mono",Consolas,monospace;font-size:12px;padding:1px 6px;border-radius:5px;border:1px solid var(--line2);border-bottom-width:2px;background:var(--surface)}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:22px;letter-spacing:.06em;margin:0;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.brand small{font-family:"IBM Plex Sans",sans-serif;font-weight:500;font-size:12.5px;letter-spacing:0;margin-left:8px;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+.tabs{display:flex;gap:3px;padding:3px;border-radius:11px;background:var(--surface);border:1px solid var(--line)}
+.tab{border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:8px;font-weight:600;font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+.tbadge{font-family:"IBM Plex Mono",monospace;font-size:12px;padding:0 6px;border-radius:6px;background:var(--warn-soft);color:var(--warn)}
+.tab[aria-selected="true"] .tbadge{background:rgba(0,0,0,.18);color:inherit}
+.spacer{flex:1}
+.iconbtn{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--surface);cursor:pointer;color:var(--ink)}
+.iconbtn:hover{border-color:var(--accent)}
+:root[data-theme="dark"] .i-moon,:root[data-theme="light"] .i-sun{display:none}
+.hprog{height:3px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.hprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+.hprog i.time{background:linear-gradient(90deg,var(--warn),var(--accent))}
+.runbar .in{padding-top:8px;padding-bottom:8px;gap:12px}
+.timer{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:21px;font-variant-numeric:tabular-nums;padding:2px 12px;border-radius:9px;background:var(--surface);border:1px solid var(--line2)}
+.timer.low{color:var(--bad);border-color:var(--bad);background:var(--bad-soft);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.rinfo{font-size:14.5px;color:var(--muted)}
+.rinfo b{color:var(--ink)}
+.mbadge{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);margin-left:6px}
+
+/* ---------- buttons & controls ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;transition:border-color .15s,background .15s,filter .15s}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.big{padding:11px 28px;font-size:16px;border-radius:11px}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line2)}
+.btn[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+#pWrong[aria-pressed="true"]{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+#xFlag[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:14px;font-weight:500}
+.linkbtn:hover{text-decoration:underline}
+.sel{padding:6px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);color:var(--ink);font-size:14px;max-width:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{--tc:var(--accent);display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:99px;font-size:13.5px;cursor:pointer;white-space:nowrap;transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--tc)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--tc);flex:none}
+.chip .cnt{color:var(--muted);font-size:12px}
+.chip[aria-pressed="true"]{border-color:var(--tc);background:color-mix(in srgb,var(--tc) 17%,var(--surface))}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ---------- layout ---------- */
+main{padding-bottom:80px}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 0}
+.wrap.wide{max-width:1120px}
+.ptools{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 90%,transparent)}
+.pin{max-width:860px;margin:0 auto;padding:12px 16px;display:grid;gap:10px}
+.prow{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+.stats{font-size:14.5px;color:var(--muted);margin-right:auto}
+.stats b{color:var(--ink);font-family:"Chakra Petch",sans-serif;font-size:16px}
+.stats .sname{color:var(--ink);font-weight:600}
+.stats .pend{color:var(--warn);font-weight:600;font-size:14.5px}
+@media (max-width:599px){.ptools .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px;scrollbar-width:thin}}
+@media (min-width:760px){.ptools{position:sticky;top:var(--hh,58px);z-index:20;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
+.empty{text-align:center;color:var(--muted);padding:48px 16px;border:1px dashed var(--line2);border-radius:14px}
+.inotes{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--tc);border-radius:12px;padding:12px 18px;margin-bottom:16px}
+.inotes summary{cursor:pointer;font-weight:600}
+.inotes ul{margin:10px 0 4px;padding-left:20px}
+.inotes li{margin:4px 0;font-size:15px}
+
+/* ---------- question card ---------- */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:0 0 16px;box-shadow:var(--shadow);transition:border-color .2s}
+.q.hide{display:none}
+.q.right{border-color:color-mix(in srgb,var(--ok) 60%,transparent)}
+.q.wrong{border-color:color-mix(in srgb,var(--bad) 60%,transparent)}
+.flash{animation:flash 1.3s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:var(--shadow)}}
+.qhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.qnum{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:18px;color:var(--accent);letter-spacing:.03em}
+.qsub{font-size:13.5px;color:var(--muted);margin-right:4px}
+.tag{font-size:12px;padding:2px 10px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.topic{font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;white-space:nowrap;color:var(--tc);background:color-mix(in srgb,var(--tc) 14%,transparent);border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
+.fbadge{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;color:var(--warn);background:var(--warn-soft)}
+.qtext{white-space:pre-line;margin:0 0 14px;font-size:16.5px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;margin:7px 0;border-radius:11px;border:1px solid var(--line);background:var(--surface2);cursor:pointer;position:relative;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--line2)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.opt .k{flex:none;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1.5px solid var(--line2);font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:13px;color:var(--muted);margin-top:-1px}
+.opt input[type="checkbox"]+.k{border-radius:7px}
+.opt .t{flex:1;min-width:0}
+.opt:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.opt:has(input:checked) .k{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.locked .opt{cursor:default}
+.opt.match{cursor:default;flex-wrap:wrap;align-items:center}
+.opt.match .t{flex:1 1 280px}
+.opt.match select{min-width:210px;padding:7px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);color:var(--ink)}
+.corr{display:none;width:100%;padding-left:39px;font-size:13.5px;font-weight:600;color:var(--ok)}
+/* đáp án đúng */
+.reveal .opt.is-ans{border-color:var(--ok);background:var(--ok-soft)}
+.reveal .opt.is-ans .k{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.reveal .opt.is-ans .t::after{content:"  ✓";color:var(--ok);font-weight:700}
+/* chọn sai */
+.reveal .opt.picked-wrong{border-color:var(--bad);background:var(--bad-soft)}
+.reveal .opt.picked-wrong .k{background:var(--bad);border-color:var(--bad);color:var(--on-accent)}
+.reveal .opt.picked-wrong .t{text-decoration:line-through;text-decoration-color:var(--bad)}
+.graded .opt:not(.match):has(input:checked)::after{content:"Bạn chọn";align-self:center;margin-left:auto;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px;border:1px solid currentColor;color:var(--muted);white-space:nowrap}
+.reveal .opt.match .corr{display:block}
+.reveal .opt.match.good{border-color:var(--ok);background:var(--ok-soft)}
+.reveal .opt.match.good .corr::after{content:"  ✓"}
+.reveal .opt.match.bad{border-color:var(--bad);background:var(--bad-soft)}
+.why{display:none;margin-top:14px;padding:12px 16px;border-radius:11px;background:color-mix(in srgb,var(--accent) 8%,var(--surface2));border:1px solid color-mix(in srgb,var(--accent) 26%,transparent)}
+.reveal .why{display:block}
+.why-h{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.why p{margin:0;font-size:15px}
+.why p.warn{margin-top:8px;color:var(--warn)}
+.qfoot{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.qfoot:empty{display:none}
+.verdict{font-weight:700;font-size:14.5px}
+.verdict.ok{color:var(--ok)}.verdict.no{color:var(--bad)}.verdict.blank{color:var(--muted)}
+
+/* ---------- panels (setup / result / notes) ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:18px;box-shadow:var(--shadow)}
+.panel.slim{padding:12px 20px}
+.panel h2{margin:0 0 4px;font-size:22px;line-height:1.3}
+.panel h3{margin:0;font-size:17px}
+.lead{color:var(--muted);margin:0 0 14px}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.field{padding:14px 0;border-top:1px solid var(--line)}
+.flabel{font-weight:600;margin-bottom:10px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.flabel .hint{font-weight:400;color:var(--muted);font-size:14px}
+.flabel b{font-family:"Chakra Petch",sans-serif;font-size:18px;color:var(--accent)}
+input[type="range"]{width:100%;accent-color:var(--accent);margin:0 0 10px}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--accent)}
+.checkline{display:flex;gap:10px;align-items:center;padding:3px 0;cursor:pointer;width:fit-content}
+.checkline input{width:17px;height:17px}
+.customrow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.num-in{width:96px;padding:6px 10px;border-radius:9px;border:1px solid var(--line2);background:var(--surface2);color:var(--ink)}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{display:block;border:1px solid var(--line2);border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--surface2)}
+.mode:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.mode input{margin:0 6px 0 0;vertical-align:-2px}
+.mode span{display:block;color:var(--muted);font-size:14px;margin-top:3px}
+.startrow{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--line)}
+.summary{color:var(--muted)}
+.summary b{color:var(--ink)}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.score{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:17px;text-align:center;border-radius:9px;padding:5px 0}
+.score.g{color:var(--ok);background:var(--ok-soft)}.score.m{color:var(--warn);background:var(--warn-soft)}.score.b{color:var(--bad);background:var(--bad-soft)}
+.hmeta{font-size:14px;color:var(--muted);line-height:1.5}
+.hmeta b{color:var(--ink)}
+.hdate{font-size:13px;color:var(--muted);white-space:nowrap}
+/* run */
+.run{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+.runnav{display:flex;gap:8px;flex-wrap:wrap}
+.runnav .grow{flex:1}
+.kbd{color:var(--muted);font-size:13px;margin:12px 0 0}
+.gridnav{position:sticky;top:calc(var(--hh,110px) + 16px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.gn-h{font-weight:600;font-size:14px;margin-bottom:10px}
+.gn{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:52vh;overflow:auto;padding:3px}
+.gn button{aspect-ratio:1;border-radius:8px;border:1px solid var(--line2);background:var(--surface2);color:var(--ink);font-family:"Chakra Petch",sans-serif;font-weight:600;font-size:14px;cursor:pointer;position:relative;padding:0}
+.gn button:hover{border-color:var(--accent)}
+.gn button.ans{background:color-mix(in srgb,var(--accent) 22%,var(--surface2));border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.gn button.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.gn button.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.gn button.cur{outline:2px solid var(--ink);outline-offset:1px}
+.gn button.flag::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid var(--line2);background:var(--surface2)}
+.legend i.a{background:color-mix(in srgb,var(--accent) 22%,var(--surface2));border-color:var(--accent)}
+.legend i.f{background:var(--warn);border-color:var(--warn);border-radius:50%}
+.legend i.o{background:var(--ok-soft);border-color:var(--ok)}
+.legend i.x{background:var(--bad-soft);border-color:var(--bad)}
+/* result */
+.res-top{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.bigpct{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:64px;line-height:1}
+.bigpct.g{color:var(--ok)}.bigpct.m{color:var(--warn)}.bigpct.b{color:var(--bad)}
+.res-title{font-size:20px;font-weight:600}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:8px 16px;min-width:100px}
+.kpi .v{font-family:"Chakra Petch",sans-serif;font-size:21px;font-weight:700}
+.kpi .v.ok{color:var(--ok)}.kpi .v.bad{color:var(--bad)}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.tbars{display:grid;gap:10px;margin:10px 0 4px}
+.tbrow{display:grid;grid-template-columns:minmax(130px,210px) 1fr 92px;gap:12px;align-items:center;font-size:14.5px}
+.tbrow .nm{display:flex;align-items:center;gap:8px}
+.tbrow .nm .dot{width:9px;height:9px;border-radius:50%;background:var(--tc);flex:none}
+.track{height:10px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.track i{display:block;height:100%;border-radius:99px}
+.track i.g{background:var(--ok)}.track i.m{background:var(--warn)}.track i.b{background:var(--bad)}
+.tbrow .v{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.advice{margin-top:18px;padding:12px 16px;border-radius:11px;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap}
+.advice .txt{flex:1 1 260px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+/* notes */
+.tips ul,.ncard ul{padding-left:20px;margin:10px 0 0}
+.tips li{margin:6px 0}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.ncard{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--tc);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;scroll-margin-top:calc(var(--hh,58px) + 12px)}
+.ncard h3{margin:0;font-size:17px}
+.ncard .c{color:var(--muted);font-size:13px}
+.ncard ul{flex:1;margin-bottom:14px}
+.ncard li{margin:6px 0;font-size:15px}
+.ncard .acts{margin-top:auto}
+/* toast & dialog */
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:11px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:calc(100vw - 32px);box-shadow:var(--shadow)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:1px solid var(--line2);border-radius:16px;background:var(--surface);color:var(--ink);padding:22px 24px;width:min(440px,calc(100vw - 32px));box-shadow:0 24px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(5,10,20,.55)}
+dialog p{margin:0;font-size:16px}
+dialog .acts{justify-content:flex-end}
+
+@media (max-width:860px){
+  .run{grid-template-columns:1fr}
+  .gridnav{position:static}
+  .gn{grid-template-columns:repeat(auto-fill,minmax(42px,1fr));max-height:none}
+}
+@media (max-width:600px){
+  .tabs{order:3;width:100%}
+  .tab{flex:1;justify-content:center;padding:6px 8px}
+  .q{padding:16px}
+  .panel{padding:18px 16px}
+  .modes{grid-template-columns:1fr}
+  .opt.match select{width:100%;margin-left:39px;min-width:0;width:calc(100% - 39px)}
+  .tbrow{grid-template-columns:1fr 80px}
+  .tbrow .track{grid-column:1/-1;grid-row:2}
+  .hist li{grid-template-columns:56px 1fr}
+  .hdate{grid-column:2}
+  .bigpct{font-size:52px}
+  .kbd{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top" id="top">
+  <div class="in">
+    <h1 class="brand">CCARP<small>113 câu</small></h1>
+    <nav class="tabs" role="tablist" aria-label="Chế độ">
+      <button class="tab" role="tab" data-v="practice">Luyện tập</button>
+      <button class="tab" role="tab" data-v="exam">Luyện đề <span class="tbadge" id="tabTimer" hidden></span></button>
+      <button class="tab" role="tab" data-v="notes">Ghi nhớ</button>
+    </nav>
+    <span class="spacer"></span>
+    <button class="iconbtn" id="themeBtn" aria-label="Đổi giao diện sáng / tối" title="Đổi giao diện sáng / tối">
+      <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+  <div class="runbar" id="runbar" hidden>
+    <div class="in">
+      <span class="timer" id="xTimer">00:00</span>
+      <span class="rinfo" id="xInfo"></span>
+      <button class="btn ghost" id="xQuit" style="margin-left:auto">Huỷ lượt</button>
+      <button class="btn primary" id="xSubmit">Nộp bài</button>
+    </div>
+  </div>
+  <div class="hprog"><i id="hbar"></i></div>
+</header>
+
+<main>
+  <section class="view" id="vPractice">
+    <div class="ptools"><div class="pin">
+      <div class="prow">
+        <span class="stats" id="pStats"></span>
+        <select class="sel" id="pJump" aria-label="Nhảy tới câu"></select>
+        <button class="btn" id="pWrong" aria-pressed="false">Chỉ câu sai</button>
+        <button class="btn" id="pShow" aria-pressed="false">Hiện đáp án</button>
+        <button class="btn primary" id="pGrade">Chấm các câu đã làm</button>
+        <button class="btn ghost" id="pReset">Làm lại</button>
+      </div>
+      <div class="chips" id="pChips" role="group" aria-label="Lọc theo chủ đề"></div>
+    </div></div>
+    <div class="wrap">
+      <details class="inotes" id="pNotes" hidden><summary></summary><ul></ul></details>
+      <p class="empty" id="pEmpty" hidden>Không có câu nào khớp bộ lọc hiện tại.</p>
+      <div id="pList"></div>
+    </div>
+  </section>
+
+  <section class="view" id="vExam" hidden><div class="wrap" id="xWrap"></div></section>
+
+  <section class="view" id="vNotes" hidden><div class="wrap wide" id="nWrap"></div></section>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"><form method="dialog"><p id="dlgMsg"></p><div class="acts"><button class="btn" value="cancel" id="dlgCancel">Huỷ</button><button class="btn primary" value="ok" id="dlgOk">Đồng ý</button></div></form></dialog>
+
+<script>
+const DATA = [{"n": 1, "q": "You are configuring tool permissions for a Claude-based assistant. The assistant's defined responsibilities require read access to a knowledge base and write access to a draft queue, and nothing else. Which scoping design best applies least privilege?", "kind": "single", "opts": [{"k": "A", "t": "Allow access to all tools with read permissions globally across the system."}, {"k": "B", "t": "Per-role allow-list of exactly the read-knowledge-base and write-draft-queue tools, enforced at the orchestration layer."}, {"k": "C", "t": "Allow access to every tool in the catalog and rely on the model to decline tools it should not use."}, {"k": "D", "t": "Disable all tools entirely to achieve a minimal permission surface."}], "ans": ["B"]}, {"n": 2, "q": "You are diagnosing a Claude Code session whose subagent uses 50,000 tokens of context before the engineer types a single message. Which root cause is most likely?", "kind": "single", "opts": [{"k": "A", "t": "The developer's keyboard layout or input-method configuration is the cause of the elevated context consumption, introducing extra tokens before the engineer types any message."}, {"k": "B", "t": "Many MCP servers are configured, each contributing tool definitions to the context budget; Tool Search is not enabled, so all definitions load upfront."}, {"k": "C", "t": "The model has internal personal preferences or default behaviors that silently consume large portions of context budget before any user message is processed, independent of tool configuration."}, {"k": "D", "t": "The font rendering or display-scaling settings of the IDE are converting visual output into additional context tokens, causing the high pre-session context consumption."}], "ans": ["B"]}, {"n": 3, "q": "You are integrating Claude Code into the team's pull-request workflow. The team wants AI-assisted review without removing human approval. Which integration design best fits this requirement?", "kind": "single", "opts": [{"k": "A", "t": "Claude Code reviews the pull request and posts a structured analysis as a comment, while a human reviewer retains the approval decision under the existing branch-protection rules."}, {"k": "B", "t": "Claude Code merges every pull request automatically after completing its analysis, bypassing human approval and the existing branch-protection rules."}, {"k": "C", "t": "Claude Code disables all existing branch-protection rules to streamline the merge process, removing human approval as a required gate."}, {"k": "D", "t": "Claude Code silently deletes pull requests it assesses as low quality without posting a comment or notifying the author."}], "ans": ["A"]}, {"n": 4, "q": "A technical team is debating whether to implement a new capability for generating regulatory filings from internal data as a Claude Skill or as an MCP server. The capability requires a fixed authoring procedure with embedded examples, does not need to call live external systems, and must be portable across three Claude deployments: claude.ai, an internal API integration, and Claude Code. Which factor most strongly favors implementing the capability as a Skill?", "kind": "single", "opts": [{"k": "A", "t": "The capability needs to query a live database for the most recent regulatory filings."}, {"k": "B", "t": "The capability must also be callable from a developer's command-line interface."}, {"k": "C", "t": "The capability requires direct authentication against the corporate identity provider."}, {"k": "D", "t": "The capability is procedural knowledge with no live external-system calls required."}], "ans": ["D"]}, {"n": 5, "q": "You are producing an architecture guide for a new deployment and must complete the planning steps before drafting each section. Which two steps must be completed BEFORE drafting each section of the guide? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Identify the audience and the questions the guide must answer for that audience."}, {"k": "B", "t": "Translate the guide into the supported regional languages before drafting."}, {"k": "C", "t": "Validate the guide with the implementation team and incorporate corrections."}, {"k": "D", "t": "Establish the document under version control and assign a review cadence."}, {"k": "E", "t": "Outline the guide sections covering the overview, components, contracts, flows, runbooks, and limitations"}], "ans": ["A", "E"]}, {"n": 6, "q": "A solutions architect is analyzing stakeholder feedback collected after the first quarter of a Claude-powered procurement automation deployment. The feedback includes four statements: (1) \"Our procurement team is processing 3x more purchase orders per analyst per day.\" (2) \"We have eliminated the manual data entry role entirely and redeployed those staff to vendor relationship management.\" (3) \"The API integration costs are running 40% over the projected per-transaction budget.\" (4) \"Response latency during end-of-month batch runs is averaging 11 seconds, against our committed 5-second SLA.\" Which of the following correctly identifies the primary business value pillar each stakeholder statement represents?", "kind": "single", "opts": [{"k": "A", "t": "Statement 1: Efficiency; Statement 2: Transformation; Statement 3: Solution Cost; Statement 4: Performance SLA"}, {"k": "B", "t": "Statement 1: Productivity; Statement 2: Efficiency; Statement 3: Solution Cost; Statement 4: Performance SLA"}, {"k": "C", "t": "Statement 1: Transformation; Statement 2: Productivity; Statement 3: Solution Cost; Statement 4: Efficiency"}, {"k": "D", "t": "Statement 1: Efficiency; Statement 2: Productivity; Statement 3: Performance SLA; Statement 4: Solution Cost"}], "ans": ["A"]}, {"n": 7, "q": "You are building a feedback-and-alignment routine for a multi-stakeholder deployment. Which two practices belong in the routine? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Record each session and distribute the recording to stakeholders who could not attend live."}, {"k": "B", "t": "Escalate any disagreement among stakeholders to the executive sponsor for binding resolution."}, {"k": "C", "t": "Rotate facilitation among the participating stakeholder groups to share ownership of the routine."}, {"k": "D", "t": "Set a regular cadence for revisiting expectations and assumptions as conditions evolve over time."}, {"k": "E", "t": "Reconcile divergent stakeholder positions explicitly rather than papering over them in the moment"}], "ans": ["D", "E"]}, {"n": 8, "q": "A business sponsor has requested an AI solution to 'improve customer experience.' The sponsor cannot articulate which customer journey is failing, which metric reflects the failure, or which decisions the AI should support. The sponsor is asking you to begin design work next week. Which delegation-competency action should you take first?", "kind": "single", "opts": [{"k": "A", "t": "Recommend that the sponsor revise the request and resubmit it later for evaluation."}, {"k": "B", "t": "Begin prototyping a generic assistant against the broad request before the next deadline."}, {"k": "C", "t": "Propose a fixed scope that you commit to by default based on your own assumptions."}, {"k": "D", "t": "Facilitate a structured discovery to define the failing decision and the target metric."}], "ans": ["D"]}, {"n": 9, "q": "You are responding to a stakeholder request that adds significant scope to a deployment already in flight. Which response best aligns expectations while respecting the stakeholder's underlying need?", "kind": "single", "opts": [{"k": "A", "t": "Hide the scope-addition request from the broader delivery team to avoid a difficult conversation, allowing the change to proceed without team awareness of its timeline implications."}, {"k": "B", "t": "Decline the request outright without acknowledging the stakeholder's underlying need or offering alternatives such as deferral, descoping, or timeline extension."}, {"k": "C", "t": "Acknowledge the request, describe the scope and timeline implications transparently, and propose options—defer it, descope something else, or extend the timeline—for the stakeholder to choose."}, {"k": "D", "t": "Accept the additional scope into the current release without describing the timeline or descoping implications, allowing the delivery plan to absorb unacknowledged changes until they surface as delays."}], "ans": ["C"]}, {"n": 10, "q": "You are classifying chunking strategies by the corpus type each is best suited to. For each chunking strategy, select the appropriate corpus type: 'Long Structured Documents,' 'Heterogeneous Short Records,' or 'Code or Hierarchical Specifications.'", "kind": "match", "opts": [{"k": "A", "t": "Function-level or section-level chunking for code modules"}, {"k": "B", "t": "Tree-aware chunking that follows code or specification hierarchy"}, {"k": "C", "t": "Per-record chunking where each record is one chunk"}, {"k": "D", "t": "Semantic chunking along clause or paragraph boundaries"}, {"k": "E", "t": "Fixed-size chunking with overlap for short records of similar length"}, {"k": "F", "t": "Hierarchical chunking that mirrors document section structure"}], "choices": ["Code or Hierarchical Specs", "Heterogeneous Short Records", "Long Structured Documents"], "ans": ["Code or Hierarchical Specs", "Code or Hierarchical Specs", "Heterogeneous Short Records", "Long Structured Documents", "Heterogeneous Short Records", "Long Structured Documents"]}, {"n": 11, "q": "You are running a risk assessment on a planned Claude-based deployment and must complete the inventory steps before assessing threats against assets. Which two steps must be completed BEFORE assessing threats against assets to estimate likelihood and impact? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Document the assessment outcome and present it to the risk committee."}, {"k": "B", "t": "Recommend mitigations and residual-risk acceptance for all identified threats."}, {"k": "C", "t": "Identify the assets that the deployment touches, along with the sensitivity of each asset"}, {"k": "D", "t": "Recommend mitigations and residual-risk acceptance for risks that remain."}, {"k": "E", "t": "Enumerate the threat actors and attack vectors relevant to the deployment."}], "ans": ["C", "E"]}, {"n": 12, "q": "You are preparing an operational runbook for a Claude-based service. Which content is essential to include in the runbook?", "kind": "single", "opts": [{"k": "A", "t": "Dashboard and log references only, without alert definitions, triage steps, escalation paths, or rollback procedures for the on-call engineer to act on."}, {"k": "B", "t": "Common alerts and their triage steps, escalation paths, rollback procedures, and references to the relevant dashboards and logs."}, {"k": "C", "t": "Alert definitions and triage steps only, without escalation paths, rollback procedures, or references to dashboards and logs for on-call use."}, {"k": "D", "t": "Escalation paths and rollback procedures only, without alert definitions, triage steps, or dashboard references to guide initial incident response."}], "ans": ["B"]}, {"n": 13, "q": "You are operating an interactive assistant whose dominant performance constraint is per-turn latency. Quality on routine turns is already acceptable. Which configuration adjustment most directly improves latency without disproportionately damaging quality?", "kind": "single", "opts": [{"k": "A", "t": "Disable prompt caching entirely to ensure fresh context processing on every request, preventing stale prefix content from affecting latency-sensitive interactions."}, {"k": "B", "t": "Reduce retrieval depth to the top-k passages that historically cover the answer, and cache stable system-prompt content."}, {"k": "C", "t": "Increase retrieval depth to the corpus maximum to improve recall regardless of latency."}, {"k": "D", "t": "Switch every turn to the heaviest available model to maximize output quality, accepting that the increased model latency will worsen the per-turn SLO rather than improve it."}], "ans": ["B"]}, {"n": 14, "q": "You are supporting an engineer whose Claude Code session reports a permission denial when the engineer expected the action to be allowed. Which resolution step is most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "Tell the engineer to retry the denied action verbatim repeatedly until the denial stops appearing, without inspecting the active permission rules to determine whether the denial is intentional."}, {"k": "B", "t": "Disable the permission system entirely across all scopes to remove the denial, eliminating all tool-pattern and deny-rule controls rather than identifying and amending the specific rule."}, {"k": "C", "t": "Inspect the active permission rules across all scopes—managed, command-line, local, project, and user—to identify which rule is denying the action and confirm whether it should be amended or remain denied."}, {"k": "D", "t": "Grant the engineer unrestricted Bash access to bypass the specific rule causing the denial, removing all tool-pattern constraints rather than amending only the rule in question."}], "ans": ["C"]}, {"n": 15, "q": "You are selecting a model for a new production workload and must complete the upstream steps before testing candidate models empirically. Which two steps must be completed BEFORE running a representative sample on a candidate model? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Select the lightest model that consistently meets the quality bar across the sample."}, {"k": "B", "t": "Retest the model choice when a new model version becomes available."}, {"k": "C", "t": "Choose a candidate model based on the requirements profile and known capabilities."}, {"k": "D", "t": "Define the quality bar, latency tolerance, and expected volume for the workload."}, {"k": "E", "t": "Sign off the production rollout plan with the platform and security teams."}], "ans": ["C", "D"]}, {"n": 16, "q": "You are building an ethics-review checklist for deployments supported by artificial intelligence. Which two checks belong on the list? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Confirm that vendor licensing terms permit the planned production use of the model."}, {"k": "B", "t": "Verify that outputs do not rely on generalizations about people that the underlying data does not support."}, {"k": "C", "t": "Confirm that high-impact decisions retain human accountability rather than being attributed to the model."}, {"k": "D", "t": "Restrict ethics review to outputs that exceed a defined model-confidence threshold."}, {"k": "E", "t": "Confirm that latency and throughput targets are met across supported user populations."}], "ans": ["B", "C"]}, {"n": 17, "q": "A security team is evaluating two proposed controls. \nControl A adds an outbound tool allowlist with destination restrictions and per-call review. \nControl B scores responses against a stable adversarial evaluation set after each model-version change. \nWhich two risk categories are correctly matched to these controls? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Control A - prompt injection from adversarial content in retrieved data"}, {"k": "B", "t": "Control A - silent quality drift after a model-version upgrade"}, {"k": "C", "t": "Control A - data exfiltration via outbound tool calls"}, {"k": "D", "t": "Control B - data exfiltration via outbound tool calls"}, {"k": "E", "t": "Control B - silent quality drift after a model-version upgrade"}], "ans": ["C", "E"]}, {"n": 18, "q": "You are a platform architect designing an internal Claude-based assistant that serves both finance analysts and external auditors. Each population must access only documents permitted by its role. Where should role-based access control be enforced in the pipeline?", "kind": "single", "opts": [{"k": "A", "t": "Inside the system prompt as a natural-language instruction for Claude to ignore unauthorized documents."}, {"k": "B", "t": "At the retrieval layer, before any role-restricted content reaches the prompt-construction step or the model."}, {"k": "C", "t": "Nowhere in the pipeline; rely on the model's general refusal behavior to reject unauthorized document access without any enforced access control."}, {"k": "D", "t": "After the response is generated, by post-filtering content that should not have been retrieved."}], "ans": ["B"]}, {"n": 19, "q": "A Claude-based research assistant begins producing responses that confidently contradict its retrieved source documents despite no change to the retrieval pipeline. Which two diagnostic actions most directly identify the root cause of this behavior? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Increase the context-window size to allow more retrieved chunks per query."}, {"k": "B", "t": "Switch the retrieval index to a denser embedding model to improve chunk-relevance scores."}, {"k": "C", "t": "Determine whether the failure reproduces on the previous model version to test for a model mismatch."}, {"k": "D", "t": "Reduce the temperature setting to lower response variance across all query types."}, {"k": "E", "t": "Inspect the system-prompt grounding instructions to determine whether citation constraints remain intact."}], "ans": ["C", "E"]}, {"n": 20, "q": "You are selecting a pattern for a compliance Q&A assistant that must answer policy questions with citations to the authoritative internal source set. Latency, cost, and audit predictability are prioritized. Which pattern is the best fit?", "kind": "single", "opts": [{"k": "A", "t": "Augmented LLM with retrieval-augmented generation over the indexed authoritative corpus and citation rendering on each answer."}, {"k": "B", "t": "Multi-agent orchestration with a planner, researcher, and writer agent for every query."}, {"k": "C", "t": "A pure agent loop with open web-browsing tools to surface the most current policy information, without constraining retrieval to the authoritative internal corpus."}, {"k": "D", "t": "A static prompt with the entire policy corpus concatenated into every request."}], "ans": ["A"]}, {"n": 21, "q": "You are integrating human review into a high-volume classification pipeline where reviewing every output is infeasible. Which sampling strategy best balances throughput with quality oversight?", "kind": "single", "opts": [{"k": "A", "t": "No sampling, relying entirely on user complaints to reveal quality and safety problems after they affect users."}, {"k": "B", "t": "Risk-stratified sampling that reviews all low-confidence and high-impact outputs and a smaller random sample of high-confidence routine outputs."}, {"k": "C", "t": "Inverse sampling that reviews only high-confidence routine outputs and skips low-confidence and high-impact outputs."}, {"k": "D", "t": "Universal review of every output regardless of confidence or throughput impact."}], "ans": ["B"]}, {"n": 22, "q": "You are reviewing an integration specification for security gaps. Which two findings constitute valid security gaps in the specification? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Tool calls execute server-side under a least-privilege service principal with scoped permissions"}, {"k": "B", "t": "Service credentials are placed in the prompt context, where they can leak into logs and traces."}, {"k": "C", "t": "Role-based access control is enforced only at the response-rendering layer after the model accesses restricted data."}, {"k": "D", "t": "Per-user OAuth tokens are exchanged with scope-restricted permissions and refreshed within the active session."}, {"k": "E", "t": "Tool inputs and outputs are encrypted in transit using transport-layer security between services."}], "ans": ["B", "C"]}, {"n": 23, "q": "You are auditing a procurement-assistant agent whose defined responsibility is to draft purchase requests for review. For each tool currently configured on the agent, select yes if the tool should remain after a least-privilege audit. Otherwise, select no if it should be removed.", "kind": "match", "opts": [{"k": "A", "t": "A read-only catalog lookup tool that returns vendor and SKU information"}, {"k": "B", "t": "An inbox-send tool that emails purchase requests to vendors directly"}, {"k": "C", "t": "A draft-write tool that creates purchase-request drafts in the review queue"}, {"k": "D", "t": "A production-database admin tool unrelated to procurement"}, {"k": "E", "t": "A read-only policy-document tool that returns the relevant procurement policies"}], "choices": ["Yes", "No"], "ans": ["Yes", "No", "Yes", "No", "Yes"]}, {"n": 24, "q": "You are a solution architect evaluating candidate use cases for a Claude-based program. For each scenario, select Yes if Claude is appropriate as the primary solution at the architectural level. Otherwise, select No.", "kind": "match", "opts": [{"k": "A", "t": "Drafting first-pass investigative reports from semi-structured incident logs for analyst review."}, {"k": "B", "t": "Computing real-time fraud scores at sub-50-millisecond latency on a streaming pipeline."}, {"k": "C", "t": "Long-context contract review with structured clause extraction and deviation flagging."}, {"k": "D", "t": "Replacing a vector index for semantic retrieval over a multi-million-document corpus."}, {"k": "E", "t": "Routing inbound support tickets into 30 categories with reasoning for the chosen routing."}], "choices": ["Yes", "No"], "ans": ["Yes", "No", "Yes", "No", "Yes"]}, {"n": 25, "q": "A research summarization assistant has been deployed for six months. A user has flagged that a generated summary contained a fabricated citation. Which two Diligence-competency actions should you take? (Select two.) \nEach correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Sample recent summaries to estimate the fabrication frequency across the population."}, {"k": "B", "t": "Disable the assistant immediately for all current users without any prior diagnostic analysis."}, {"k": "C", "t": "Review whether citation-grounding controls exist anywhere in the current generation pipeline."}, {"k": "D", "t": "Communicate to users that the assistant does not fabricate output as a matter of design."}, {"k": "E", "t": "Treat the incident as an anecdotal isolated case and take no further investigative action."}], "ans": ["A", "C"]}, {"n": 26, "q": "You are distinguishing functional from non-functional requirements during discovery. Which item is a non-functional requirement?", "kind": "single", "opts": [{"k": "A", "t": "The system must extract a defined set of specific fields from invoice attachments and populate a downstream data record."}, {"k": "B", "t": "The system must produce a draft response that a human reviewer can edit before sending."}, {"k": "C", "t": "The system must classify inbound tickets into a defined set of categories."}, {"k": "D", "t": "The system must respond at p95 latency under 800 milliseconds at the expected request volume."}], "ans": ["D"]}, {"n": 27, "q": "You are presenting an architectural decision to a mixed audience that includes an executive sponsor and the engineering leads who will implement the decision. Which presentation strategy best serves both audiences?", "kind": "single", "opts": [{"k": "A", "t": "Open with a deep dive into low-level implementation details targeted at engineering leads, and stop there without addressing the business outcomes or trade-offs the executive sponsor needs."}, {"k": "B", "t": "Lead with the decision, the business outcomes it serves, and the trade-offs accepted; follow with the technical rationale, alternatives, and implementation implications for the engineering audience."}, {"k": "C", "t": "Skip the rationale, alternatives, and trade-off discussion entirely and simply announce the chosen decision, leaving both audiences without the context needed to implement or validate it."}, {"k": "D", "t": "Present a single undifferentiated narrative that addresses technical and business concerns with equal weight throughout, treating both audiences as requiring the same depth on every section."}], "ans": ["B"]}, {"n": 28, "q": "You are listing characteristics of robust guardrail design for an enterprise deployment. Which two characteristics belong on the list? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Centralized log retention for guardrail violations with quarterly review by the security team."}, {"k": "B", "t": "Per-role tool allow-lists enforced at the orchestration layer before any tool call executes."}, {"k": "C", "t": "User feedback channels that route reported guardrail failures into the product backlog for triage."}, {"k": "D", "t": "Periodic refresh of the system prompt wording to keep refusal language current and clear."}, {"k": "E", "t": "Adversarial-input coverage in the evaluation set with regression tracking on guardrail performance."}], "ans": ["B", "E"]}, {"n": 29, "q": "You are responding to an adversarial input pattern in which users include text claiming admin authority and instructing the model to bypass safety restrictions. Which combination of controls most effectively mitigates this attack pattern?", "kind": "single", "opts": [{"k": "A", "t": "Trusting that the model will intrinsically recognize and reject all bypass attempts without prompt-level instructions, runtime classifiers, scoped permissions, or audit logging."}, {"k": "B", "t": "Prompt-level instructions that treat user content as untrusted data, runtime classifiers that detect override attempts, scoped tool permissions that cannot be elevated by user content, and audit logging of attempts."}, {"k": "C", "t": "Removing all safety restrictions and guardrails to eliminate the attack surface that bypass attempts target, accepting that this makes the assistant unrestricted for all inputs."}, {"k": "D", "t": "Granting users any privilege level they assert in their message content, on the assumption that cooperative behavior requires honoring self-declared authority without independent verification."}], "ans": ["B"]}, {"n": 30, "q": "An operations engineer reports that a Claude-based pipeline began returning malformed JSON responses after a scheduled maintenance window, causing downstream processing failures. Which two investigative steps most directly isolate the root cause? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Clear the prompt cache and resubmit all pending requests to eliminate stale cached prefixes."}, {"k": "B", "t": "Compare the current system prompt and output schema configuration against the last known good version from before the maintenance window."}, {"k": "C", "t": "Switch to a different Claude model tier to rule out provider-side changes as a contributing factor."}, {"k": "D", "t": "Increase the max_tokens limit to determine whether output truncation is causing incomplete JSON structures."}, {"k": "E", "t": "Replay a set of pre-maintenance requests against the current configuration and inspect the raw model output before downstream parsing."}], "ans": ["B", "E"]}, {"n": 31, "q": "You are investigating an MCP server that fails on first launch but succeeds on subsequent runs. System permission dialogs appeared during the first launch. Which response is most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "Recognize the first-run permission grant as the cause, document the expected behavior in onboarding guidance, and confirm that subsequent runs succeed."}, {"k": "B", "t": "Reinstall the operating system to clear all permission state without first confirming whether the one-time permission grant caused the failure."}, {"k": "C", "t": "Disable operating-system permission dialogs entirely, accept the resulting security implications, and proceed without confirming whether the failure recurs."}, {"k": "D", "t": "Treat the first-run failure as a permanent fault, replace the MCP server, and do not verify whether subsequent runs succeed."}], "ans": ["A"]}, {"n": 32, "q": "A platform team operates a self-hosted multi-agent system on Kubernetes that orchestrates seven specialized agents for invoice processing. The team spends approximately 40 percent of engineering capacity on infrastructure maintenance, message bus reliability, and agent state recovery. The CFO has asked you to evaluate moving to managed agent infrastructure to reclaim engineering capacity. The security officer requires that all customer financial data remain within an approved network boundary.\n Which factor should most heavily influence your recommendation?", "kind": "single", "opts": [{"k": "A", "t": "Whether the current seven agents map cleanly to the patterns supported by managed agents."}, {"k": "B", "t": "Whether managed agents reduce per-invoice token costs across the existing processing volume."}, {"k": "C", "t": "Whether managed agents support the current bus topology used by the platform team."}, {"k": "D", "t": "Whether managed agent data handling satisfies the network boundary required by security."}], "ans": ["D"]}, {"n": 33, "q": "You are reviewing a peer's Claude Code permission rules for an enterprise rollout. The rules grant unrestricted Bash access to all projects across all developers. Which response is most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "Add unrestricted access to additional tool categories as well, so that Bash is not asymmetrically more permissive than other tools, expanding the attack surface further in the name of consistency."}, {"k": "B", "t": "Approve the unrestricted Bash access as written on the grounds that narrowing the rules would add configuration complexity, accepting the full attack surface for all engineers across all projects."}, {"k": "C", "t": "Replace unrestricted Bash with narrowly scoped tool patterns that allow only the specific commands the workflows require, and add explicit deny rules for sensitive operations."}, {"k": "D", "t": "Disable all permission rules for the enterprise rollout so every command across every project runs without any tool-pattern scoping or explicit deny rules for sensitive operations."}], "ans": ["C"]}, {"n": 34, "q": "You are compiling guardrail tactics for a customer-facing assistant. Which two tactics belong on the guardrail list? Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Embed approved override phrases that users can invoke to bypass guardrails."}, {"k": "B", "t": "Lower sampling temperature globally to eliminate all variability in responses."}, {"k": "C", "t": "Validate the model output against a structured schema before downstream actions are taken."}, {"k": "D", "t": "Layer prompt-level guardrails with runtime content checks rather than relying on either alone."}, {"k": "E", "t": "Rely on a single hardened system prompt as the only guardrail mechanism."}], "ans": ["C", "D"]}, {"n": 35, "q": "You are designing a content moderation classifier that processes high volumes of usergenerated comments under a tight per-message latency budget using well-defined classification labels. Which model selection best aligns with the workload?", "kind": "single", "opts": [{"k": "A", "t": "Opus, because every moderation decision requires maximum reasoning depth regardless of classification complexity."}, {"k": "B", "t": "Haiku, because its latency and cost profile align with high-volume classification workloads that require limited reasoning depth."}, {"k": "C", "t": "Sonnet, because larger general-purpose models are preferred even when workload latency requirements are strict."}, {"k": "D", "t": "Sonnet with extended thinking enabled, because deeper reasoning should be applied to every moderation request to improve edge-case handling."}], "ans": ["B"]}, {"n": 36, "q": "You are sequencing decomposed components in an invoice-processing pipeline. For each of the decomposed components, select the execution layer it belongs to: 'Pre-Processing,' 'Model Stage,' or 'Post-Processing.'", "kind": "match", "opts": [{"k": "A", "t": "Claude-based classification of invoice type"}, {"k": "B", "t": "Persistence of validated records to the system of record"}, {"k": "C", "t": "Schema validation of the extracted fields"}, {"k": "D", "t": "Claude-based extraction of structured invoice fields"}, {"k": "E", "t": "PII redaction on extracted text prior to model invocation"}, {"k": "F", "t": "Optical character recognition on scanned invoice images"}], "choices": ["Model Stage", "Post-Processing", "Pre-Processing"], "ans": ["Model Stage", "Post-Processing", "Post-Processing", "Model Stage", "Pre-Processing", "Pre-Processing"]}, {"n": 37, "q": "You are evaluating retrieval-strategy claims used by a peer team. For each claim, select yes if the statement is generally accurate. Otherwise, select no.", "kind": "match", "opts": [{"k": "A", "t": "Dense vector retrieval is well suited to recovering paraphrased intent against unstructured text."}, {"k": "B", "t": "Sparse term-matching retrieval recovers exact terms (such as identifiers and rare tokens) more reliably than dense alone."}, {"k": "C", "t": "Structured query retrieval is the right fit for filter-and-aggregate workloads against a relational store with schema and indexes."}, {"k": "D", "t": "Hybrid retrieval is identical to dense-only retrieval and shares the same recall characteristics."}, {"k": "E", "t": "Random sampling of a data store is a sound retrieval strategy for production Q&A."}], "choices": ["Yes", "No"], "ans": ["Yes", "Yes", "Yes", "No", "No"]}, {"n": 38, "q": "You are supporting a team whose Claude Code sessions consistently load 60 or more MCP tools from many servers, exhausting context budget before the session begins. Which adjustment most directly addresses this issue without removing capability?", "kind": "single", "opts": [{"k": "A", "t": "Enable Tool Search so tool definitions are deferred and discovered on demand rather than loaded into context upfront."}, {"k": "B", "t": "Disable every MCP server in the configuration to free up context budget, accepting that the team loses all tool access and cannot perform any MCP-dependent task in the session."}, {"k": "C", "t": "Increase the prompt's verbosity with additional instructions and context, which consumes more of the context budget rather than reducing the tool-definition overhead causing the issue."}, {"k": "D", "t": "Add additional MCP servers to give the team more capability, which increases rather than reduces the number of tool definitions loaded into the session's context budget."}], "ans": ["A"]}, {"n": 39, "q": "A team manager wants all engineers working on the same repository to share identical MCP server definitions without manual synchronization. Which configuration approach satisfies this requirement?", "kind": "single", "opts": [{"k": "A", "t": "Managed configuration pushed to all endpoints by the administrator."}, {"k": "B", "t": "Environment variables set at the operating-system level on each workstation."}, {"k": "C", "t": "Project-scope .claude/settings.json and .mcp.json files committed to the repository."}, {"k": "D", "t": "Each engineer maintains a personal ~/.claude/settings.json with the shared definitions."}], "ans": ["C"]}, {"n": 40, "q": "The platform team at Trenova Systems, Inc. needs to reduce per-query cost and p95 latency for a high-volume Claude pipeline without degrading output quality on the core use case. Which two optimizations directly target both cost and latency simultaneously? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Enable prompt caching on the static system-prompt prefix to reduce billable input tokens on repeated calls."}, {"k": "B", "t": "Route straightforward query types to a smaller, faster Claude model and reserve the full model for complex cases."}, {"k": "C", "t": "Increase max_tokens to reduce the frequency of truncated responses requiring follow-up calls."}, {"k": "D", "t": "Add a retrieval step that fetches the full source corpus into the context window before generation."}, {"k": "E", "t": "Expand the system prompt to include additional few-shot examples on every request."}], "ans": ["A", "B"]}, {"n": 41, "q": "You are evaluating model-selection claims used by a peer team. For each statement, select yes if the statement is generally true. Otherwise, select no.", "kind": "match", "opts": [{"k": "A", "t": "Heavier-reasoning models typically consume more of the rate limit and run more slowly than lighter models on the same input."}, {"k": "B", "t": "A representative-sample evaluation on the target workload is the right basis for confirming a model selection."}, {"k": "C", "t": "The most capable model is always the right choice regardless of the workload profile."}, {"k": "D", "t": "Tiered routing can serve routine traffic with a lighter model while reserving a heavier model for traffic that needs its capability."}, {"k": "E", "t": "Selecting a model based on which version was most recently announced is the right basis for production decisions."}], "choices": ["Yes", "No"], "ans": ["Yes", "Yes", "No", "Yes", "No"]}, {"n": 42, "q": "You are designing a test strategy for a Claude-based pipeline that handles sensitive financial data. Which two test types should be prioritized to cover both safety under attack and cross-component correctness? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Adversarial tests using prompt-injection and malformed-input cases."}, {"k": "B", "t": "Regression tests against a stable reference set of previously known-good outputs."}, {"k": "C", "t": "Smoke tests that verify core paths after each deployment."}, {"k": "D", "t": "Integration tests that verify end-to-end pipeline behavior across all components."}, {"k": "E", "t": "Unit tests targeting only individual prompt-template rendering logic."}], "ans": ["A", "D"]}, {"n": 43, "q": "A revenue projection assistant has missed its monthly cost target by 38 percent. Profiling shows three contributors: a 6,000-token policy preamble repeated on every call (45 percent of cost), retrieval of historical sales chunks averaging 3,000 tokens per call (30 percent), and inference on a flagship-tier model (25 percent). Stakeholders require that projection accuracy remain unchanged. Which two optimizations should you sequence first to reduce cost without affecting accuracy? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Reduce the number of historical sales chunks retrieved across each query run."}, {"k": "B", "t": "Truncate the policy preamble to remove non-essential clauses from the prompt."}, {"k": "C", "t": "Enable prompt caching on the static policy preamble across the recurring calls."}, {"k": "D", "t": "Switch the workload to a smaller, faster Claude model tier across all queries."}, {"k": "E", "t": "Cache common retrieved sales chunks accessed across many of the daily queries."}], "ans": ["C", "E"]}, {"n": 44, "q": "You are integrating AI-assisted tooling into the team's documentation workflow. The team wants generated documentation that stays grounded in the actual code. Which integration approach best fits this requirement?", "kind": "single", "opts": [{"k": "A", "t": "Generate documentation from the model's training-data recall without reading any of the actual repository code, accepting that the output will not reflect the current implementation."}, {"k": "B", "t": "Have the subagents publish generated documentation directly to the public-facing site without passing through the team's normal review workflow or any human approval step."}, {"k": "C", "t": "Configure subagents that read the relevant code files via filesystem and code-search tools, generate the documentation, and emit changes through the team's normal review workflow."}, {"k": "D", "t": "Disable all filesystem and code-search tools so the subagents cannot read any repository code, accepting that documentation generation will be entirely disconnected from the actual implementation."}], "ans": ["C"]}, {"n": 45, "q": "A Claude architect is implementing safety controls for a customer-facing advice assistant that must never provide regulated investment recommendations. Which two guardrail implementations most directly enforce this constraint? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Increase response temperature to introduce variability that reduces the likelihood of specific recommendations."}, {"k": "B", "t": "Add an output classifier that detects and blocks responses containing regulated investment recommendation language."}, {"k": "C", "t": "Limit session length to reduce the volume of queries processed per user per day."}, {"k": "D", "t": "Log all user queries to a SIEM for post-hoc compliance review."}, {"k": "E", "t": "Define explicit out-of-scope categories in the system prompt with fixed refusal phrasing for investment advice requests."}], "ans": ["B", "E"]}, {"n": 46, "q": "You are assessing a Claude-based system whose dominant risk is silent quality drift on safety-relevant outputs after a model-version upgrade. Which assessment activity most directly addresses this risk?", "kind": "single", "opts": [{"k": "A", "t": "Disable adversarial evaluation entirely during model-version upgrade cycles to reduce evaluation cost, accepting that safety drift will go undetected until it appears in production."}, {"k": "B", "t": "Rotate adversarial inputs randomly so no two upgrades are scored on the same set."}, {"k": "C", "t": "Skip evaluation on each model-version upgrade and rely on user-submitted complaints to surface safety drift after the upgraded model has already served production traffic."}, {"k": "D", "t": "Maintain an adversarial evaluation set with version-attributed scoring so each upgrade is measured against the same set before promotion."}], "ans": ["D"]}, {"n": 47, "q": "You are transitioning a Claude-based deployment from design into implementation. Which handoff package most directly supports a clean transition?", "kind": "single", "opts": [{"k": "A", "t": "The most recent set of design presentation slides without component-level diagrams, interface contracts, an evaluation framework with a reference set, runbooks, or a known-limitations register."}, {"k": "B", "t": "A verbal walkthrough conducted on the day of handoff with no written architecture overview, ADRs, component contracts, evaluation framework, runbooks, playbook, or known limitations."}, {"k": "C", "t": "Architecture overview, ADRs, component contracts, evaluation framework with reference set, runbooks, on-call playbook, and known limitations."}, {"k": "D", "t": "Source code alone with no integrating architecture overview, ADRs, component contracts, evaluation framework, runbooks, on-call playbook, or known-limitations register to support the delivery team."}], "ans": ["C"]}, {"n": 48, "q": "A document analysis service processes legal filings averaging 80,000 tokens each. Each filing is queried by attorneys an average of 14 times during a case. The current architecture sends the full filing on every query. The CFO has asked you to reduce per-query costs while preserving response quality. The security officer requires that filing contents not be stored outside the organization's tenancy. Which optimization approach should you recommend?", "kind": "single", "opts": [{"k": "A", "t": "Summarize each filing once at intake and run all subsequent queries against the summary."}, {"k": "B", "t": "Cache the filing as the prompt prefix for reuse across the 14 queries per case."}, {"k": "C", "t": "Index filings in a vector store and retrieve only the relevant passages per query."}, {"k": "D", "t": "Move the workload to a smaller Claude model to reduce the per-token cost paid."}], "ans": ["B"]}, {"n": 49, "q": "You are an architect supporting the iteration phase of a deployed Claude-based system. Which activity most directly fits this phase?", "kind": "single", "opts": [{"k": "A", "t": "Rebuild the entire system architecture from scratch at the start of every iteration cycle regardless of what production telemetry, evaluations, and stakeholder feedback indicate is needed."}, {"k": "B", "t": "Stop measuring production outcomes once the deployment has successfully launched, treating the go-live milestone as the end of the evaluation and iteration cycle."}, {"k": "C", "t": "Discard the evaluation framework and reference set once the deployment is in production, accepting that future iterations will have no structured basis for measuring the impact of changes."}, {"k": "D", "t": "Review production telemetry, sampled output evaluations, and stakeholder feedback to identify the highest-impact change for the next cycle, then plan the change against the evaluation framework."}], "ans": ["D"]}, {"n": 50, "q": "You are running a controlled experiment to compare two prompts and must complete the design steps before executing the experiment. Which two steps must be completed BEFORE running the experiment with random assignment? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Determine the minimum detectable effect size and the sample size needed for power."}, {"k": "B", "t": "Decide whether to promote, reject, or iterate the candidate based on the analysis."}, {"k": "C", "t": "Define the hypothesis and the primary success metric for the comparison."}, {"k": "D", "t": "Analyze the results against the predefined success metric and significance threshold."}, {"k": "E", "t": "Document the recommendation, the trade-offs accepted, and the alternatives considered."}], "ans": ["A", "C"]}, {"n": 51, "q": "A senior architect is managing stakeholder expectations for a Claude-based reporting assistant midway through development. Stakeholders have escalating concerns about response latency. Which two actions most directly address stakeholder expectation alignment in this situation? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Present measured p50 and p95 latency baselines against the agreed SLA thresholds so stakeholders have accurate data."}, {"k": "B", "t": "Pause all development until latency concerns are fully resolved."}, {"k": "C", "t": "Communicate that latency concerns are a known LLM limitation that cannot be addressed."}, {"k": "D", "t": "Replace the current Claude model with a third-party model to signal responsiveness."}, {"k": "E", "t": "Revise the SLA definition collaboratively with stakeholders if current targets are not achievable given production constraints."}], "ans": ["A", "E"]}, {"n": 52, "q": "A technical team is cataloguing risks specific to Claude's use in a document-grounded Q&A system. Which two items represent failure modes intrinsic to LLM-based systems rather than generic software defects? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "An expired TLS certificate blocks outbound API calls to Claude."}, {"k": "B", "t": "A database connection timeout causes retrieval to return an empty result set."}, {"k": "C", "t": "The model refuses a legitimate query because surface features trigger an overly broad safety pattern."}, {"k": "D", "t": "A misconfigured load balancer routes requests to a deprecated API version."}, {"k": "E", "t": "The model generates a plausible-sounding answer unsupported by any retrieved document."}], "ans": ["C", "E"]}, {"n": 53, "q": "You are evaluating prompting claims in a peer's design document. For each claim, select yes if the claim reflects sound practice. Otherwise, select no.", "kind": "match", "opts": [{"k": "A", "t": "Zero-shot is appropriate as a starting point for closed-set classification when categories and descriptions are provided in the prompt."}, {"k": "B", "t": "Adding a few-shot example set with exact field names anchors output formatting on extraction tasks."}, {"k": "C", "t": "Chain-of-thought should be the default on every task regardless of complexity."}, {"k": "D", "t": "Leading-question framing is best mitigated by asking for an even-handed comparison with stated criteria."}, {"k": "E", "t": "Behavioral differences across model versions can be ignored once a prompt has been validated on one version."}], "choices": ["Yes", "No"], "ans": ["Yes", "Yes", "No", "Yes", "No"]}, {"n": 54, "q": "Engineering leadership wants to roll out Claude Skills to 280 developers across 14 teams. Skills will encode internal coding standards, code-review checklists, and incident-postmortem templates. Leadership has asked how to govern Skill authorship so that Skills remain trustworthy without bottlenecking on a single central team. Which governance model should you recommend?", "kind": "single", "opts": [{"k": "A", "t": "Per-developer authorship across the 280 engineers with no team-level coordination required"}, {"k": "B", "t": "Centralized authorship by a single platform team responsible for every Skill produced."}, {"k": "C", "t": "Fully decentralized authorship across the 14 teams with no review before publication."}, {"k": "D", "t": "Federated authorship across the 14 teams with a central review and publication gate."}], "ans": ["D"]}, {"n": 55, "q": "A security audit uncovers two issues: (1) all end users share a single API key, and (2) tool calls are executed without logging the initiating user. Which two mitigations directly address these specific findings? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Validate structured outputs against a schema before downstream actions are executed."}, {"k": "B", "t": "Enforce RBAC at the retrieval layer before content enters the model context."}, {"k": "C", "t": "Move credentials out of the prompt context and resolve them from a server-side secret store."}, {"k": "D", "t": "Add actor attribution to tool-call logs so each call records the initiating user identity."}, {"k": "E", "t": "Replace the shared API key with per-user OAuth tokens carrying scope-restricted permissions."}], "ans": ["D", "E"]}, {"n": 56, "q": "An architect is reviewing a Claude-based candidate-screening tool prior to deployment. A stakeholder asserts that because the model was not trained on company data, no bias evaluation is necessary. Which two responses most accurately challenge this assertion? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Transparency obligations are satisfied by disclosing that an AI system is in use, without further evaluation."}, {"k": "B", "t": "Fairness testing is required only when the training dataset is known to contain protected-class labels."}, {"k": "C", "t": "The model may carry demographic biases from pretraining that manifest in screening outcomes regardless of fine-tuning."}, {"k": "D", "t": "The system should be evaluated on outcome-disparity metrics across protected groups before deployment."}, {"k": "E", "t": "Bias evaluation is unnecessary when the model provider has published a responsible-use policy."}], "ans": ["C", "D"]}, {"n": 57, "q": "A pilot AI assistant for procurement specialists shows 89 percent first-response acceptance, but follow-up surveys reveal that specialists frequently override the assistant’s vendor recommendations after considering criteria the assistant did not evaluate. The pilot owner wants to ship the assistant unchanged because of the strong acceptance rate.\nWhich two Discernment-competency observations should you raise BEFORE approving the launch? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "The acceptance rate alone proves readiness for general production use."}, {"k": "B", "t": "The survey response rate may not be statistically representative of all specialists."}, {"k": "C", "t": "The unconsidered criteria represent a scope gap in the assistant's input space."}, {"k": "D", "t": "Acceptance does not establish whether recommendations remain correct after specialist review."}, {"k": "E", "t": "The pilot duration was probably too short to demonstrate reliability across the full year."}], "ans": ["C", "D"]}, {"n": 58, "q": "The engineering lead at Trenova Systems, Inc. is evaluating two proposals for improving developer workflows using Claude-assisted tooling. \nProposal A adds Claude Code to the IDE for inline code generation and review. \nProposal B routes all code-generation requests through a shared Slack bot without IDE integration. \nWhich two observations most accurately evaluate these proposals against workflow-improvement objectives? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Proposal B is superior because centralizing requests in Slack creates an auditable log of all code-generation activity"}, {"k": "B", "t": "Proposal B introduces workflow friction by requiring developers to leave the IDE, undermining the productivity objective."}, {"k": "C", "t": "Proposal A reduces context switching by providing AI assistance at the point of development without requiring a separate tool."}, {"k": "D", "t": "Proposal B improves workflow velocity because Slack notifications create an asynchronous review queue."}, {"k": "E", "t": "Both proposals are equivalent because the model capabilities are identical regardless of the integration point"}], "ans": ["B", "C"]}, {"n": 59, "q": "You are evaluating a Claude-based deployment for adherence to a specific regulation. Which two steps must be completed BEFORE mapping deployment data flows to specific regulatory clauses? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Compare the in-place controls against the regulatory requirements to identify any compliance gaps."}, {"k": "B", "t": "Identify the applicability of the regulation based on data types, jurisdiction, and audience."}, {"k": "C", "t": "Schedule the remediation work with the engineering team based on the prioritized gap findings."}, {"k": "D", "t": "Document the identified gaps along with recommended remediations and residual risk for signoff."}, {"k": "E", "t": "Inventory the vendor-provided compliance tooling and confirm which compliance affordances are in place."}], "ans": ["B", "E"]}, {"n": 60, "q": "You are designing a feedback session for a deployment in flight. Which structure best supports productive stakeholder feedback?", "kind": "single", "opts": [{"k": "A", "t": "Hold an open-ended meeting with no pre-distributed agenda or artifacts, and rely on participants' memory to carry decisions and follow-up owners forward."}, {"k": "B", "t": "Define a focused agenda, share the artifacts in advance, capture decisions and follow-ups in writing, and confirm action owners and dates."}, {"k": "C", "t": "Distribute artifacts at the session start rather than in advance, so stakeholders review materials in real time without preparation before the discussion begins."}, {"k": "D", "t": "End the session without recording decisions, follow-up items, action owners, or dates, relying on participant memory to carry the session's outcomes forward."}], "ans": ["B"]}, {"n": 61, "q": "You are reviewing a peer's end-to-end design for a Claude-based platform expected to scale to thousands of concurrent users. For each statement, indicate Yes if it reflects sound architectural practice. Otherwise, select No.", "kind": "match", "opts": [{"k": "A", "t": "Authentication and authorization run before retrieval so retrieval can filter by identity."}, {"k": "B", "t": "An asynchronous queue absorbs bursty traffic between intake and the model invocation layer."}, {"k": "C", "t": "Tax computation is encoded directly in the system prompt rather than in code."}, {"k": "D", "t": "Conversation logs include unredacted government identifiers to maximize signal for tuning."}], "choices": ["Yes", "No"], "ans": ["Yes", "Yes", "No", "No"]}, {"n": 62, "q": "You are assessing data-exfiltration risk in a Claude-based assistant that has tools for both internal-document retrieval and outbound HTTP calls. Which scenario most directly indicates a data-exfiltration risk?", "kind": "single", "opts": [{"k": "A", "t": "The outbound HTTP tool returns a 200 response when the assistant calls an allow-listed domain to fulfil a user-initiated data-lookup request."}, {"k": "B", "t": "The user submits a routine question and receives a routine answer."}, {"k": "C", "t": "Adversarial content in a retrieved document instructs the model to call the outbound HTTP tool and send sensitive content to an attacker-controlled URL."}, {"k": "D", "t": "The internal-document retrieval tool returns a document that the user is authorized to view."}], "ans": ["C"]}, {"n": 63, "q": "A loan pre-qualification assistant shows 94 percent approval recommendations that match the human underwriter decision. The fairness team has reviewed approval rate parity across protected groups and reported no significant difference. A board member has asked whether this evidence is sufficient to declare the assistant fair. Which two Discernment-competency findings should you report? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Approval rate parity does not by itself assess error rate parity across protected groups."}, {"k": "B", "t": "Match with human underwriters does not establish freedom from underwriter-introduced bias."}, {"k": "C", "t": "The 94 percent match rate is sufficient evidence of fairness for the assistant's decisions."}, {"k": "D", "t": "The fairness team's review process likely missed at least some of the protected groups studied."}, {"k": "E", "t": "A larger sample is needed before any meaningful fairness claim can be made about the model."}], "ans": ["A", "B"]}, {"n": 64, "q": "An architect is reviewing a set of architecture documentation packages before handing off a Claude-based pipeline to an implementation team. Which two characteristics indicate that a documentation package is sufficient to support implementation without ongoing architect involvement? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "The document specifies integration contracts, configuration schemas, and expected input/output shapes for each component."}, {"k": "B", "t": "The document includes a decision log that records the rationale for key architectural choices and the alternatives rejected."}, {"k": "C", "t": "The document provides a high-level narrative description of the system without component-level detail."}, {"k": "D", "t": "The document includes the architect's contact information for questions during implementation."}], "ans": ["A", "B"]}, {"n": 65, "q": "You are reviewing a peer's draft system prompt that contains contradictory instructions: one section says never to speculate beyond the supplied source, while another says to confidently fill in any gaps. Which response is most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "Add a priority instruction directing the model to evaluate all instructions and apply whichever appears most contextually appropriate on each request."}, {"k": "B", "t": "Remove or rewrite the gap-filling instruction so the prompt consistently constrains the model to source-supported content."}, {"k": "C", "t": "Increase temperature so output randomness masks the contradiction."}, {"k": "D", "t": "Keep both instructions and rely on the model to decide which one to follow on each request."}], "ans": ["B"]}, {"n": 66, "q": "You are comparing patterns for a batch document-classification job that follows fixed steps: extract metadata, classify, summarize, and persist. Which pattern is the best fit and why?", "kind": "single", "opts": [{"k": "A", "t": "A workflow pattern, because agentic patterns do not support tool invocations and therefore cannot execute the persist step that writes results to the downstream store."}, {"k": "B", "t": "An agentic pattern, because the open-ended planning capability of agents produces more consistent structured outputs than a fixed workflow graph on classification tasks."}, {"k": "C", "t": "An agentic pattern, because agents are categorically more accurate than workflows and therefore always preferable regardless of step predictability."}, {"k": "D", "t": "A workflow pattern, because the steps are well-defined and predictable per-request token cost is preferred over flexibility."}], "ans": ["D"]}, {"n": 67, "q": "A managed agent deployment for claims triage has grown from 6 tools to 34 tools over 18 months as product teams added capabilities. Triage accuracy has declined from 91 percent to 78 percent, and average tool-selection latency has increased by 2.3 seconds. A junior engineer has proposed adding a tool-router agent in front of the current agent to filter the tool list per request. \nWhich two findings should you present to justify capability decomposition before adding the router? \n(Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Tool descriptions overlap across multiple claim categories within the agent's tool set."}, {"k": "B", "t": "Several tools have not been invoked across the most recent 90 days of traffic."}, {"k": "C", "t": "The 34 tools serve four distinct claim-workflow domains within the triage scope."}, {"k": "D", "t": "The router pattern is well documented in the team's internal architecture guide."}, {"k": "E", "t": "The proposed router introduces an additional model call on every incoming request."}], "ans": ["A", "C"]}, {"n": 68, "q": "A Claude architect needs to ensure that a security-hardening flag cannot be disabled by any individual engineer after it is set. Which configuration scope correctly enforces this requirement?", "kind": "single", "opts": [{"k": "A", "t": "User scope (~/.claude/settings.json) on each engineer's machine."}, {"k": "B", "t": "Environment variable defined in the CI/CD pipeline only."}, {"k": "C", "t": "Managed configuration applied centrally and marked as non-overridable."}, {"k": "D", "t": "Project scope (.claude/settings.json) committed to the repository."}], "ans": ["C"]}, {"n": 69, "q": "A Claude architect is auditing configuration scope assignments. Which two statements correctly identify an appropriate use of user-scope configuration versus other scopes? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Persisting personal editor theme preferences that follow an engineer across projects."}, {"k": "B", "t": "Saving a preferred Claude response language that applies to all repositories the engineer uses."}, {"k": "C", "t": "Enforcing a company-wide policy that must not be overridden by individual engineers."}, {"k": "D", "t": "Defining MCP server endpoints shared by all contributors to a specific repository."}, {"k": "E", "t": "Storing API authentication keys so they are not committed to version control."}], "ans": ["A", "B"]}, {"n": 70, "q": "You are compiling factors that should drive the choice between Model Context Protocol (MCP), direct API integration, and agent-to-agent handoff. Which two factors belong on the list? (Select two.) Each correct answer presents a complete solution", "kind": "multi", "opts": [{"k": "A", "t": "Whether the vendor publishes detailed reference documentation for each candidate protocol"}, {"k": "B", "t": "Whether the team has prior implementation experience with any of the candidate protocols."}, {"k": "C", "t": "Whether the underlying transport supports encryption in transit between the integrated services."}, {"k": "D", "t": "Whether the integration must be portable across multiple AI clients in the ecosystem."}, {"k": "E", "t": "Whether the interaction is stateless and latency-sensitive or stateful and longer-running."}], "ans": ["D", "E"]}, {"n": 71, "q": "You are selecting a protocol for a single low-latency stateless tool call from a Claude-based assistant to an internal pricing service that already exposes a stable HTTP API. Which integration mechanism is the most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "A direct API call to the existing endpoint with the appropriate scoped credentials."}, {"k": "B", "t": "A long-lived stateful session protocol for a stateless single-call interaction."}, {"k": "C", "t": "A bespoke streaming protocol layered over an unrelated asynchronous message bus."}, {"k": "D", "t": "An agent-to-agent handoff that introduces another Claude-based agent in front of the pricing service."}], "ans": ["A"]}, {"n": 72, "q": "A Claude architect observes that after a recent model-version upgrade, grounded responses began including claims not supported by the retrieved source documents. Which mitigation is most directly targeted at this failure mode?", "kind": "single", "opts": [{"k": "A", "t": "Constrain responses to source-supported content, require citations, and add a verification step."}, {"k": "B", "t": "Score each new model version against a stable adversarial evaluation set."}, {"k": "C", "t": "Replace the shared API key with per-user OAuth tokens to improve access control."}, {"k": "D", "t": "Treat retrieved data as untrusted and apply input classifiers at ingestion time."}], "ans": ["A"]}, {"n": 73, "q": "You are defining escalation criteria for ambiguous cases in an automated workflow. Which set of criteria best supports consistent escalation?", "kind": "single", "opts": [{"k": "A", "t": "No escalation criteria; the model decides independently on every turn whether to escalate, without explicit confidence thresholds, impact categories, or classifier-based ambiguity flags."}, {"k": "B", "t": "Escalation only after an affected customer has contacted support to complain, after the automated workflow has already completed without human review."}, {"k": "C", "t": "Escalation at the discretion of whoever is available when the team's on-call engineer has spare capacity, without a defined threshold, category, or ambiguity criterion."}, {"k": "D", "t": "A confidence score below a defined threshold, presence of high-impact decision categories, ambiguity flags raised by content classifiers, and the user's explicit request for review."}], "ans": ["D"]}, {"n": 74, "q": "After a prompt-template update, several previously passing test cases now produce unexpected outputs. Which test type is specifically designed to detect this category of failure?", "kind": "single", "opts": [{"k": "A", "t": "Integration tests that verify end-to-end behavior across pipeline components."}, {"k": "B", "t": "Adversarial tests designed to probe for safety and injection vulnerabilities."}, {"k": "C", "t": "Regression tests scored against a stable reference set of known-good behavior."}, {"k": "D", "t": "Smoke tests that verify core paths are reachable after each deployment."}], "ans": ["C"]}, {"n": 75, "q": "A Claude architect at a health services organization is defining evaluation metrics for a clinical-summary pipeline. The pipeline must remain within a per-query cost ceiling and must never surface patient data to unauthorized roles. Which two metrics directly address these requirements? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "BLEU score computed against a human-annotated reference summary set."}, {"k": "B", "t": "Role-based access-control enforcement rate measured on a red-team dataset."}, {"k": "C", "t": "Throughput measured as successful requests processed per minute."}, {"k": "D", "t": "Per-query token cost measured against the defined cost ceiling."}, {"k": "E", "t": "Response latency at the 95th percentile across a one-week sample window."}], "ans": ["B", "D"]}, {"n": 76, "q": "You are choosing the level of detail for an implementation guide. The audience is a delivery team that will build the deployment. Which guidance composition best serves them?", "kind": "single", "opts": [{"k": "A", "t": "Component responsibilities, contracts between components, sequence diagrams of the dominant flows, configuration parameters with defaults, and operational runbooks."}, {"k": "B", "t": "Component responsibilities and interface contracts only, without sequence diagrams of the dominant flows, configuration parameters with defaults, or runbooks to guide operational tasks."}, {"k": "C", "t": "An architecture overview and sequence diagrams for the dominant flows, without interface contracts, configuration-parameter tables, or operational runbooks for the delivery team to follow."}, {"k": "D", "t": "An architecture overview and a list of known limitations, without component-level diagrams, interface contracts, configuration parameters, or operational runbooks to support implementation."}], "ans": ["A"]}, {"n": 77, "q": "You are identifying the highest-impact optimization for a deployment whose token cost is dominated by a long, repeated system prompt and a large retrieved context per request. Which optimization most directly targets the dominant cost driver?", "kind": "single", "opts": [{"k": "A", "t": "Increase retrieval depth on every request to maximize recall, worsening the dominant cost driver by adding more retrieved tokens per request rather than reducing them."}, {"k": "B", "t": "Add additional repeated content to the system prompt to give the model more guidance."}, {"k": "C", "t": "Move the long, repeated system prompt into a cacheable prefix and trim retrieved context to the spans relevant to each query."}, {"k": "D", "t": "Switch every request to the heaviest available model to maximize output quality, accepting that higher per-request inference cost compounds rather than addresses the dominant cost driver."}], "ans": ["C"]}, {"n": 78, "q": "You are defining transparency practices for a customer-facing assistant whose responses are materially shaped by AI. Which transparency practice most directly supports responsible deployment?", "kind": "single", "opts": [{"k": "A", "t": "Misrepresent the AI's role in producing responses in order to make the assistant feel more trustworthy or more human, undermining informed user consent and organizational transparency."}, {"k": "B", "t": "Refuse to answer any user question about how the responses were produced or whether AI was involved, treating the AI's role as confidential operational information."}, {"k": "C", "t": "Disclose AI involvement to end users in line with the organization's transparency policy and provide a documented path to reach a human when needed."}, {"k": "D", "t": "Disclose AI involvement only to internal staff and operators while withholding that information from the end users whose interactions are materially shaped by the AI system."}], "ans": ["C"]}, {"n": 79, "q": "An engineering organization is adopting Claude Code across 200 developers. A team lead proposes that AI-generated pull requests bypass standard code review for changes under 50 lines. Which two Diligence-competency objections should you raise? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Removing review eliminates the verification mechanism required for AI-generated output across the workflow."}, {"k": "B", "t": "Code-review capacity should be expanded to handle every code change submitted across the team."}, {"k": "C", "t": "The threshold should be increased to 200 lines to capture more changes."}, {"k": "D", "t": "AI-generated pull requests should be rejected by default across the organization."}, {"k": "E", "t": "Line count is a poor proxy for the actual risk introduced by a code change."}], "ans": ["A", "E"]}, {"n": 80, "q": "You are defining an SLA for a Claude-based assistant. Which SLA definition is most operationally meaningful?", "kind": "single", "opts": [{"k": "A", "t": "A target tied to a stakeholder sentiment measure such as “the team feels satisfied,” which cannot be measured objectively or used to trigger a documented breach response."}, {"k": "B", "t": "A measurable target with a defined metric, threshold, evaluation window, and consequence for breach—for example, 'p95 per-request latency under 800 ms over a 28-day window.'"}, {"k": "C", "t": "A qualitative commitment such as “the system will be fast and reliable,” which names no metric, threshold, or evaluation window."}, {"k": "D", "t": "A target that names the metric and threshold but omits the evaluation window and breach consequence, leaving compliance periods and remediation triggers undefined."}], "ans": ["B"]}, {"n": 81, "q": "A Claude architect is designing a HIPAA-compliant pipeline that processes patient records. Which two design decisions directly support HIPAA compliance requirements? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Setting max_tokens to a low value to minimize the volume of text generated per request."}, {"k": "B", "t": "Selecting the highest-capability Claude model to maximize diagnostic accuracy."}, {"k": "C", "t": "Enforcing role-based access controls so that PHI is retrievable only by authorized personnel."}, {"k": "D", "t": "Ensuring patient data is never included in training feedback loops sent to the model provider without a BAA in place."}, {"k": "E", "t": "Using streaming responses to reduce perceived latency for clinical users."}], "ans": ["C", "D"]}, {"n": 82, "q": "You are designing a human-in-the-loop validation workflow for a new Claude-based deployment and must complete the design steps before piloting the workflow with a representative subset of traffic. Which two steps must be completed BEFORE piloting the workflow with a representative subset of traffic? \n(Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Define the sampling strategy and the escalation criteria at each oversight point in the pipeline."}, {"k": "B", "t": "Iterate the workflow design based on observed pilot findings before broader rollout to production."}, {"k": "C", "t": "Onboard the reviewer pool with role-specific training on the check criteria and escalation procedures."}, {"k": "D", "t": "Document the workflow with check criteria, escalation paths, and service-level agreements (SLAs) for each step."}, {"k": "E", "t": "Identify the decision points in the pipeline that require human oversight by impact and reversibility."}], "ans": ["A", "E"]}, {"n": 83, "q": "You are compiling team-setup practices for a Claude Code rollout across an engineering organization. Which two practices belong on the list? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Use project scope for team-shared Model Context Protocol (MCP) servers and permission rules under version control."}, {"k": "B", "t": "Apply managed configuration centrally for security-critical settings that must not be overridden by individual engineers."}, {"k": "C", "t": "Use local scope for security-critical permission rules so each engineer can adapt them to ongoing work."}, {"k": "D", "t": "Use user scope for team-shared MCP servers so every engineer on the team has consistent access."}, {"k": "E", "t": "Use project scope for personal editor preferences so the preferences apply consistently within the project."}], "ans": ["A", "B"]}, {"n": 84, "q": "You are reviewing a customer-support agent's configuration. Each candidate tool falls into one of four categories: \n(1) required to complete defined tasks, \n(2) frequently used and reduces handoffs, \n(3) occasionally useful for unrelated work, \n(4) speculative future utility. \nWhich categories should typically remain in the agent configuration?", "kind": "single", "opts": [{"k": "A", "t": "Only category 3, because occasionally useful tools for unrelated work provide broader coverage and should take priority over tools required for the agent's defined tasks."}, {"k": "B", "t": "Only category 4, because speculative future-utility tools provide the most flexibility and should be configured even when no defined task currently requires them."}, {"k": "C", "t": "Categories 1 and 2 only, because they map to defined tasks and the agent's regular hand-offs."}, {"k": "D", "t": "All four categories, because broader tool access is categorically better for agent performance regardless of whether the tools map to defined tasks or regular hand-offs."}], "ans": ["C"]}, {"n": 85, "q": "You are documenting an architectural decision to support future audit and onboarding. Which artifact is the strongest fit?", "kind": "single", "opts": [{"k": "A", "t": "A slide deck in a presentation folder with no accompanying written rationale."}, {"k": "B", "t": "A code comment in a single file that contains an opinion of one engineer."}, {"k": "C", "t": "An Architecture Decision Record that states the context, the decision, the alternatives considered, the consequences, and the date and authors."}, {"k": "D", "t": "A short verbal note shared during a hallway conversation with no written record."}], "ans": ["C"]}, {"n": 86, "q": "During an architectural review, the security team identifies a risk that adversarial content injected into retrieved documents could manipulate the model's behavior. Which mitigation most directly addresses this threat?", "kind": "single", "opts": [{"k": "A", "t": "Treat all retrieved content as untrusted input and apply input classifiers with output validation."}, {"k": "B", "t": "Require citations for each claim and constrain responses to source-supported content."}, {"k": "C", "t": "Restrict outbound tool calls to an approved destination allow-list."}, {"k": "D", "t": "Score outputs against a stable adversarial evaluation set on each model-version change."}], "ans": ["A"]}, {"n": 87, "q": "You are evaluating an evaluation set used to score a Claude-based hiring-support tool. The set is drawn from one geographic region and one tenure band. Which response is most appropriate?", "kind": "single", "opts": [{"k": "A", "t": "Discard all quantitative evaluation and replace it with qualitative impressions collected from a small, convenience-selected group that may not represent the tool's full user population."}, {"k": "B", "t": "Expand the evaluation set to cover the geographic regions and tenure bands the tool will serve, and rescore the system on the expanded set before broader release."}, {"k": "C", "t": "Reduce the evaluation set further to a single demographic subgroup to simplify score interpretation, narrowing coverage rather than expanding it to match the intended user population."}, {"k": "D", "t": "Continue using the narrow evaluation set drawn from one region and one tenure band because the existing benchmark scores are already high on that subset."}], "ans": ["B"]}, {"n": 88, "q": "You must present an architectural recommendation to deploy a Claude-based contract review assistant to a steering committee that includes the CFO, the general counsel, and the CIO. Each stakeholder cares about different aspects of the decision. How should you structure the recommendation document?", "kind": "single", "opts": [{"k": "A", "t": "Lead with the technical architecture diagram and the full component list before any other section."}, {"k": "B", "t": "Lead with detailed cost projections across the full multi-year horizon before the rationale section."}, {"k": "C", "t": "Present the same dense narrative throughout with no stakeholder differentiation in any section."}, {"k": "D", "t": "Lead with the architectural decision, then address each stakeholder's primary concerns directly."}], "ans": ["D"]}, {"n": 89, "q": "You are compiling a diagnostic toolkit for Claude Code operational issues. Which two diagnostic actions belong in the toolkit? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Increase the model sampling temperature so that intermittent issues surface more frequently for analysis."}, {"k": "B", "t": "File a support ticket with vendor support before any local reproduction or evidence collection."}, {"k": "C", "t": "Reproduce the issue with a minimal reproduction case that isolates one variable at a time."}, {"k": "D", "t": "Roll back to the previous Claude Code version immediately to confirm whether the issue is version specific."}, {"k": "E", "t": "List the configured Model Context Protocol (MCP) servers and inspect server status to identify connection failures."}], "ans": ["C", "E"]}, {"n": 90, "q": "A Claude Architect is reviewing a post-deployment performance report for an AI-assisted legal-document summarization system. The report includes these observations:\nAverage summarization time decreased from 47 minutes to 6 minutes per document.\nAssociates spend less time on summaries, but overall billable output has not measurably changed.\nInfrastructure costs increased by 22% because redundant retry logic generated additional API calls.\nSome summaries require attorney correction, adding an average of 8 minutes of review per document.\nWhich analysis correctly attributes each observation to the appropriate business-value pillar?", "kind": "single", "opts": [{"k": "A", "t": "Observations 1 and 2 both indicate efficiency gains; Observation 3 is a solution-cost issue; Observation 4 is a performance-SLA issue."}, {"k": "B", "t": "Observation 1 is a transformation outcome; Observation 2 is an efficiency gain; Observation 3 is a performance-SLA degradation; Observation 4 is a solution-cost issue."}, {"k": "C", "t": "Observations 1 and 4 together indicate a net performance-SLA improvement; Observation 2 is a transformation gap; Observation 3 is a productivity drain from over-engineering."}, {"k": "D", "t": "Observation 1 indicates an efficiency gain; Observation 2 shows that productivity has not yet been realized; Observation 3 is a solution-cost issue; Observation 4 is an efficiency loss that partially offsets Observation 1."}], "ans": ["D"]}, {"n": 91, "q": "You are supporting an engineer whose newly added MCP server does not appear in their Claude Code session. Which diagnostic step should be tried first?", "kind": "single", "opts": [{"k": "A", "t": "Disable every MCP server in the configuration to isolate the issue, removing all tool access rather than confirming whether the new server is registered."}, {"k": "B", "t": "Switch the team to a different Claude product family unrelated to the existing workflow, abandoning the current configuration rather than diagnosing the registration issue."}, {"k": "C", "t": "Verify the MCP server is registered using the listing command, then reconnect the session if needed, since configuration changes typically require a restart to take effect."}, {"k": "D", "t": "Reinstall the developer's operating system from scratch, discarding all local configuration and tool state before attempting any targeted diagnostic steps."}], "ans": ["C"]}, {"n": 92, "q": "You are a solution architect designing a Claude-based assistant with access to 60 internal tools across multiple business domains. Loading every tool definition on every request increases token usage and time to first response. Which design pattern best addresses this issue without sacrificing capability breadth?", "kind": "single", "opts": [{"k": "A", "t": "Apply progressive tool discovery so a curated initial subset is exposed and additional tools are loaded on demand based on the task."}, {"k": "B", "t": "Use a separate model call to summarize all 60 tool definitions before each user turn."}, {"k": "C", "t": "Increase the maximum context length and load all 60 tool definitions on every request, accepting the higher token cost and latency as necessary for full capability."}, {"k": "D", "t": "Hard-code a fixed set of five tools per request to reduce token usage, regardless of whether those tools are relevant to the current task."}], "ans": ["A"]}, {"n": 93, "q": "The compliance team at a firm has approved a Claude Skill that generates client-facing investment summaries. The Skill includes the firm’s required disclaimers and prohibited-language list. A product manager has asked whether additional guardrails are needed at the application layer or whether the Skill alone is sufficient.\nWhich two guardrail responsibilities should remain at the application layer rather than the Skill? (Select two.) \nEach correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Log every generated summary to the firm's compliance audit trail for retention."}, {"k": "B", "t": "Verify the requesting user is authorized to generate investment summaries at all."}, {"k": "C", "t": "Format output sections according to the firm's standardized house style guidelines."}, {"k": "D", "t": "Apply the disclaimer template that the compliance team has standardized firm-wide."}, {"k": "E", "t": "Apply the prohibited-language list that the compliance team maintains and updates."}], "ans": ["A", "B"]}, {"n": 94, "q": "You are supporting an EU-based deployment with GDPR obligations. Which combination of measures best supports the deployment's GDPR posture?", "kind": "single", "opts": [{"k": "A", "t": "Enterprise-tier deployment with a signed Data Processing Addendum, defined data-retention configuration, redaction of personal data not needed for the task, and documented data-subject rights handling."}, {"k": "B", "t": "Disabling all data-retention configuration, redaction controls, and data-subject-rights handling to simplify the deployment."}, {"k": "C", "t": "Using a personal Claude account tier for processing EU personal data at scale, with no signed Data Processing Addendum and no documented data-subject-rights handling procedure."}, {"k": "D", "t": "Pasting full EU personal data into every prompt to “give Claude complete context” without considering purpose limitation, data minimization, or the organization's Data Processing Addendum obligations."}], "ans": ["A"]}, {"n": 95, "q": "You are reviewing instrumentation in a multi-agent system. Which two findings constitute valid observability gaps in the instrumentation? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Trace spans for each agent step are exported to the shared distributed-tracing backend."}, {"k": "B", "t": "Latency and token usage on every span are emitted to the central metrics pipeline."}, {"k": "C", "t": "Tool-call payloads and outcomes are recorded with redaction applied to known sensitive fields."}, {"k": "D", "t": "Model identity and version on each turn are not recorded with the turn artifacts."}, {"k": "E", "t": "Request-scoped correlation identifiers do not propagate across agent and tool calls."}], "ans": ["D", "E"]}, {"n": 96, "q": "When communicating an architectural decision to a security and compliance reviewer, which content set is most aligned with that audience's primary concerns?", "kind": "single", "opts": [{"k": "A", "t": "Feature delivery schedule, roadmap dependencies, and scope boundaries for the product manager."}, {"k": "B", "t": "Implementation timeline, component interfaces, and deployment sequence for the engineering team."}, {"k": "C", "t": "Threat model, control mappings, residual-risk acceptance criteria, and audit traceability."}, {"k": "D", "t": "Decision rationale, business outcomes, and high-level risk summary for executive review."}], "ans": ["C"]}, {"n": 97, "q": "You are defining when to introduce a project subagent versus relying on Claude Code's general capabilities. Which scenario most directly justifies a dedicated subagent?", "kind": "single", "opts": [{"k": "A", "t": "The team has a recurring specialized task, such as database schema review, that requires a focused system prompt, narrow tool permissions, and a specific model selection across many sessions."}, {"k": "B", "t": "The team has a one-time ad hoc question that will not recur and does not require a focused system prompt, narrow tool permissions, or dedicated model selection."}, {"k": "C", "t": "The team has no recurring specialized tasks and uses Claude Code only for isolated general-purpose work that does not justify a dedicated system prompt or tool scope."}, {"k": "D", "t": "The team wants every Claude Code interaction to use the same generic system prompt with no task-specific specialization, narrow tool permissions, or dedicated model selection."}], "ans": ["A"]}, {"n": 98, "q": "You are identifying signals that a deployment should re-enter design rather than continue iterating in place. Which signal most directly indicates the need for a new design cycle?", "kind": "single", "opts": [{"k": "A", "t": "A minor copy edit is requested in a customer-facing string within the existing UI, which can be handled as a localized content change without altering component responsibilities or contracts."}, {"k": "B", "t": "A dashboard alert threshold needs a small numerical adjustment to reduce false-positive noise, which can be handled as an operational configuration change without a new design cycle."}, {"k": "C", "t": "A runbook step requires a clarification edit to improve on-call guidance accuracy, which can be handled as a documentation update without changes to component responsibilities or core contracts."}, {"k": "D", "t": "The system's current architecture cannot meet the new requirements without changes to component responsibilities or core contracts."}], "ans": ["D"]}, {"n": 99, "q": "You are rolling out monitoring for a Claude-based deployment and must complete the specification steps before instrumenting the deployment. Which two steps must be completed BEFORE instrumenting the deployment to emit metrics and traces? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Define the metrics and the slices the deployment will monitor across normal and adversarial traffic."}, {"k": "B", "t": "Tune the alert thresholds based on observed normal-state distributions to reduce false positives."}, {"k": "C", "t": "Define the service-level objectives (SLOs) and the error budgets the deployment will be held to."}, {"k": "D", "t": "Build the dashboards that surface metrics across slices at the cadence the team operates on."}, {"k": "E", "t": "Document the dashboards, alerts, and runbooks for the on-call rotation that will respond."}], "ans": ["A", "C"]}, {"n": 100, "q": "You are integrating Claude Code into a team workflow and must complete the design and configuration steps before piloting the integrated workflow with a small group. Which two steps must be completed BEFORE piloting the integrated workflow? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Document the integrated workflow with handoff criteria, permission boundaries, and on-call runbooks."}, {"k": "B", "t": "Identify the workflow steps where AI-assisted tooling adds value and where human authority must remain."}, {"k": "C", "t": "Negotiate the workflow change with affected teams and obtain formal sign-off from each manager."}, {"k": "D", "t": "Iterate the integrated workflow based on pilot findings before broader rollout to the team."}, {"k": "E", "t": "Configure the project-scope MCP servers, permissions, subagents, and persistent project context."}], "ans": ["B", "E"]}, {"n": 101, "q": "You are preparing a HIPAA-eligible deployment for a healthcare customer. Which configuration supports HIPAA compliance using Anthropic-offered tools?", "kind": "single", "opts": [{"k": "A", "t": "Claude Free with no contractual addendum, since consumer products meet HIPAA requirements out of the box."}, {"k": "B", "t": "Claude Enterprise with a signed Business Associate Agreement, Zero Data Retention enabled, and audit logging configured for compliance tracking."}, {"k": "C", "t": "Disabling all audit logging so that no PHI is recorded in any log store, on the assumption that the absence of logs satisfies HIPAA requirements without a signed BAA."}, {"k": "D", "t": "An ad-hoc personal Claude account used by individual clinicians for PHI-related tasks, with no Business Associate Agreement, no Zero Data Retention, and no audit logging configured."}], "ans": ["B"]}, {"n": 102, "q": "You are listing characteristics of strong architectural-decision communication. Which two characteristics belong on the list? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Ownership and review cadence for revisiting the decision when conditions or assumptions change."}, {"k": "B", "t": "Distribution to a standing review forum with mandatory attendance from senior engineering leaders."}, {"k": "C", "t": "Omission of rejected alternatives to keep the decision document focused and concise for readers."}, {"k": "D", "t": "Alternatives considered along with the criteria that were used to evaluate each alternative."}, {"k": "E", "t": "Use of a consistent template across the team to standardize the visual presentation of decisions."}], "ans": ["A", "D"]}, {"n": 103, "q": "You are integrating Claude Code into a workflow that runs against a production database. Which guardrail design most directly preserves safety on data-modifying operations?", "kind": "single", "opts": [{"k": "A", "t": "Allow Claude Code to write directly to the production database without subagent scoping, read-only credential defaults, or human confirmation gates on data-modifying operations."}, {"k": "B", "t": "Configure the database MCP server with a fully privileged credential that can perform any read or write operation, and allow all operations to proceed without explicit human confirmation."}, {"k": "C", "t": "Disable all logging and auditing on database operations through the MCP server to reduce alert noise, removing the observability needed to detect unintended data modifications."}, {"k": "D", "t": "Configure the database MCP server with a read-only credential by default, restrict the subagent's tool list to read-only operations, and require explicit human confirmation on any operation that would modify data."}], "ans": ["D"]}, {"n": 104, "q": "You are building an evaluation pipeline for a Claude-based deployment and must complete the specification steps before running the deployment against the dataset. Which two steps must be completed BEFORE running the deployment against the evaluation dataset? (Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Publish the aggregated metrics to a dashboard and gate releases on threshold checks."}, {"k": "B", "t": "Curate and label the evaluation dataset to match the defined slices."}, {"k": "C", "t": "Review failure cases with subject matter experts to refine the scoring rubric."}, {"k": "D", "t": "Define the metrics and slices the framework will report across representative, edge, and adversarial cases."}, {"k": "E", "t": "Score the deployment outputs against the reference labels and compute aggregate metrics."}], "ans": ["B", "D"]}, {"n": 105, "q": "You are rolling out a standardized Claude Code configuration to an engineering team and must complete the planning steps before piloting the configuration. \nWhich two steps must be completed BEFORE piloting the configuration with a small group of engineers? \n(Select two.) Each correct answer presents part of the solution.", "kind": "multi", "opts": [{"k": "A", "t": "Define the project-scope baseline covering Model Context Protocol (MCP) servers, permission rules, and subagents."}, {"k": "B", "t": "Onboard every engineer in the organization to the new configuration through mandatory training sessions."}, {"k": "C", "t": "Roll out the stabilized configuration to additional teams with documentation and a defined support channel"}, {"k": "D", "t": "Identify the team workflows, security boundaries, and which decisions belong to managed configuration versus project scope."}, {"k": "E", "t": "Iterate the configuration based on the pilot findings and stabilize the baseline before broader rollout."}], "ans": ["A", "D"]}, {"n": 106, "q": "A healthcare organization is evaluating two Claude-powered AI architectures for a clinical documentation assistant. Architecture X produces higher output quality scores but costs $0.18 per documentation session and averages 4.2 seconds per response. Architecture Y scores slightly lower on quality metrics but costs $0.09 per session and averages 2.1 seconds per response. The stated SLA requires responses under 3 seconds, and the annual volume is projected at 2 million documentation sessions.\n Which evaluation approach correctly applies business value pillar analysis to this decision?", "kind": "single", "opts": [{"k": "A", "t": "Select Architecture Y based solely on the 50% cost reduction, since solution cost is the most important value pillar in healthcare budget-constrained environments."}, {"k": "B", "t": "Select Architecture X because the higher quality scores justify the cost premium, and any SLA gap can be addressed through infrastructure optimization after deployment."}, {"k": "C", "t": "Eliminate Architecture X on SLA grounds, then evaluate Architecture Y against the efficiency and solution cost pillars by calculating annual cost difference and assessing whether the quality delta materially impacts clinical workflow productivity."}, {"k": "D", "t": "Recommend a hybrid approach using Architecture X for complex cases and Architecture Y for routine cases, without additional analysis, since this preserves quality where it matters most."}], "ans": ["C"]}, {"n": 107, "q": "You are explaining the precedence of Claude Code configuration scopes to the team. Which precedence ordering, from highest to lowest, is correct?", "kind": "single", "opts": [{"k": "A", "t": "Local > managed > user > command-line arguments > project"}, {"k": "B", "t": "Project > user > managed > local > command-line arguments"}, {"k": "C", "t": "Managed > command-line arguments > local > project > user"}, {"k": "D", "t": "User > project > local > command-line arguments > managed"}], "ans": ["C"]}, {"n": 108, "q": "A Claude architect is leading the discovery phase for a new AI-powered customer service solution. Which two activities are characteristic of structured discovery and requirement gathering for a Claude-based deployment? (Select two.)", "kind": "multi", "opts": [{"k": "A", "t": "Facilitating stakeholder workshops to surface latency, accuracy, and compliance constraints before scoping begins."}, {"k": "B", "t": "Selecting the Claude model tier based on the architect's prior project experience before stakeholder input is collected."}, {"k": "C", "t": "Generating an initial prototype and iterating based on user reaction rather than written requirements."}, {"k": "D", "t": "Documenting explicit success criteria and failure thresholds that will gate production deployment."}, {"k": "E", "t": "Deferring constraint documentation until the integration design phase to avoid scope creep."}], "ans": ["A", "D"]}, {"n": 109, "q": "You are classifying token-management tactics by where each tactic applies in the request lifecycle: 'Input Preparation,' 'Prompt Construction,' or 'Output Handling.'", "kind": "match", "opts": [{"k": "A", "t": "Persist the validated output for downstream consumption and audit"}, {"k": "B", "t": "Order the prompt sections so cacheable content sits before per-request content"}, {"k": "C", "t": "Summarize prior conversation history when full history is no longer needed"}, {"k": "D", "t": "Validate the model's structured output against the expected schema"}, {"k": "E", "t": "Move stable repeated content into a cacheable prefix at the head of the prompt"}, {"k": "F", "t": "Trim retrieved passages to spans relevant to the user's question"}], "choices": ["Input Preparation", "Output Handling", "Prompt Construction"], "ans": ["Output Handling", "Prompt Construction", "Input Preparation", "Output Handling", "Prompt Construction", "Input Preparation"]}, {"n": 110, "q": "A customer support team has proposed delegating customer refund decisions to a Claude-driven workflow with no human review for refunds under 50 USD. The team's reasoning is that small refunds are low-risk and human review would erase the efficiency gain. Which Delegation-competency principle should guide your response?", "kind": "single", "opts": [{"k": "A", "t": "Delegation should always include human review on every decision the workflow produces."}, {"k": "B", "t": "Delegation scope should reflect the type of risk involved, not the transaction size alone."}, {"k": "C", "t": "Delegation scope should be set primarily by maximizing efficiency gains across the workflow."}, {"k": "D", "t": "Delegation should be avoided entirely wherever financial transactions occur in the workflow."}], "ans": ["B"]}, {"n": 111, "q": "You are identifying inefficiency in a Claude Code workflow where each engineer manually re-explains the project's conventions and architecture in every session. Which adjustment most directly removes this inefficiency?", "kind": "single", "opts": [{"k": "A", "t": "Forbid the use of Claude Code on the project entirely to avoid the session-initialization overhead, accepting that the team loses all AI-assisted development productivity for this codebase."}, {"k": "B", "t": "Capture the project's conventions and architecture in a project-scoped CLAUDE.md (or equivalent persistent project-context file) committed to the repository, so each session loads it automatically."}, {"k": "C", "t": "Tell each engineer to retype the project conventions and architecture context more quickly at the start of each session, reducing time lost without eliminating the repeated manual effort."}, {"k": "D", "t": "Remove all documented project conventions and architectural standards so engineers have nothing to re-explain at session start, accepting the loss of consistency and shared coding standards."}], "ans": ["B"]}, {"n": 112, "q": "The compliance team has authored a regulatory disclosure procedure that must be applied identically across customer service, sales, and onboarding workflows. Which two design decisions should you include? (Select two.) Each correct answer presents part of the solution", "kind": "multi", "opts": [{"k": "A", "t": "Package the procedure as a Claude Skill owned directly by the compliance team."}, {"k": "B", "t": "Embed the procedure text into each workflow's system prompt at integration time."}, {"k": "C", "t": "Store the procedure in a shared retrieval corpus accessible to each workflow independently."}, {"k": "D", "t": "Have each workflow team rewrite the procedure for its own context."}, {"k": "E", "t": "Reference the same Claude Skill from all three workflow integrations."}], "ans": ["A", "E"]}, {"n": 113, "q": "You are compiling continuity practices that span the deployment lifecycle. Which two practices belong on the list? (Select two.) Each correct answer presents a complete solution.", "kind": "multi", "opts": [{"k": "A", "t": "Maintain a stakeholder register and notify the listed parties at every phase transition event."}, {"k": "B", "t": "Carry the evaluation framework and reference set forward across iterations rather than rebuilding each time."}, {"k": "C", "t": "Archive every phase deliverable in long-term storage to preserve a record of what was produced."}, {"k": "D", "t": "Capture lessons learned at the end of each phase and surface them as inputs to the next phase."}, {"k": "E", "t": "Lock decisions made in early phases to prevent revisiting them as later phases begin."}], "ans": ["B", "D"]}];
+
+/* ===== Chủ đề, ghi nhớ, giải thích ===== */
+const TOPICS=[
+ {id:'cc',name:'Claude Code & cấu hình',short:'Claude Code',c:'--t1',
+  ns:[2,3,14,31,33,38,39,44,58,68,69,83,89,91,97,100,103,105,107,111],
+  notes:["Thứ tự ưu tiên cấu hình: <b>Managed &gt; command-line &gt; local &gt; project &gt; user</b>.",
+   "Dùng chung cả team → <b>project scope</b> commit vào repo (<code>.mcp.json</code>, <code>.claude/settings.json</code>, <code>CLAUDE.md</code>). Bắt buộc toàn tổ chức, không ai tắt được → <b>managed</b>. Sở thích cá nhân → <b>user</b>.",
+   "Nhiều MCP server làm đầy context ngay khi mở session → bật <b>Tool Search</b> để chỉ nạp định nghĩa tool khi cần.",
+   "Quyền: pattern hẹp cho đúng lệnh cần dùng + <b>deny rule</b> cho thao tác nhạy cảm, không cấp Bash không giới hạn. Bị chặn ngoài ý muốn → kiểm tra rule ở mọi cấp.",
+   "MCP không hiện → <code>claude mcp list</code> rồi restart/reconnect session. Lỗi chỉ ở lần chạy đầu kèm hộp thoại quyền → do lần cấp quyền đầu tiên.",
+   "Subagent riêng khi có việc chuyên biệt lặp lại (prompt riêng, tool hẹp, model riêng). DB production: credential chỉ đọc + người xác nhận khi sửa dữ liệu."]},
+ {id:'sec',name:'Bảo mật, guardrail & tuân thủ',short:'Bảo mật',c:'--t2',
+  ns:[1,11,17,18,22,23,28,29,34,45,55,59,62,81,84,86,93,94,101],
+  notes:["<b>Least privilege</b>: allow-list tool theo vai trò, thực thi ở tầng orchestration, không dựa vào model tự từ chối.",
+   "<b>RBAC ở tầng retrieval</b>, trước khi dữ liệu đi vào prompt. Lọc sau khi model đã sinh câu trả lời là quá muộn.",
+   "Nội dung truy xuất là <b>dữ liệu không tin cậy</b> (prompt injection gián tiếp). Chặn rò rỉ bằng allowlist đích cho tool gọi ra ngoài.",
+   "Credential không nằm trong prompt. Thay API key dùng chung bằng <b>OAuth theo từng user</b>. Log tool-call phải ghi người khởi tạo.",
+   "Guardrail <b>nhiều lớp</b>: chỉ dẫn trong prompt + classifier lúc runtime + validate schema đầu ra. Một system prompt duy nhất là không đủ.",
+   "<b>HIPAA</b>: BAA + Zero Data Retention + audit log. <b>GDPR</b>: DPA + cấu hình lưu trữ + tối thiểu hoá dữ liệu + quy trình quyền chủ thể dữ liệu."]},
+ {id:'eval',name:'Đánh giá, kiểm thử & vận hành',short:'Đánh giá & vận hành',c:'--t3',
+  ns:[12,19,21,30,42,46,50,52,72,73,74,75,80,82,87,95,99,104],
+  notes:["Đổi prompt → <b>regression test</b>. Chống tấn công → <b>adversarial test</b>. Đúng giữa các thành phần → <b>integration test</b>.",
+   "Nâng cấp model → chấm lại trên <b>bộ eval cố định</b>, ghi điểm theo từng phiên bản trước khi promote.",
+   "Model nói sai so với nguồn → ràng buộc bám nguồn + bắt buộc trích dẫn + bước kiểm chứng; thử tái hiện trên phiên bản model cũ.",
+   "SLA dùng được = <b>metric + ngưỡng + cửa sổ đo + hệ quả khi vi phạm</b>.",
+   "Human review: <b>lấy mẫu theo rủi ro</b>. Escalation theo ngưỡng confidence, loại quyết định tác động lớn, cờ mơ hồ và yêu cầu của user.",
+   "Quan sát: correlation ID xuyên suốt agent/tool, ghi model + version mỗi lượt. Chẩn đoán: so với bản tốt gần nhất, replay request, xem output thô."]},
+ {id:'cost',name:'Chi phí, độ trễ & chọn model',short:'Chi phí & model',c:'--t4',
+  ns:[13,15,35,40,41,43,48,77,109],
+  notes:["<b>Prompt caching</b> phần tĩnh (system prompt, tài liệu dùng lại) và đặt nó ở <b>đầu</b> prompt → giảm cả chi phí lẫn độ trễ.",
+   "<b>Định tuyến theo tầng</b>: việc đơn giản, khối lượng lớn → model nhỏ (Haiku); việc khó → model lớn.",
+   "Chọn model: đặt quality bar, độ trễ, khối lượng → chọn ứng viên → chạy mẫu đại diện → lấy <b>model nhẹ nhất đạt chuẩn</b> → kiểm tra lại khi có phiên bản mới.",
+   "Cắt retrieval về top-k hoặc đúng đoạn liên quan thay vì nhồi cả kho tài liệu vào context.",
+   "Đề yêu cầu “không giảm độ chính xác” → ưu tiên <b>cache</b>, không cắt nội dung hay chuyển sang model nhỏ hơn."]},
+ {id:'arch',name:'Kiến trúc giải pháp, RAG & Skills',short:'Kiến trúc',c:'--t5',
+  ns:[4,10,20,24,32,36,37,53,54,61,65,66,67,70,71,92,112],
+  notes:["Các bước cố định, dự đoán được → <b>workflow</b>. Đường đi mở, không biết trước → <b>agent</b>.",
+   "<b>Skill</b> = tri thức quy trình, dùng được ở claude.ai/API/Claude Code, một nguồn cho nhiều workflow. <b>MCP</b> = kết nối hệ thống/dữ liệu trực tiếp, dùng được trên nhiều AI client. Một lời gọi stateless → <b>API trực tiếp</b>.",
+   "Hỏi đáp trên nguồn chính thức → <b>RAG + trích dẫn</b>. Dense cho ngữ nghĩa, sparse cho từ khoá chính xác, truy vấn có cấu trúc cho lọc/tổng hợp.",
+   "Nhiều tool chồng chéo → <b>tách theo miền nghiệp vụ</b>. Nhiều tool → nạp dần theo nhu cầu (progressive discovery).",
+   "Logic tất định (tính thuế, phép tính) để trong <b>code</b>, không trong prompt. Prompt có chỉ dẫn mâu thuẫn → sửa tận gốc.",
+   "Không dùng Claude cho việc cần độ trễ dưới 50 ms hoặc để thay thế vector index."]},
+ {id:'lead',name:'Stakeholder, tài liệu & vòng đời',short:'Stakeholder & tài liệu',c:'--t6',
+  ns:[5,7,9,26,27,47,49,51,60,64,76,85,88,96,98,102,108,113],
+  notes:["Yêu cầu mơ hồ → <b>discovery có cấu trúc</b> trước khi thiết kế; ghi rõ tiêu chí thành công và ngưỡng thất bại.",
+   "Thêm scope giữa chừng → ghi nhận nhu cầu, <b>minh bạch tác động</b>, đưa lựa chọn (hoãn, bỏ bớt, lùi hạn) để stakeholder quyết.",
+   "Trình bày: <b>quyết định → giá trị & đánh đổi → chi tiết kỹ thuật</b>. Mỗi đối tượng nhận đúng thứ họ quan tâm (bảo mật: threat model, control, rủi ro còn lại).",
+   "<b>ADR</b>: bối cảnh, quyết định, phương án đã cân nhắc, hệ quả, ngày, tác giả; có người sở hữu và lịch xem lại.",
+   "Bàn giao: kiến trúc, ADR, contract, khung eval + bộ tham chiếu, runbook, playbook on-call, hạn chế đã biết.",
+   "Quay lại thiết kế khi yêu cầu mới buộc phải đổi trách nhiệm thành phần hoặc contract cốt lõi."]},
+ {id:'flu',name:'AI Fluency & giá trị kinh doanh',short:'AI Fluency & giá trị',c:'--t7',
+  ns:[6,8,16,25,56,57,63,78,79,90,106,110],
+  notes:["<b>4D AI Fluency</b>: Delegation (giao việc gì cho AI), Description (mô tả yêu cầu), Discernment (đánh giá đầu ra), Diligence (trách nhiệm và kiểm chứng).",
+   "Delegation: phạm vi giao cho AI dựa trên <b>loại rủi ro</b>, không chỉ dựa trên giá trị giao dịch.",
+   "Discernment: tỷ lệ chấp nhận hay tỷ lệ khớp với con người <b>không chứng minh</b> đầu ra đúng hay công bằng.",
+   "Fairness: xem cả <b>tỷ lệ lỗi</b> giữa các nhóm; model vẫn có thể mang thiên kiến từ dữ liệu pretrain.",
+   "Minh bạch: công bố có AI tham gia + có đường liên hệ con người khi cần.",
+   "Trụ cột giá trị: <b>Efficiency</b> (thời gian mỗi việc), <b>Productivity</b> (sản lượng), <b>Transformation</b> (đổi cách làm việc), <b>Solution Cost</b>, <b>Performance SLA</b>. Loại phương án vi phạm SLA trước."]}
+];
+const TIPS=[
+ "<b>Loại trừ trước.</b> Phần lớn phương án sai rất cực đoan: “tắt toàn bộ”, “bỏ qua con người”, “dựa vào model tự từ chối”, “cài lại hệ điều hành”. Gạch chúng đi rồi mới cân nhắc phần còn lại.",
+ "Đáp án đúng thường là phương án <b>nhiều lớp và cân bằng</b>: thực thi ở tầng hệ thống (không chỉ dặn trong prompt), giữ con người ở quyết định quan trọng, đo bằng dữ liệu.",
+ "Câu “Which two steps must be completed <b>BEFORE</b>…”: chọn hai bước <b>sớm nhất</b> của quy trình. Tài liệu hoá, tinh chỉnh sau pilot, rollout thường là bước sau.",
+ "Câu chọn nhiều luôn có đúng <b>2</b> đáp án; trang không cho chọn quá số lượng.",
+ "Gạch chân ràng buộc trong đề: “without affecting accuracy”, “most directly”, “first”, “network boundary”… Ràng buộc cứng thường quyết định đáp án.",
+ "Câu Yes/No về các nhận định: phát biểu có “always”, “regardless”, “identical”, “can be ignored” gần như luôn là <b>No</b>."
+];
+const EXPL={
+1:"Quyền tối thiểu nghĩa là chỉ cấp đúng những tool mà vai trò cần và thực thi ở tầng orchestration. Không dựa vào model tự từ chối; tắt hết tool thì không làm được việc.",
+2:"Mỗi MCP server nạp định nghĩa tool vào context ngay từ đầu. Khi không bật Tool Search, nhiều server có thể tiêu hàng chục nghìn token trước cả tin nhắn đầu tiên.",
+3:"AI hỗ trợ review bằng cách comment phân tích có cấu trúc; quyết định approve vẫn thuộc con người và branch protection giữ nguyên.",
+4:"Skill phù hợp với tri thức quy trình (hướng dẫn, ví dụ mẫu), dùng được ở claude.ai, API và Claude Code. MCP phù hợp khi cần gọi hệ thống hoặc dữ liệu bên ngoài.",
+5:"Trước khi viết từng phần: xác định người đọc và câu hỏi họ cần được trả lời, rồi lập dàn ý. Dịch, review với team, đưa vào version control là các bước sau.",
+6:"Theo khung trụ cột giá trị: tăng năng suất xử lý = Efficiency; thay đổi cách tổ chức công việc (bỏ vai trò, chuyển người sang việc giá trị cao hơn) = Transformation; chi phí vượt dự toán = Solution Cost; độ trễ so với cam kết = Performance SLA.",
+7:"Routine căn chỉnh tốt cần nhịp định kỳ xem lại kỳ vọng và giả định, và xử lý thẳng các quan điểm khác nhau thay vì lờ đi. Ghi hình, luân phiên chủ trì hay đẩy lên sponsor không phải cốt lõi.",
+8:"Delegation: yêu cầu mơ hồ thì trước hết phải làm discovery có cấu trúc để xác định quyết định đang có vấn đề và chỉ số mục tiêu. Không prototype mù, không tự đặt scope.",
+9:"Với yêu cầu tăng scope: ghi nhận nhu cầu, minh bạch tác động lên scope và timeline, rồi đưa lựa chọn (hoãn, cắt phần khác, lùi hạn) để stakeholder quyết.",
+10:"Code hoặc đặc tả phân cấp → chia theo hàm/section hoặc theo cây. Tài liệu dài có cấu trúc → chia theo ngữ nghĩa (điều khoản, đoạn) hoặc theo cấu trúc mục. Bản ghi ngắn → mỗi bản ghi một chunk, hoặc fixed-size có overlap.",
+11:"Đánh giá rủi ro: trước khi ước lượng khả năng xảy ra và tác động phải kiểm kê tài sản (kèm độ nhạy) và liệt kê tác nhân đe doạ, vector tấn công. Khuyến nghị giảm thiểu và báo cáo là bước sau.",
+12:"Runbook phải giúp on-call hành động được: alert phổ biến kèm bước triage, đường escalation, quy trình rollback và link dashboard/log. Thiếu phần nào cũng là runbook chưa đủ.",
+13:"Khi độ trễ là ràng buộc chính: giảm độ sâu retrieval về top-k đủ dùng và cache phần system prompt ổn định. Giảm token đầu vào mà không làm hỏng chất lượng.",
+14:"Bị chặn quyền ngoài dự kiến: kiểm tra rule ở mọi cấp (managed, command-line, local, project, user) để tìm rule gây chặn và quyết định có nên sửa. Không tắt cả hệ thống quyền.",
+15:"Trình tự chọn model: định nghĩa quality bar, độ trễ, khối lượng → chọn ứng viên theo profile → chạy mẫu đại diện → chọn model nhẹ nhất đạt chuẩn → kiểm tra lại khi có phiên bản mới.",
+16:"Checklist đạo đức: đầu ra không dựa trên khái quát hoá về con người mà dữ liệu không chứng minh, và quyết định tác động lớn vẫn có con người chịu trách nhiệm. License hay hiệu năng không phải hạng mục đạo đức.",
+17:"Allowlist outbound + giới hạn đích → chống rò rỉ dữ liệu qua tool call. Chấm điểm trên bộ eval đối kháng cố định sau mỗi lần đổi model → phát hiện suy giảm chất lượng âm thầm.",
+18:"RBAC phải thực thi ở tầng retrieval, trước khi nội dung bị hạn chế đi vào prompt hay model. Chỉ dặn trong prompt hoặc lọc sau khi sinh đều không đáng tin.",
+19:"Model mâu thuẫn với nguồn dù pipeline retrieval không đổi → nghi do đổi model hoặc prompt: thử tái hiện trên phiên bản model trước, và kiểm tra chỉ dẫn grounding/trích dẫn trong system prompt.",
+20:"Hỏi đáp chính sách có trích dẫn, ưu tiên độ trễ, chi phí và khả năng audit → LLM + RAG trên kho nguồn chính thức, hiển thị trích dẫn. Multi-agent quá nặng; duyệt web mở thì không kiểm soát được nguồn.",
+21:"Lấy mẫu theo rủi ro: review toàn bộ đầu ra có độ tin cậy thấp hoặc tác động cao, cộng một mẫu ngẫu nhiên nhỏ của đầu ra thông thường.",
+22:"Lỗ hổng thật: credential nằm trong prompt (có thể lọt vào log/trace) và RBAC chỉ áp ở tầng hiển thị sau khi model đã đọc dữ liệu hạn chế. Các phương án còn lại là thực hành tốt.",
+23:"Agent chỉ soạn đề nghị mua hàng để người review → giữ tool đọc catalog, đọc chính sách, ghi bản nháp; bỏ tool gửi email trực tiếp cho vendor và tool admin DB không liên quan.",
+24:"Claude hợp với việc cần hiểu ngôn ngữ và lập luận (soạn báo cáo, review hợp đồng dài, phân loại có giải thích). Không hợp với chấm điểm gian lận dưới 50 ms hay thay thế vector index.",
+25:"Diligence: khi phát hiện trích dẫn bịa, lấy mẫu để ước lượng tần suất và kiểm tra pipeline có cơ chế grounding trích dẫn hay không. Không tắt ngay khi chưa chẩn đoán, không coi là ca lẻ.",
+26:"Yêu cầu phi chức năng mô tả chất lượng vận hành (độ trễ, thông lượng, độ sẵn sàng…), ví dụ p95 dưới 800 ms. Trích xuất, phân loại, soạn nháp là yêu cầu chức năng.",
+27:"Khán giả hỗn hợp: mở đầu bằng quyết định, kết quả kinh doanh và đánh đổi (cho sponsor), sau đó mới đến lý do kỹ thuật, phương án thay thế và tác động triển khai (cho kỹ sư).",
+28:"Guardrail vững: allow-list tool theo vai trò thực thi ở tầng orchestration trước khi tool chạy, và bộ eval có input đối kháng kèm theo dõi regression.",
+29:"Chống giả mạo quyền admin cần nhiều lớp: prompt coi nội dung user là dữ liệu không tin cậy, classifier phát hiện ý đồ override, quyền tool không nâng được bằng nội dung user, và log lại các lần thử.",
+30:"JSON hỏng sau bảo trì → so system prompt và cấu hình schema với phiên bản tốt gần nhất, rồi replay request cũ trên cấu hình hiện tại và xem output thô trước khi parse.",
+31:"Lỗi chỉ ở lần chạy đầu kèm hộp thoại cấp quyền hệ thống → nguyên nhân là lần cấp quyền đầu tiên. Ghi vào hướng dẫn onboarding và xác nhận các lần sau chạy tốt.",
+32:"Yêu cầu dữ liệu phải nằm trong ranh giới mạng là ràng buộc cứng. Nếu managed agents không đáp ứng thì các lợi ích khác (chi phí, pattern, topology) không còn ý nghĩa.",
+33:"Thay Bash không giới hạn bằng pattern tool hẹp chỉ cho phép đúng lệnh workflow cần, kèm deny rule cho thao tác nhạy cảm.",
+34:"Guardrail: validate output theo schema trước khi thực hiện hành động tiếp theo, và xếp lớp guardrail ở prompt với kiểm tra nội dung lúc runtime. Một system prompt duy nhất là không đủ.",
+35:"Phân loại khối lượng lớn, nhãn rõ ràng, ngân sách độ trễ chặt → Haiku: nhanh, rẻ, đủ khả năng lập luận cho loại việc này.",
+36:"Tiền xử lý: OCR và che PII trước khi gọi model. Tầng model: phân loại và trích xuất bằng Claude. Hậu xử lý: validate schema và lưu vào hệ thống gốc.",
+37:"Dense tốt cho ý diễn đạt khác đi (paraphrase); sparse tốt cho từ chính xác và mã định danh; truy vấn có cấu trúc cho lọc/tổng hợp trên CSDL. Hybrid khác dense-only; lấy mẫu ngẫu nhiên không phải chiến lược retrieval.",
+38:"Tool Search trì hoãn việc nạp định nghĩa tool và chỉ tìm khi cần → giảm context mà vẫn giữ đủ khả năng.",
+39:"Commit .mcp.json (và .claude/settings.json) ở cấp project vào repo → mọi người dùng chung định nghĩa mà không cần đồng bộ tay. Managed áp cho toàn tổ chức, không riêng một repo.",
+40:"Prompt caching phần prefix tĩnh và định tuyến truy vấn đơn giản sang model nhỏ hơn đều giảm đồng thời chi phí và độ trễ.",
+41:"Model mạnh chạy chậm hơn và tốn rate limit hơn; xác nhận lựa chọn bằng đánh giá trên mẫu đại diện; định tuyến theo tầng. “Luôn chọn model mạnh nhất” hay “chọn bản mới nhất” đều sai.",
+42:"An toàn khi bị tấn công → test đối kháng (prompt injection, input sai định dạng). Đúng đắn giữa các thành phần → integration test end-to-end.",
+43:"Chỉ chọn tối ưu không ảnh hưởng độ chính xác: cache preamble chính sách tĩnh và cache các chunk dữ liệu hay được truy xuất. Cắt preamble, giảm chunk hay đổi model nhỏ đều có thể làm giảm độ chính xác.",
+44:"Tài liệu bám code: subagent đọc code qua công cụ filesystem/code search, sinh tài liệu và đưa thay đổi qua quy trình review thông thường của team.",
+45:"Chặn tư vấn đầu tư có quy định: classifier đầu ra chặn nội dung khuyến nghị, cộng với định nghĩa rõ phạm vi ngoài lề trong system prompt kèm câu từ chối cố định. Log sau sự việc không ngăn được vi phạm.",
+46:"Suy giảm chất lượng âm thầm sau nâng cấp model → duy trì bộ eval đối kháng cố định, chấm điểm theo từng phiên bản trước khi promote. Đổi bộ test mỗi lần thì không so sánh được.",
+47:"Gói bàn giao đầy đủ: tổng quan kiến trúc, ADR, contract các thành phần, khung eval kèm bộ tham chiếu, runbook, playbook on-call và danh sách hạn chế đã biết.",
+48:"Cùng một hồ sơ 80.000 token bị hỏi 14 lần → cache hồ sơ làm prompt prefix để tái sử dụng, không phải lưu nội dung vào hệ thống bên ngoài như vector store.",
+49:"Giai đoạn lặp: xem telemetry, đánh giá mẫu đầu ra và phản hồi stakeholder để chọn thay đổi có tác động lớn nhất, rồi lên kế hoạch dựa trên khung eval.",
+50:"Thí nghiệm A/B: trước khi chạy phải có giả thuyết + chỉ số chính, và xác định hiệu ứng tối thiểu cần phát hiện + cỡ mẫu. Phân tích, quyết định, ghi tài liệu là sau.",
+51:"Căn chỉnh kỳ vọng bằng dữ liệu: trình bày baseline p50/p95 so với ngưỡng SLA, và cùng stakeholder điều chỉnh SLA nếu mục tiêu hiện tại không khả thi.",
+52:"Lỗi đặc thù LLM: từ chối nhầm vì bề mặt câu hỏi kích hoạt pattern an toàn quá rộng, và bịa câu trả lời nghe hợp lý nhưng không có trong tài liệu. TLS, timeout DB, load balancer là lỗi phần mềm thông thường.",
+53:"Zero-shot ổn khi đã cho nhãn và mô tả; few-shot neo định dạng đầu ra; hỏi so sánh công bằng có tiêu chí để tránh câu hỏi dẫn dắt. Chain-of-thought không nên mặc định mọi lúc, và phải kiểm tra lại khi đổi phiên bản model.",
+54:"Quản trị Skill: các team tự viết (federated) nhưng có cổng review và phát hành tập trung, vừa đáng tin vừa không nghẽn ở một team.",
+55:"Một API key dùng chung → đổi sang OAuth token theo từng user với scope giới hạn. Tool call không ghi người khởi tạo → thêm actor vào log tool-call.",
+56:"Model có thể mang thiên kiến từ dữ liệu pretrain dù không được train trên dữ liệu công ty → phải đánh giá chênh lệch kết quả giữa các nhóm được bảo vệ trước khi triển khai.",
+57:"Discernment: tỷ lệ chấp nhận cao không chứng minh khuyến nghị còn đúng sau khi chuyên gia xem xét; các tiêu chí bị bỏ sót cho thấy lỗ hổng phạm vi đầu vào của trợ lý.",
+58:"Tích hợp ngay trong IDE giảm chuyển ngữ cảnh; bắt developer rời IDE sang Slack tạo ma sát, đi ngược mục tiêu năng suất.",
+59:"Trước khi ánh xạ luồng dữ liệu vào điều khoản: xác định quy định có áp dụng không (loại dữ liệu, khu vực, đối tượng) và kiểm kê công cụ tuân thủ nhà cung cấp đã có. So sánh gap, ghi nhận, lên lịch khắc phục là sau.",
+60:"Buổi phản hồi hiệu quả: agenda tập trung, gửi tài liệu trước, ghi lại quyết định và việc cần làm, chốt người chịu trách nhiệm và hạn.",
+61:"Xác thực/phân quyền chạy trước retrieval để lọc theo danh tính; hàng đợi bất đồng bộ hấp thụ traffic đột biến. Logic tính thuế phải ở code, không ở prompt; không lưu log chứa định danh chưa che.",
+62:"Rò rỉ dữ liệu điển hình: nội dung độc trong tài liệu truy xuất ra lệnh cho model gọi HTTP outbound gửi dữ liệu nhạy cảm tới URL của kẻ tấn công (prompt injection gián tiếp).",
+63:"Cân bằng tỷ lệ duyệt chưa đủ: cần xem cả tỷ lệ lỗi theo nhóm; và khớp với underwriter không loại trừ khả năng thừa hưởng thiên kiến của chính underwriter.",
+64:"Tài liệu đủ để triển khai mà không cần architect: có contract tích hợp, schema cấu hình, dạng input/output từng thành phần, và nhật ký quyết định kèm lý do và phương án bị loại.",
+65:"Chỉ dẫn mâu thuẫn phải được sửa tận gốc: bỏ hoặc viết lại chỉ dẫn “tự tin điền chỗ trống” để prompt nhất quán yêu cầu bám nguồn.",
+66:"Các bước cố định, dự đoán được (trích metadata → phân loại → tóm tắt → lưu) → dùng workflow: ổn định, chi phí token dự đoán được. Agent chỉ cần khi đường đi không biết trước.",
+67:"Để biện minh cho việc tách năng lực: mô tả tool chồng chéo giữa các loại claim, và 34 tool phục vụ 4 miền nghiệp vụ riêng biệt → nên tách theo miền thay vì thêm router.",
+68:"Cài đặt không ai được phép tắt → managed configuration áp tập trung, không thể ghi đè (ưu tiên cao nhất).",
+69:"User scope dành cho sở thích cá nhân đi theo người qua mọi project (theme, ngôn ngữ phản hồi). Chính sách công ty → managed; MCP dùng chung trong repo → project.",
+70:"Chọn giữa MCP, API trực tiếp và agent-to-agent: có cần dùng được trên nhiều AI client không (→ MCP), và tương tác là stateless-nhạy độ trễ hay stateful-chạy lâu.",
+71:"Một lần gọi stateless, độ trễ thấp tới HTTP API ổn định → gọi API trực tiếp với credential có scope. Thêm giao thức hay agent trung gian chỉ tăng độ trễ và độ phức tạp.",
+72:"Lỗi grounding (khẳng định không có trong nguồn) → ràng buộc chỉ trả lời theo nguồn, bắt buộc trích dẫn, thêm bước kiểm chứng. Các phương án khác nhắm vào rủi ro khác.",
+73:"Tiêu chí escalation nhất quán: ngưỡng confidence, danh mục quyết định tác động cao, cờ mơ hồ từ classifier, và khi user yêu cầu người review.",
+74:"Sau khi đổi prompt template mà case cũ hỏng → regression test so với bộ tham chiếu known-good.",
+75:"Trần chi phí → đo chi phí token mỗi truy vấn so với trần. Không lộ dữ liệu bệnh nhân → đo tỷ lệ thực thi RBAC trên bộ red-team.",
+76:"Đội triển khai cần: trách nhiệm từng thành phần, contract giữa chúng, sequence diagram luồng chính, tham số cấu hình kèm mặc định, và runbook vận hành.",
+77:"Chi phí chủ yếu do system prompt lặp lại + context truy xuất lớn → đưa system prompt vào prefix có cache và cắt context truy xuất về đúng đoạn liên quan.",
+78:"Minh bạch: công bố có AI tham gia theo chính sách của tổ chức và có đường liên hệ con người khi cần.",
+79:"Diligence: bỏ review là bỏ cơ chế kiểm chứng đầu ra AI; và số dòng code là thước đo rủi ro kém (vài dòng vẫn có thể gây sự cố lớn).",
+80:"SLA có ý nghĩa vận hành: chỉ số + ngưỡng + cửa sổ đánh giá + hệ quả khi vi phạm (ví dụ p95 dưới 800 ms trong 28 ngày).",
+81:"HIPAA: RBAC để chỉ người được phép mới truy xuất được PHI, và dữ liệu bệnh nhân không đi vào vòng phản hồi gửi nhà cung cấp khi chưa có BAA.",
+82:"Trước pilot HITL: xác định các điểm quyết định cần con người (theo tác động và khả năng đảo ngược), rồi định nghĩa chiến lược lấy mẫu và tiêu chí escalation ở từng điểm.",
+83:"Setup cho team: MCP và rule quyền dùng chung → project scope (version control); cài đặt bảo mật trọng yếu → managed.",
+84:"Chỉ giữ tool cần cho nhiệm vụ đã định và tool dùng thường xuyên giúp giảm hand-off; bỏ tool cho việc không liên quan và tool “để dành sau này”.",
+85:"Ghi quyết định kiến trúc cho audit và onboarding → ADR: bối cảnh, quyết định, phương án thay thế, hệ quả, ngày và tác giả.",
+86:"Injection qua tài liệu truy xuất → coi mọi nội dung truy xuất là không tin cậy, dùng classifier đầu vào và validate đầu ra.",
+87:"Bộ eval phải phủ đúng tập người dùng thực tế: mở rộng theo khu vực và thâm niên mà công cụ phục vụ, rồi chấm lại trước khi phát hành rộng.",
+88:"Hội đồng nhiều bên (CFO, pháp chế, CIO): mở đầu bằng quyết định kiến trúc, rồi giải quyết trực tiếp mối quan tâm chính của từng người.",
+89:"Chẩn đoán Claude Code: tái hiện tối giản, mỗi lần đổi một biến; liệt kê MCP server và kiểm tra trạng thái kết nối. Không rollback vội hay mở ticket khi chưa có bằng chứng.",
+90:"Giảm thời gian mỗi tài liệu = Efficiency; sản lượng tính phí không đổi = Productivity chưa hiện thực hoá; retry thừa làm tăng chi phí = Solution Cost; thời gian luật sư sửa = hao hụt Efficiency, bù trừ một phần.",
+91:"MCP mới không hiện: kiểm tra đã đăng ký chưa bằng lệnh liệt kê (claude mcp list), rồi reconnect hoặc khởi động lại session vì cấu hình thường cần restart.",
+92:"60 tool trên nhiều miền → progressive tool discovery: đưa ra một tập con ban đầu, nạp thêm tool khi task cần.",
+93:"Skill lo nội dung (disclaimer, từ cấm, định dạng). Tầng ứng dụng phải lo xác thực người dùng có quyền, và ghi log vào audit trail tuân thủ.",
+94:"GDPR: gói Enterprise với DPA đã ký, cấu hình thời gian lưu dữ liệu, che dữ liệu cá nhân không cần thiết (tối thiểu hoá) và quy trình xử lý quyền chủ thể dữ liệu.",
+95:"Lỗ hổng quan sát: không ghi danh tính/phiên bản model theo từng lượt, và correlation ID không truyền qua các lời gọi agent/tool. Các phương án còn lại là thực hành tốt.",
+96:"Người review bảo mật/tuân thủ cần: threat model, ánh xạ control, tiêu chí chấp nhận rủi ro còn lại, và khả năng truy vết audit.",
+97:"Subagent riêng đáng làm khi có việc chuyên biệt lặp lại cần system prompt riêng, quyền tool hẹp và model cụ thể (ví dụ review schema DB).",
+98:"Quay lại thiết kế khi kiến trúc hiện tại không đáp ứng yêu cầu mới nếu không đổi trách nhiệm thành phần hoặc contract cốt lõi. Sửa chữ, chỉnh ngưỡng, sửa runbook chỉ là thay đổi nhỏ.",
+99:"Trước khi gắn instrument: định nghĩa metric và các lát cắt (slice) cần theo dõi, và SLO + error budget. Dashboard, tinh chỉnh ngưỡng, tài liệu là các bước sau.",
+100:"Trước pilot: xác định bước nào AI tạo giá trị và bước nào con người phải giữ quyền, rồi cấu hình MCP, quyền, subagent và context ở cấp project.",
+101:"HIPAA với công cụ của Anthropic: Claude Enterprise + BAA đã ký + Zero Data Retention + audit log. Tài khoản cá nhân hay gói miễn phí không đạt.",
+102:"Truyền đạt quyết định tốt: có người sở hữu và lịch xem lại khi điều kiện thay đổi, và ghi các phương án đã cân nhắc cùng tiêu chí đánh giá.",
+103:"DB production: credential mặc định chỉ đọc, subagent chỉ có tool đọc, và bắt buộc người xác nhận cho mọi thao tác sửa dữ liệu.",
+104:"Trước khi chạy eval: định nghĩa metric và các slice (đại diện, biên, đối kháng), rồi tuyển chọn và gán nhãn dataset theo slice. Chấm điểm, review lỗi, dashboard là sau.",
+105:"Trước pilot cấu hình: xác định workflow, ranh giới bảo mật và phần nào thuộc managed hay project; rồi định nghĩa baseline project (MCP, quyền, subagent).",
+106:"Trước hết loại phương án vi phạm SLA (4,2 s > 3 s), sau đó mới đánh giá phương án còn lại theo chi phí/efficiency và tác động của chênh lệch chất lượng.",
+107:"Thứ tự ưu tiên Claude Code: Managed > đối số command-line > local (.claude/settings.local.json) > project (.claude/settings.json) > user (~/.claude/settings.json).",
+108:"Discovery có cấu trúc: workshop với stakeholder để làm rõ ràng buộc về độ trễ, độ chính xác, tuân thủ; và ghi rõ tiêu chí thành công/ngưỡng thất bại làm cổng triển khai.",
+109:"Chuẩn bị đầu vào: tóm tắt lịch sử hội thoại, cắt đoạn truy xuất. Dựng prompt: đặt phần cache được lên đầu. Xử lý đầu ra: validate schema, lưu kết quả.",
+110:"Delegation: phạm vi uỷ quyền phải dựa trên loại rủi ro (gian lận, ngoại lệ, tác động tới khách hàng), không chỉ dựa vào giá trị giao dịch.",
+111:"Ghi quy ước và kiến trúc vào CLAUDE.md ở cấp project, commit vào repo → mỗi session tự nạp, không phải giải thích lại.",
+112:"Một quy trình phải áp dụng y hệt ở nhiều nơi → đóng gói thành Skill do team compliance sở hữu và tham chiếu cùng một Skill từ mọi workflow (một nguồn sự thật).",
+113:"Liên tục qua vòng đời: mang khung eval và bộ tham chiếu qua các vòng lặp, và ghi bài học cuối mỗi giai đoạn làm đầu vào cho giai đoạn sau."
+};
+const WARN={
+6:"Đáng tranh luận: “gấp 3 lần số đơn mỗi analyst mỗi ngày” là sản lượng, nên cũng có thể xếp vào Productivity (xem cách Q.90 phân biệt Efficiency và Productivity).",
+10:"Đề ghi “Code or Hierarchical Specifications” còn lựa chọn ghi “Code or Hierarchical Specs”; hai cách ghi cùng một nghĩa.",
+48:"Lưu ý thực tế: prompt cache chỉ tồn tại 5 phút đến 1 giờ. Nếu 14 lần hỏi rải rác nhiều ngày thì tỷ lệ trúng cache sẽ thấp.",
+82:"Đào tạo reviewer về logic cũng cần làm trước pilot; đáp án chọn theo trình tự các bước thiết kế."
+};
+
+/* ===== Tiện ích ===== */
+const KEY='ccarp-progress-v1',KEX='ccarp-exam-v1',KHIS='ccarp-history-v1',KWB='ccarp-wrong-v1',KSET='ccarp-setup-v1',KVIEW='ccarp-view',KTH='ccarp-theme';
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const L='ABCDEF';
+const Q={};DATA.forEach(q=>{Q[q.n]=q});
+const TMAP={},TOPIC_BY_N={};TOPICS.forEach(t=>{TMAP[t.id]=t;t.ns.forEach(n=>{TOPIC_BY_N[n]=t})});
+const topicOf=n=>TOPIC_BY_N[n]||TMAP.arch;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const answered=s=>Array.isArray(s)&&s.some(Boolean);
+function isRight(q,s){if(!Array.isArray(s))return false;if(q.kind==='match')return q.ans.every((a,i)=>s[i]===a);return s.length===q.ans.length&&q.ans.every(a=>s.includes(a))}
+const pad=n=>String(n).padStart(2,'0');
+function fmtS(sec){sec=Math.max(0,Math.round(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
+const fmtDate=t=>new Date(t).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const band=p=>p>=80?'g':p>=60?'m':'b';
+
+let WB=new Set(load(KWB,[]));
+function markResult(n,ok){if(ok)WB.delete(n);else WB.add(n);store(KWB,[...WB])}
+
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3000)}
+function ask(msg,ok,cancel){
+  const d=$('#dlg');
+  if(typeof d.showModal!=='function')return Promise.resolve(confirm(msg));
+  $('#dlgMsg').textContent=msg;$('#dlgOk').textContent=ok||'Đồng ý';$('#dlgCancel').textContent=cancel||'Huỷ';
+  d.returnValue='';d.showModal();
+  return new Promise(res=>{d.onclose=()=>res(d.returnValue==='ok')});
+}
+
+/* ===== Thẻ câu hỏi dùng chung ===== */
+function buildCard(q,o){
+  o=o||{};
+  const el=document.createElement('section');el.className='q';el.dataset.n=q.n;if(o.id)el.id=o.id;
+  const order=o.order||q.opts.map((_,i)=>i),tp=topicOf(q.n);
+  const tag=q.kind==='single'?'Chọn 1':q.kind==='multi'?`Chọn ${q.ans.length}`:'Chọn cho từng mục';
+  let body;
+  if(q.kind==='match'){
+    body=order.map((i,d)=>`<div class="opt match" data-i="${i}"><span class="k">${L[d]}</span><span class="t">${esc(q.opts[i].t)}</span><select aria-label="Mục ${L[d]}"><option value="">— chọn —</option>${q.choices.map(c=>`<option>${esc(c)}</option>`).join('')}</select><span class="corr">Đáp án: ${esc(q.ans[i])}</span></div>`).join('');
+  }else{
+    const type=q.kind==='single'?'radio':'checkbox';
+    body=order.map((i,d)=>{const it=q.opts[i];return `<label class="opt" data-k="${it.k}"><input type="${type}" name="${o.prefix||'p'}${q.n}" value="${it.k}"><span class="k">${L[d]}</span><span class="t">${esc(it.t)}</span></label>`}).join('');
+  }
+  const w=WARN[q.n];
+  el.innerHTML=`<div class="qhead"><span class="qnum">${o.label||'Q.'+q.n}</span>${o.sub?`<span class="qsub">${o.sub}</span>`:''}<span class="tag">${tag}</span><span class="topic" style="--tc:var(${tp.c})">${esc(tp.short)}</span>${o.extra||''}</div>`+
+    `<p class="qtext">${esc(q.q)}</p><div class="opts">${body}</div>`+
+    `<div class="why"><div class="why-h">Vì sao?</div><p>${esc(EXPL[q.n]||'')}</p>${w?`<p class="warn">⚠ ${esc(w)}</p>`:''}</div><div class="qfoot"></div>`;
+  return el;
+}
+function getSel(q,el){
+  if(q.kind==='match'){const a=Array(q.opts.length).fill('');$$('.opt.match',el).forEach(r=>{a[+r.dataset.i]=r.querySelector('select').value});return a}
+  return $$('input:checked',el).map(i=>i.value);
+}
+function setSel(q,el,sel){
+  if(!Array.isArray(sel))return;
+  if(q.kind==='match')$$('.opt.match',el).forEach(r=>{r.querySelector('select').value=sel[+r.dataset.i]||''});
+  else $$('input',el).forEach(i=>{i.checked=sel.includes(i.value)});
+}
+function setVerdict(el,kind){const v=el.querySelector('.verdict');if(!v)return;v.className='verdict'+(kind?' '+kind:'');v.textContent={ok:'✓ Đúng',no:'✗ Sai',blank:'Bỏ trống'}[kind]||''}
+function reveal(q,el,sel,graded){
+  sel=sel||[];graded=!!graded;
+  el.classList.add('reveal');el.classList.toggle('graded',graded);
+  if(q.kind==='match'){
+    $$('.opt.match',el).forEach(r=>{const i=+r.dataset.i,g=sel[i]===q.ans[i];r.classList.toggle('good',graded&&g);r.classList.toggle('bad',graded&&!g)});
+  }else{
+    $$('.opt',el).forEach(o=>{const k=o.dataset.k;o.classList.toggle('is-ans',q.ans.includes(k));o.classList.toggle('picked-wrong',graded&&sel.includes(k)&&!q.ans.includes(k))});
+  }
+  if(graded){const ok=isRight(q,sel);el.classList.toggle('right',ok);el.classList.toggle('wrong',!ok);setVerdict(el,ok?'ok':answered(sel)?'no':'blank')}
+  else{el.classList.remove('right','wrong');setVerdict(el,'')}
+}
+function unreveal(el){el.classList.remove('reveal','graded','right','wrong');$$('.opt',el).forEach(o=>o.classList.remove('picked-wrong','good','bad','is-ans'));setVerdict(el,'')}
+function lock(el){el.classList.add('locked');$$('input,select',el).forEach(i=>{i.disabled=true})}
+function limitMulti(q,el,t){
+  if(q.kind!=='multi'||!t||t.type!=='checkbox'||!t.checked)return;
+  if($$('input:checked',el).length>q.ans.length){t.checked=false;toast(`Câu này chỉ chọn ${q.ans.length} đáp án. Bỏ bớt một lựa chọn trước đã.`)}
+}
+
+/* ===== Chế độ Luyện tập ===== */
+const P={state:load(KEY,{})||{},topic:'all',onlyWrong:false,showAll:false,snap:new Set(),prog:0};
+const inTopic=n=>P.topic==='all'||topicOf(n).id===P.topic;
+const pEl=n=>document.getElementById('p'+n);
+
+function renderPChips(){
+  $('#pChips').innerHTML=`<button class="chip" data-t="all" aria-pressed="${P.topic==='all'}">Tất cả <span class="cnt">${DATA.length}</span></button>`+
+    TOPICS.map(t=>`<button class="chip" data-t="${t.id}" style="--tc:var(${t.c})" aria-pressed="${P.topic===t.id}"><span class="dot"></span>${esc(t.short)} <span class="cnt">${t.ns.length}</span></button>`).join('');
+}
+function renderPractice(){
+  const list=$('#pList');list.innerHTML='';
+  const frag=document.createDocumentFragment();
+  for(const q of DATA){
+    const el=buildCard(q,{id:'p'+q.n,prefix:'p'});
+    el.querySelector('.qfoot').innerHTML='<button class="btn check">Kiểm tra</button><span class="verdict"></span>';
+    const st=P.state[q.n];
+    if(st){setSel(q,el,st.sel);if(st.checked)reveal(q,el,st.sel,true)}
+    if(P.showAll&&!(st&&st.checked))reveal(q,el,[],false);
+    el.addEventListener('change',e=>pChange(q,el,e));
+    el.querySelector('.check').addEventListener('click',()=>pCheck(q,el));
+    frag.appendChild(el);
+  }
+  list.appendChild(frag);
+  $('#pJump').innerHTML='<option value="">Tới câu…</option>'+DATA.map(q=>`<option value="${q.n}">Q.${q.n} · ${esc(topicOf(q.n).short)}</option>`).join('');
+  syncP();applyPFilter();updatePStats();renderInlineNotes();
+}
+function syncP(){
+  $$('#pChips .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===P.topic));
+  $('#pWrong').setAttribute('aria-pressed',P.onlyWrong);
+  $('#pShow').setAttribute('aria-pressed',P.showAll);
+}
+function pChange(q,el,e){
+  limitMulti(q,el,e.target);
+  P.state[q.n]={sel:getSel(q,el),checked:false};
+  unreveal(el);if(P.showAll)reveal(q,el,[],false);
+  store(KEY,P.state);updatePStats(); // không lọc lại → câu đang sửa không biến mất
+}
+function pCheck(q,el){
+  const sel=getSel(q,el);
+  if(!answered(sel)){toast('Bạn chưa chọn đáp án cho câu này.');return}
+  reveal(q,el,sel,true);P.state[q.n]={sel,checked:true};markResult(q.n,isRight(q,sel));
+  store(KEY,P.state);updatePStats();
+}
+function applyPFilter(){
+  let vis=0;
+  for(const q of DATA){const show=inTopic(q.n)&&(!P.onlyWrong||P.snap.has(q.n));pEl(q.n).classList.toggle('hide',!show);if(show)vis++}
+  $('#pEmpty').hidden=vis>0;
+}
+function updatePStats(){
+  let t=0,d=0,c=0,r=0;const pend=[];
+  for(const q of DATA){if(!inTopic(q.n))continue;t++;const s=P.state[q.n];if(!s)continue;if(answered(s.sel)){d++;if(!s.checked)pend.push(q.n)}if(s.checked){c++;if(isRight(q,s.sel))r++}}
+  $('#pStats').innerHTML=(P.topic==='all'?'':`<span class="sname">${esc(TMAP[P.topic].short)}</span> · `)+`Đã làm <b>${d}</b>/${t} · Đã chấm <b>${c}</b> · Đúng <b>${r}</b>${c?`/${c} (${Math.round(r/c*100)}%)`:''}`+
+    (pend.length?` · <button class="linkbtn pend" data-n="${pend[0]}" title="Câu đã chọn đáp án nhưng chưa bấm Kiểm tra (hoặc đã sửa sau khi chấm)">${pend.length} câu chưa chấm →</button>`:'');
+  P.prog=t?d/t:0;updateHeaderBar();
+}
+function renderInlineNotes(){
+  const box=$('#pNotes');
+  if(P.topic==='all'){box.hidden=true;return}
+  const t=TMAP[P.topic];box.hidden=false;box.style.setProperty('--tc',`var(${t.c})`);
+  box.querySelector('summary').textContent=`Ghi nhớ nhanh: ${t.name}`;
+  box.querySelector('ul').innerHTML=t.notes.map(x=>`<li>${x}</li>`).join('');
+}
+function setPTopic(id){
+  P.topic=id;syncP();applyPFilter();updatePStats();renderInlineNotes();
+}
+$('#pChips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;setPTopic(c.dataset.t);window.scrollTo({top:0})});
+$('#pWrong').onclick=()=>{
+  P.onlyWrong=!P.onlyWrong;
+  if(P.onlyWrong){
+    // chụp danh sách câu sai tại thời điểm bật lọc
+    P.snap=new Set(DATA.filter(q=>{const s=P.state[q.n];return s&&s.checked&&!isRight(q,s.sel)}).map(q=>q.n));
+    if(!P.snap.size)toast('Chưa có câu sai nào trong các câu đã chấm.');
+  }
+  syncP();applyPFilter();
+};
+$('#pShow').onclick=()=>{
+  P.showAll=!P.showAll;
+  for(const q of DATA){const s=P.state[q.n];if(s&&s.checked)continue;const el=pEl(q.n);if(P.showAll)reveal(q,el,[],false);else unreveal(el)}
+  syncP();
+};
+$('#pGrade').onclick=()=>{
+  let g=0,skip=0;
+  for(const q of DATA){
+    if(!inTopic(q.n))continue;
+    const el=pEl(q.n),sel=getSel(q,el);
+    if(!answered(sel)){skip++;continue}
+    const ok=isRight(q,sel);reveal(q,el,sel,true);P.state[q.n]={sel,checked:true};markResult(q.n,ok);g++;
+    if(P.onlyWrong&&!ok)P.snap.add(q.n);
+  }
+  store(KEY,P.state);applyPFilter();updatePStats();
+  toast(g?`Đã chấm ${g} câu${skip?` · ${skip} câu chưa trả lời được bỏ qua`:''}.`:'Chưa có câu nào được trả lời để chấm.');
+};
+$('#pReset').onclick=async()=>{
+  if(!await ask('Xoá toàn bộ câu trả lời ở chế độ Luyện tập? Lịch sử luyện đề vẫn được giữ.','Xoá'))return;
+  P.state={};P.onlyWrong=false;P.showAll=false;P.snap.clear();P.topic='all';
+  store(KEY,P.state);renderPChips();renderPractice();window.scrollTo({top:0});toast('Đã xoá câu trả lời, bắt đầu lại từ đầu.');
+};
+$('#pJump').onchange=e=>{const n=+e.target.value;e.target.value='';if(n)jumpTo(n)};
+$('#pStats').addEventListener('click',e=>{const b=e.target.closest('.pend');if(b)jumpTo(+b.dataset.n)});
+function jumpTo(n){
+  const el=pEl(n);
+  if(el.classList.contains('hide')){P.topic='all';P.onlyWrong=false;syncP();applyPFilter();updatePStats();renderInlineNotes();toast(`Đã tắt bộ lọc để hiện Q.${n}.`)}
+  const tb=$('.ptools'),sticky=getComputedStyle(tb).position==='sticky';
+  const off=$('#top').offsetHeight+(sticky?tb.offsetHeight:0)+12;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-off,behavior:'smooth'});
+  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+}
+
+/* ===== Chế độ Luyện đề ===== */
+let X=load(KEX,null),examView='setup',timerId=null,HIS=load(KHIS,[])||[];
+if(X&&(!Array.isArray(X.qs)||!X.qs.every(n=>Q[n])))X=null;
+const S=Object.assign({topics:TOPICS.map(t=>t.id),count:20,pace:1.5,custom:30,shufQ:true,shufO:true,mode:'test',wrongOnly:false},load(KSET,{})||{});
+S.topics=S.topics.filter(id=>TMAP[id]);
+const saveS=()=>store(KSET,S);
+const running=()=>!!(X&&!X.done);
+const poolList=()=>DATA.filter(q=>S.topics.includes(topicOf(q.n).id)&&(!S.wrongOnly||WB.has(q.n))).map(q=>q.n);
+const minutesFor=n=>S.pace==='custom'?Math.max(1,Math.round(+S.custom)||1):Math.max(1,Math.ceil(n*S.pace));
+
+function renderExam(){
+  const w=$('#xWrap');w.classList.remove('wide');
+  if(running()){examView='run';renderRun()}
+  else if(examView==='result'&&X&&X.done)renderResult();
+  else{examView='setup';renderSetup()}
+  updateHeaderBar();
+}
+
+function renderSetup(){
+  const w=$('#xWrap');
+  w.innerHTML=`<div class="panel">
+    <h2>Luyện đề theo chủ đề</h2>
+    <p class="lead">Chọn chủ đề, số câu và thời gian. Câu hỏi được lấy ngẫu nhiên từ các chủ đề đã chọn.</p>
+    <div class="field"><div class="flabel">Chủ đề <span class="hint"><button class="linkbtn" id="sAll">Chọn tất cả</button> · <button class="linkbtn" id="sNone">Bỏ chọn</button></span></div><div class="chips" id="sTopics"></div></div>
+    <div class="field"><div class="flabel">Nguồn câu hỏi</div><label class="checkline"><input type="checkbox" id="sWrong"><span>Chỉ lấy các câu đang làm sai <span class="muted" id="sWbCnt"></span></span></label></div>
+    <div class="field"><div class="flabel">Số câu: <b id="sCountV"></b><span class="hint" id="sPoolV"></span></div><input type="range" id="sCount" min="1" aria-label="Số câu"><div class="seg" id="sQuick"></div></div>
+    <div class="field"><div class="flabel">Thời gian <span class="hint" id="sTimeV"></span></div><div class="seg" id="sPace"></div><div class="customrow" id="sCustomRow"><input type="number" class="num-in" id="sCustom" min="1" max="600" aria-label="Số phút"> phút</div></div>
+    <div class="field"><div class="flabel">Trộn</div><label class="checkline"><input type="checkbox" id="sShufQ">Trộn thứ tự câu hỏi</label><label class="checkline"><input type="checkbox" id="sShufO">Trộn thứ tự phương án (chữ A, B, C… được đánh lại)</label></div>
+    <div class="field"><div class="flabel">Cách chấm</div><div class="modes">
+      <label class="mode"><input type="radio" name="sMode" value="learn"><b>Học</b><span>Bấm Kiểm tra từng câu, xem đáp án và giải thích ngay.</span></label>
+      <label class="mode"><input type="radio" name="sMode" value="test"><b>Thi thử</b><span>Không hiện đáp án cho tới khi nộp bài, giống thi thật.</span></label></div></div>
+    <div class="startrow"><div class="summary" id="sSum"></div><button class="btn primary big" id="sStart">Bắt đầu</button></div>
+  </div>
+  ${X&&X.done?'<div class="panel slim"><button class="linkbtn" id="sLast">Xem lại kết quả lượt gần nhất →</button></div>':''}
+  <div class="panel"><div class="phead"><h3>Lịch sử luyện đề</h3>${HIS.length?'<button class="linkbtn" id="sClear">Xoá lịch sử</button>':''}</div>${histHTML()}</div>`;
+  $('#sQuick').innerHTML=[10,20,30].map(v=>`<button class="chip" data-c="${v}">${v} câu</button>`).join('')+'<button class="chip" data-c="all">Tất cả</button>';
+  $('#sPace').innerHTML=[[1,'1 phút / câu'],[1.5,'1,5 phút / câu'],[2,'2 phút / câu'],['custom','Tự nhập']].map(([v,l])=>`<button class="chip" data-p="${v}">${l}</button>`).join('');
+  $('#sTopics').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;const id=c.dataset.t;S.topics=S.topics.includes(id)?S.topics.filter(x=>x!==id):[...S.topics,id];saveS();updateSetup()};
+  $('#sAll').onclick=()=>{S.topics=TOPICS.map(t=>t.id);saveS();updateSetup()};
+  $('#sNone').onclick=()=>{S.topics=[];saveS();updateSetup()};
+  $('#sWrong').onchange=e=>{S.wrongOnly=e.target.checked;saveS();updateSetup()};
+  $('#sCount').oninput=e=>{S.count=+e.target.value;saveS();updateSetup()};
+  $('#sQuick').onclick=e=>{const c=e.target.closest('.chip');if(!c||c.disabled)return;S.count=c.dataset.c==='all'?9999:+c.dataset.c;saveS();updateSetup()};
+  $('#sPace').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;S.pace=c.dataset.p==='custom'?'custom':+c.dataset.p;saveS();updateSetup();if(S.pace==='custom')$('#sCustom').focus()};
+  $('#sCustom').oninput=e=>{S.custom=+e.target.value;saveS();updateSetup(true)};
+  $('#sShufQ').onchange=e=>{S.shufQ=e.target.checked;saveS()};
+  $('#sShufO').onchange=e=>{S.shufO=e.target.checked;saveS()};
+  $$('input[name="sMode"]').forEach(r=>{r.onchange=()=>{S.mode=r.value;saveS();updateSetup()}});
+  $('#sStart').onclick=()=>startExam();
+  const last=$('#sLast');if(last)last.onclick=()=>{examView='result';renderExam()};
+  const clr=$('#sClear');if(clr)clr.onclick=async()=>{if(await ask('Xoá toàn bộ lịch sử luyện đề?','Xoá')){HIS=[];store(KHIS,HIS);renderSetup()}};
+  updateSetup();
+}
+function updateSetup(keepCustom){
+  const pool=poolList().length,cnt=Math.min(S.count,pool);
+  $('#sTopics').innerHTML=TOPICS.map(t=>`<button class="chip" data-t="${t.id}" style="--tc:var(${t.c})" aria-pressed="${S.topics.includes(t.id)}"><span class="dot"></span>${esc(t.short)} <span class="cnt">${t.ns.length}</span></button>`).join('');
+  const sw=$('#sWrong');sw.checked=S.wrongOnly;sw.disabled=!WB.size&&!S.wrongOnly;$('#sWbCnt').textContent=`(${WB.size} câu)`;
+  const r=$('#sCount');r.max=Math.max(1,pool);r.value=Math.max(1,cnt);r.disabled=!pool;
+  $('#sCountV').textContent=cnt;$('#sPoolV').textContent=`trong ${pool} câu phù hợp`;
+  $$('#sQuick .chip').forEach(c=>{const v=c.dataset.c;c.setAttribute('aria-pressed',v==='all'?S.count>=pool&&pool>0:+v===cnt&&S.count<pool);c.disabled=v!=='all'&&+v>pool});
+  $$('#sPace .chip').forEach(c=>c.setAttribute('aria-pressed',String(S.pace)===c.dataset.p));
+  $('#sCustomRow').hidden=S.pace!=='custom';if(!keepCustom)$('#sCustom').value=S.custom;
+  const min=minutesFor(cnt);
+  $('#sTimeV').textContent=cnt?`= ${min} phút cho ${cnt} câu`:'';
+  $('#sShufQ').checked=S.shufQ;$('#sShufO').checked=S.shufO;
+  $$('input[name="sMode"]').forEach(x=>{x.checked=x.value===S.mode});
+  $('#sSum').innerHTML=pool?`<b>${cnt}</b> câu · <b>${min}</b> phút · <b>${S.topics.length}</b> chủ đề · ${S.mode==='learn'?'Chế độ học':'Chế độ thi thử'}`:(S.topics.length?'Không có câu nào phù hợp. Hãy bỏ lọc “câu đang làm sai” hoặc chọn thêm chủ đề.':'Hãy chọn ít nhất một chủ đề.');
+  $('#sStart').disabled=!pool;
+}
+function histHTML(){
+  if(!HIS.length)return '<p class="muted" style="margin:0">Chưa có lượt nào. Kết quả mỗi lượt sẽ được lưu ở đây để bạn theo dõi tiến bộ.</p>';
+  return '<ul class="hist">'+HIS.slice(0,12).map(h=>`<li><span class="score ${band(h.pct)}">${h.pct}%</span><div class="hmeta"><b>${h.right}/${h.n} câu đúng</b> · ${fmtS(h.used)} / ${h.limit} phút · ${h.mode==='learn'?'Học':'Thi thử'}${h.auto?' · hết giờ':''}<br>${h.topics.length>=TOPICS.length?'Tất cả chủ đề':h.topics.map(id=>TMAP[id]?esc(TMAP[id].short):'').join(', ')}</div><span class="hdate">${fmtDate(h.at)}</span></li>`).join('')+'</ul>';
+}
+function startExam(list){
+  const src=list||poolList();if(!src.length)return;
+  const cnt=list?list.length:Math.min(S.count,src.length);
+  const qs=shuffle(src).slice(0,cnt);if(!S.shufQ)qs.sort((a,b)=>a-b);
+  const ord={};qs.forEach(n=>{const idx=Q[n].opts.map((_,i)=>i);ord[n]=S.shufO?shuffle(idx):idx});
+  const min=minutesFor(qs.length),now=Date.now();
+  X={id:now,qs,ord,ans:{},chk:{},flag:{},cur:0,mode:S.mode,topics:[...new Set(qs.map(n=>topicOf(n).id))],start:now,end:now+min*60000,limit:min,done:false};
+  store(KEX,X);examView='run';renderExam();startTimer();window.scrollTo({top:0});
+}
+function renderRun(){
+  const w=$('#xWrap');w.classList.add('wide');
+  const learn=X.mode==='learn';
+  w.innerHTML=`<div class="run"><div class="run-main"><div id="xCard"></div>
+    <div class="runnav"><button class="btn" id="xPrev">← Câu trước</button><button class="btn" id="xFlag" aria-pressed="false">Đánh dấu</button><span class="grow"></span>${learn?'<button class="btn primary" id="xCheck">Kiểm tra</button>':''}<button class="btn" id="xNext">Câu tiếp →</button></div>
+    <p class="kbd">Phím tắt: <kbd>A</kbd>–<kbd>E</kbd> hoặc <kbd>1</kbd>–<kbd>5</kbd> chọn · <kbd>←</kbd> <kbd>→</kbd> chuyển câu${learn?' · <kbd>Enter</kbd> kiểm tra / câu tiếp':''} · <kbd>M</kbd> đánh dấu</p></div>
+    <aside class="gridnav"><div class="gn-h">Danh sách câu</div><div class="gn" id="xGrid"></div>
+    <div class="legend"><span><i></i>Chưa làm</span><span><i class="a"></i>Đã trả lời</span><span><i class="f"></i>Đánh dấu</span>${learn?'<span><i class="o"></i>Đúng</span><span><i class="x"></i>Sai</span>':''}</div></aside></div>`;
+  $('#xPrev').onclick=()=>go(-1);
+  $('#xNext').onclick=()=>{if(X.cur===X.qs.length-1)submitFlow();else go(1)};
+  $('#xFlag').onclick=toggleFlag;
+  if(learn)$('#xCheck').onclick=checkCur;
+  $('#xGrid').onclick=e=>{const b=e.target.closest('button');if(!b)return;X.cur=+b.dataset.i;store(KEX,X);drawQ()};
+  drawQ();
+}
+function drawQ(){
+  const n=X.qs[X.cur],q=Q[n],learn=X.mode==='learn';
+  const el=buildCard(q,{prefix:`x${X.id}_`,order:X.ord[n],label:`Câu ${X.cur+1}`,sub:`/ ${X.qs.length} · Q.${n}`});
+  el.querySelector('.qfoot').innerHTML='<span class="verdict"></span>';
+  setSel(q,el,X.ans[n]);
+  if(learn&&X.chk[n]){reveal(q,el,X.ans[n],true);lock(el)}
+  el.addEventListener('change',e=>{limitMulti(q,el,e.target);X.ans[n]=getSel(q,el);store(KEX,X);drawGrid();drawInfo()});
+  $('#xCard').replaceChildren(el);
+  $('#xPrev').disabled=X.cur===0;
+  $('#xNext').textContent=X.cur===X.qs.length-1?'Nộp bài':'Câu tiếp →';
+  const f=$('#xFlag');f.setAttribute('aria-pressed',!!X.flag[n]);f.textContent=X.flag[n]?'Đã đánh dấu':'Đánh dấu';
+  const c=$('#xCheck');if(c)c.disabled=!!X.chk[n];
+  drawGrid();drawInfo();
+}
+function drawGrid(){
+  const g=$('#xGrid');if(!g)return;
+  g.innerHTML=X.qs.map((n,i)=>{
+    const a=X.ans[n];let c=answered(a)?'ans':'';
+    if(X.mode==='learn'&&X.chk[n])c=isRight(Q[n],a)?'ok':'bad';
+    return `<button data-i="${i}" class="${c}${i===X.cur?' cur':''}${X.flag[n]?' flag':''}" aria-label="Câu ${i+1}">${i+1}</button>`;
+  }).join('');
+}
+function drawInfo(){
+  const done=X.qs.filter(n=>answered(X.ans[n])).length;
+  $('#xInfo').innerHTML=`Câu <b>${X.cur+1}</b>/${X.qs.length} · Đã trả lời <b>${done}</b>/${X.qs.length}<span class="mbadge">${X.mode==='learn'?'Học':'Thi thử'}</span>`;
+}
+function go(d){const i=Math.min(X.qs.length-1,Math.max(0,X.cur+d));if(i===X.cur)return;X.cur=i;store(KEX,X);drawQ();window.scrollTo({top:0,behavior:'smooth'})}
+function toggleFlag(){const n=X.qs[X.cur];if(X.flag[n])delete X.flag[n];else X.flag[n]=true;store(KEX,X);drawQ()}
+function checkCur(){
+  const n=X.qs[X.cur],q=Q[n];
+  if(X.chk[n]){go(1);return}
+  const sel=X.ans[n];
+  if(!answered(sel)){toast('Chọn đáp án trước khi kiểm tra.');return}
+  X.chk[n]=true;markResult(n,isRight(q,sel));store(KEX,X);drawQ();
+}
+function pickDisplay(d){
+  const opts=$$('#xCard .opt:not(.match)');if(d>=opts.length)return;
+  const inp=opts[d].querySelector('input');if(!inp||inp.disabled)return;
+  inp.checked=inp.type==='radio'?true:!inp.checked;
+  inp.dispatchEvent(new Event('change',{bubbles:true}));
+}
+async function submitFlow(){
+  if(!running())return;
+  const blank=X.qs.filter(n=>!answered(X.ans[n])).length,fl=X.qs.filter(n=>X.flag[n]).length;
+  let msg=blank?`Còn ${blank} câu chưa trả lời. `:'';if(fl)msg+=`${fl} câu đang được đánh dấu xem lại. `;msg+='Nộp bài và xem kết quả?';
+  if(await ask(msg,'Nộp bài','Làm tiếp'))finishExam(false);
+}
+async function quitFlow(){
+  if(!running())return;
+  if(!await ask('Huỷ lượt luyện đề này? Kết quả sẽ không được lưu.','Huỷ lượt','Làm tiếp'))return;
+  X=null;store(KEX,null);stopTimer();examView='setup';renderExam();window.scrollTo({top:0});
+}
+function scoreOf(x){
+  const r={right:0,wrong:0,blank:0,by:{}};
+  for(const n of x.qs){const q=Q[n],a=x.ans[n],t=topicOf(n).id;r.by[t]=r.by[t]||{n:0,r:0};r.by[t].n++;
+    if(!answered(a))r.blank++;else if(isRight(q,a)){r.right++;r.by[t].r++}else r.wrong++}
+  r.pct=Math.round(r.right/x.qs.length*100);return r;
+}
+function finishExam(auto){
+  if(!running())return;
+  X.done=true;X.finishedAt=Math.min(Date.now(),X.end);X.auto=!!auto;
+  const r=scoreOf(X);
+  X.qs.forEach(n=>markResult(n,isRight(Q[n],X.ans[n])));
+  HIS.unshift({at:X.start,n:X.qs.length,right:r.right,pct:r.pct,topics:X.topics,mode:X.mode,used:Math.round((X.finishedAt-X.start)/1000),limit:X.limit,auto:X.auto});
+  HIS=HIS.slice(0,30);store(KHIS,HIS);store(KEX,X);stopTimer();
+  examView='result';
+  if(view==='exam'){renderExam();window.scrollTo({top:0})}else updateHeaderBar();
+  if(auto)toast('Hết giờ. Bài đã được nộp tự động.');
+}
+let rFilter='bad';
+function renderResult(){
+  const w=$('#xWrap'),r=scoreOf(X),used=Math.round((X.finishedAt-X.start)/1000),miss=r.wrong+r.blank,fl=X.qs.filter(n=>X.flag[n]).length;
+  const rows=TOPICS.filter(t=>r.by[t.id]).map(t=>{const b=r.by[t.id],p=Math.round(b.r/b.n*100);return `<div class="tbrow" style="--tc:var(${t.c})"><span class="nm"><span class="dot"></span>${esc(t.short)}</span><span class="track"><i class="${band(p)}" style="width:${Math.max(p,2)}%"></i></span><span class="v">${b.r}/${b.n} · ${p}%</span></div>`}).join('');
+  const weak=TOPICS.filter(t=>r.by[t.id]&&r.by[t.id].n>=2).map(t=>({t,p:r.by[t.id].r/r.by[t.id].n})).sort((a,b)=>a.p-b.p)[0];
+  const adv=weak&&weak.p<0.8?`<div class="advice"><span class="txt">Nên ôn thêm: <b>${esc(weak.t.name)}</b> (đúng ${r.by[weak.t.id].r}/${r.by[weak.t.id].n}).</span><button class="btn" data-note="${weak.t.id}">Xem ghi nhớ</button><button class="btn" data-drill="${weak.t.id}">Luyện riêng chủ đề này</button></div>`:'';
+  if(!miss&&rFilter==='bad')rFilter='all';
+  w.innerHTML=`<div class="panel">
+    <div class="res-top"><div class="bigpct ${band(r.pct)}">${r.pct}%</div><div><div class="res-title">${r.pct>=80?'Rất tốt!':r.pct>=60?'Khá ổn, còn vài chỗ cần ôn.':'Cần ôn thêm.'}</div><div class="muted">Đúng ${r.right}/${X.qs.length} câu${X.auto?' · Hết giờ, bài được nộp tự động':''}</div></div></div>
+    <div class="kpis"><div class="kpi"><div class="v ok">${r.right}</div><div class="l">Đúng</div></div><div class="kpi"><div class="v bad">${r.wrong}</div><div class="l">Sai</div></div><div class="kpi"><div class="v">${r.blank}</div><div class="l">Bỏ trống</div></div><div class="kpi"><div class="v">${fmtS(used)}</div><div class="l">trên ${X.limit} phút</div></div></div>
+    <h3>Kết quả theo chủ đề</h3><div class="tbars">${rows}</div>${adv}
+    <div class="acts">${miss?`<button class="btn primary" id="rRetry">Làm lại ${miss} câu sai & bỏ trống</button>`:''}<button class="btn" id="rNew">Lượt mới</button></div>
+  </div>
+  <div class="panel"><div class="phead"><h3>Xem lại bài làm</h3><div class="seg" id="rSeg">
+    <button class="chip" data-f="bad"${miss?'':' disabled'}>Sai & bỏ trống (${miss})</button><button class="chip" data-f="all">Tất cả (${X.qs.length})</button><button class="chip" data-f="flag"${fl?'':' disabled'}>Đã đánh dấu (${fl})</button></div></div>
+    <div id="rList"></div></div>`;
+  const retry=$('#rRetry');if(retry)retry.onclick=()=>startExam(X.qs.filter(n=>!isRight(Q[n],X.ans[n])));
+  $('#rNew').onclick=()=>{examView='setup';renderExam();window.scrollTo({top:0})};
+  w.querySelectorAll('[data-note]').forEach(b=>{b.onclick=()=>openNote(b.dataset.note)});
+  w.querySelectorAll('[data-drill]').forEach(b=>{b.onclick=()=>drillTopic(b.dataset.drill)});
+  $('#rSeg').onclick=e=>{const c=e.target.closest('.chip');if(!c||c.disabled)return;rFilter=c.dataset.f;drawReview()};
+  drawReview();
+}
+function drawReview(){
+  $$('#rSeg .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.f===rFilter));
+  const box=$('#rList');box.innerHTML='';
+  X.qs.forEach((n,i)=>{
+    const q=Q[n],a=X.ans[n],ok=isRight(q,a);
+    if(rFilter==='bad'&&ok)return;if(rFilter==='flag'&&!X.flag[n])return;
+    const el=buildCard(q,{prefix:`r${X.id}_`,order:X.ord[n],label:`Câu ${i+1}`,sub:`Q.${n}`,extra:X.flag[n]?'<span class="fbadge">Đã đánh dấu</span>':''});
+    el.querySelector('.qfoot').innerHTML='<span class="verdict"></span>';
+    setSel(q,el,a);reveal(q,el,a,true);lock(el);box.appendChild(el);
+  });
+  if(!box.children.length)box.innerHTML='<p class="empty">Không có câu nào trong mục này.</p>';
+}
+function drillTopic(id){
+  S.topics=[id];S.wrongOnly=false;saveS();
+  if(running()){toast('Bạn đang có một lượt luyện đề chưa nộp.');setView('exam');return}
+  examView='setup';setView('exam');
+}
+
+/* đồng hồ */
+function startTimer(){stopTimer();timerId=setInterval(tick,250);tick()}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function tick(){
+  if(!running()){stopTimer();updateHeaderBar();return}
+  const left=X.end-Date.now();
+  if(left<=0){finishExam(true);return}
+  const txt=fmtS(Math.ceil(left/1000)),low=left<=Math.max(60000,X.limit*6000);
+  const t=$('#xTimer');t.textContent=txt;t.classList.toggle('low',low);
+  $('#tabTimer').textContent=txt;
+  if(!$('#runbar').hidden)$('#hbar').style.width=(left/(X.limit*60000)*100)+'%';
+}
+
+/* ===== Ghi nhớ ===== */
+function renderNotes(){
+  $('#nWrap').innerHTML=`<div class="panel tips"><h2>Mẹo làm bài</h2><ul>${TIPS.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+  <div class="ngrid">${TOPICS.map(t=>`<article class="ncard" id="note-${t.id}" style="--tc:var(${t.c})"><h3>${esc(t.name)}</h3><div class="c">${t.ns.length} câu</div><ul>${t.notes.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <div class="acts"><button class="btn" data-see="${t.id}">Xem câu hỏi</button><button class="btn primary" data-drill="${t.id}">Luyện đề chủ đề này</button></div></article>`).join('')}</div>`;
+}
+$('#nWrap').addEventListener('click',e=>{
+  const s=e.target.closest('[data-see]'),d=e.target.closest('[data-drill]');
+  if(s){setView('practice');setPTopic(s.dataset.see);window.scrollTo({top:0})}
+  if(d)drillTopic(d.dataset.drill);
+});
+function openNote(id){setView('notes');const el=document.getElementById('note-'+id);if(el){el.scrollIntoView({behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}}
+
+/* ===== Điều hướng, header, phím tắt ===== */
+let view='practice';
+function setView(v){
+  if(!['practice','exam','notes'].includes(v))v='practice';
+  view=v;store(KVIEW,v);
+  $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.v===v));
+  $('#vPractice').hidden=v!=='practice';$('#vExam').hidden=v!=='exam';$('#vNotes').hidden=v!=='notes';
+  if(v==='exam')renderExam();
+  if(v==='notes')renderNotes();
+  updateHeaderBar();window.scrollTo({top:0});
+}
+function updateHeaderBar(){
+  const run=running(),rb=$('#runbar'),bar=$('#hbar');
+  rb.hidden=!(run&&view==='exam');$('#tabTimer').hidden=!run;
+  bar.classList.toggle('time',!rb.hidden);
+  if(!rb.hidden)bar.style.width=(Math.max(0,X.end-Date.now())/(X.limit*60000)*100)+'%';
+  else bar.style.width=(view==='practice'?P.prog*100:0)+'%';
+}
+$$('.tab').forEach(t=>{t.onclick=()=>setView(t.dataset.v)});
+$('#xSubmit').onclick=submitFlow;
+$('#xQuit').onclick=quitFlow;
+$('#themeBtn').onclick=()=>{const th=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=th;try{localStorage.setItem(KTH,th)}catch(e){}};
+document.addEventListener('keydown',e=>{
+  if(view!=='exam'||examView!=='run'||!running()||$('#dlg').open)return;
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  const tg=e.target,tag=tg.tagName;
+  if(tag==='SELECT'||tag==='TEXTAREA'||(tag==='INPUT'&&tg.type==='number'))return;
+  const k=e.key;
+  if(k==='ArrowRight'){e.preventDefault();go(1)}
+  else if(k==='ArrowLeft'){e.preventDefault();go(-1)}
+  else if(k==='Enter'){if(tag==='BUTTON')return;if(X.mode==='learn'){e.preventDefault();checkCur()}}
+  else if(k==='m'||k==='M')toggleFlag();
+  else{const a='abcdef'.indexOf(k.toLowerCase()),b='123456'.indexOf(k),d=a>=0?a:b;if(d>=0&&k.length===1)pickDisplay(d)}
+});
+const setHH=()=>document.documentElement.style.setProperty('--hh',$('#top').offsetHeight+'px');
+if(window.ResizeObserver)new ResizeObserver(setHH).observe($('#top'));else setHH();
+
+/* ===== Khởi động ===== */
+renderPChips();renderPractice();
+let autoDone=false;
+if(running()){if(Date.now()>=X.end){finishExam(true);autoDone=true}else startTimer()}
+setView(running()||autoDone?'exam':load(KVIEW,'practice'));
+</script>
+</body>
+</html>

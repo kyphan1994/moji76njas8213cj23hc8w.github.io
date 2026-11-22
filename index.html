@@ -153,17 +153,6 @@
     color:var(--text);
     white-space:pre-line;
   }
-  .qtext-vi{
-    font-family:var(--sans);
-    font-size:14.5px;
-    font-style:italic;
-    line-height:1.5;
-    color:var(--muted);
-    white-space:pre-line;
-    margin-top:8px;
-    padding-top:10px;
-    border-top:1px dashed var(--line-strong);
-  }
   .options{margin-top:22px;display:flex;flex-direction:column;gap:10px;}
   .opt{
     display:flex;
@@ -376,6 +365,23 @@
     box-shadow:0 0 0 1px rgba(215,162,74,.35);
   }
 
+  .hl-qkey{
+    background:rgba(96,165,250,.16);
+    color:#93c5fd;
+    padding:1px 4px;
+    border-radius:2px;
+    font-weight:600;
+    text-decoration:underline;
+    text-decoration-color:#60a5fa;
+    text-underline-offset:3px;
+  }
+  .opt .otext .hl-decisive{background:rgba(88,185,138,.18);color:#7ee0ad;box-shadow:0 0 0 1px rgba(88,185,138,.45);}
+  .nokey-badge{
+    display:inline-block;margin-left:10px;padding:1px 8px;border-radius:3px;
+    background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);
+    font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.04em;vertical-align:middle;
+  }
+
   @media (max-width:520px){
     h1{font-size:26px;}
     .qtext{font-size:17px;}
@@ -429,7 +435,6 @@
       <div class="corner-tl"></div><div class="corner-br"></div>
       <div class="qnum" id="qnum">Q1</div>
       <div class="qtext" id="qtext"></div>
-      <div class="qtext-vi" id="qtextVi"></div>
       <div class="options" id="options"></div>
       <div class="feedback" id="feedback">
         <div class="fb-title" id="fbTitle"></div>
@@ -482,7 +487,6 @@
 </div>
 
 <script>
-const QUESTION_VI = {"1":"Sau khi agent tìm kiếm web và agent phân tích tài liệu hoàn thành nhiệm vụ, coordinator gọi đến agent tổng hợp (synthesis agent). Tuy nhiên, agent tổng hợp phản hồi rằng nó không thể hoàn thành nhiệm vụ vì không có kết quả nghiên cứu nào được cung cấp. Nguyên nhân nào có khả năng cao nhất gây ra vấn đề này?","2":"Khi nghiên cứu về mức độ áp dụng năng lượng tái tạo, agent tìm kiếm web trả về số liệu thống kê gần đây (2024: tỷ lệ áp dụng 35%) trong khi agent phân tích tài liệu trích xuất dữ liệu từ báo cáo nội bộ (2022: tỷ lệ áp dụng 18%). Agent tổng hợp lại hiểu nhầm đây là hai nguồn mâu thuẫn nhau thay vì nhận ra rằng dữ liệu cho thấy xu hướng tăng trưởng theo thời gian. Thay đổi nào sẽ giúp agent tổng hợp diễn giải đúng những khác biệt về thời điểm dữ liệu như thế này?","3":"Người dùng phản ánh rằng báo cáo cuối cùng đôi khi thiếu chiều sâu ở một số chủ đề con. Điều tra cho thấy agent phân tích tài liệu thường xuyên phát hiện ra các khoảng trống — ví dụ, ghi nhận rằng các nguồn thu thập được có đề cập đến xác thực API nhưng thiếu chi tiết về cơ chế làm mới token — nhưng trong pipeline cứng nhắc hiện tại, phát hiện này không thể được xử lý vì bước tìm kiếm đã hoàn tất. Thay đổi kiến trúc nào là hiệu quả nhất?","4":"Pipeline nghiên cứu đa agent của bạn bị crash sau khi xử lý được 12/28 tài liệu. Agent tìm kiếm web đã xác định được các nguồn liên quan, agent phân tích tài liệu đã hoàn thành một phần, và agent tổng hợp đã bắt đầu nhận diện các mẫu (pattern). Bạn cần tiếp tục xử lý mà không lặp lại công việc đã làm hay làm mất độ chính xác của các phát hiện trước đó. Cách tiếp cận quản lý trạng thái nào cân bằng tốt nhất giữa độ trung thực thông tin và hiệu quả sử dụng ngữ cảnh khi khôi phục trạng thái agent?","5":"Agent tổng hợp hoàn thành lượt xử lý đầu tiên nhưng cảnh báo rằng ba câu hỏi nghiên cứu quan trọng vẫn chưa được trả lời vì agent tìm kiếm web và agent phân tích tài liệu không tìm thấy thông tin liên quan đến những chủ đề con đó. Hiện tại, coordinator vẫn tiến thẳng đến bước tạo báo cáo, dẫn đến báo cáo bị thiếu thông tin. Thay đổi nào sẽ cải thiện hiệu quả nhất tính đầy đủ của nghiên cứu?","6":"Khi phân tích các vụ án pháp lý phức tạp có trích dẫn nhiều án lệ, subagent phân tích tài liệu xử lý từng án lệ một cách tuần tự. Một vụ án mang tính bước ngoặt trích dẫn 12 án lệ mất hơn 3 phút để phân tích xong hoàn toàn. Cách nào hiệu quả nhất để giảm độ trễ này mà vẫn giữ được khả năng giám sát và debug hệ thống của coordinator?","7":"Theo dõi ban đầu cho thấy giai đoạn nghiên cứu mất nhiều thời gian hơn dự kiến. Phân tích cho thấy coordinator gọi subagent tìm kiếm web, chờ phản hồi, rồi mới gọi subagent phân tích tài liệu và lại chờ tiếp. Hai tác vụ này độc lập với nhau — không tác vụ nào cần đầu ra của tác vụ kia. Bạn nên chỉnh sửa hệ thống như thế nào để chạy song song hai subagent này?","8":"Rà soát thực tế sản xuất cho thấy việc xử lý sự không chắc chắn trong báo cáo cuối cùng không nhất quán. Đôi khi các phát hiện mâu thuẫn từ các subagent bị tổng hợp thành một phát biểu tự tin duy nhất (làm mất đi các sắc thái), trong khi những lúc khác báo cáo lại rào trước đón sau quá mức với quá nhiều điều kiện ràng buộc (khiến báo cáo kém hữu ích). Khi agent tìm kiếm web trả về nhận định rằng các nhà phân tích ngành ước tính quy mô thị trường 50 tỷ USD (phương pháp luận khác nhau), còn agent phân tích tài liệu trả về một nghiên cứu bình duyệt ước tính 35 tỷ USD (±7 tỷ USD, khoảng tin cậy 95%), coordinator hoặc chọn đại một trong hai, hoặc đưa ra phát biểu mơ hồ kiểu thị trường có thể từ 35-50 tỷ USD tùy yếu tố. Cách tiếp cận hệ thống nào giải quyết tốt nhất vấn đề này?","9":"Trong môi trường thực tế, bạn nhận thấy các truy vấn kiểm tra sự kiện đơn giản (ví dụ: Hiệp định Paris về khí hậu được ký vào năm nào?) vẫn phải đi qua tuần tự cả bốn subagent, tiêu tốn hơn 40 giây và một lượng token đáng kể. Trong khi đó, các nghiên cứu so sánh phức tạp thực sự được hưởng lợi từ toàn bộ pipeline này. Phân bố truy vấn của bạn đa dạng và liên tục thay đổi khi người dùng khám phá thêm những cách sử dụng mới. Cách tiếp cận nào hiệu quả nhất để tối ưu hoá cho độ phức tạp truy vấn khác nhau?","10":"Một người dùng đang mở rộng hệ thống nghiên cứu vượt ra ngoài agent tìm kiếm web đơn lẻ ban đầu bằng cách thêm các nguồn dữ liệu chuyên biệt. Họ thêm một agent API tài chính trả về JSON có cấu trúc với doanh thu, biên lợi nhuận và tốc độ tăng trưởng; một agent theo dõi tin tức trả về tóm tắt dạng văn xuôi về các diễn biến gần đây; và một agent phân tích bằng sáng chế trả về danh sách có cấu trúc các lĩnh vực công nghệ. Agent tổng hợp kết hợp tất cả những thứ này thành các bản tóm tắt điều hành (executive briefing). Hiện tại, nó chuyển mọi thứ thành các gạch đầu dòng, khiến các so sánh tài chính mất đi tính rõ ràng dạng bảng và các tóm tắt tin tức mất đi mạch văn tự nhiên. Thay đổi nào sẽ cải thiện chất lượng bản tóm tắt nhiều nhất?","11":"Agent coordinator đã được cấu hình AgentDefinitions cho cả bốn subagent chuyên biệt, mỗi cái đều có mô tả, prompt và giới hạn tool phù hợp. Trong quá trình kiểm thử, bạn nhận thấy coordinator lý luận đúng về thời điểm cần ủy quyền (delegate) — nó tạo ra các thông điệp kiểu sẽ nhờ agent tìm kiếm web tìm nguồn về chủ đề này — nhưng việc thực thi subagent không bao giờ thực sự xảy ra. Coordinator sau đó tiếp tục như thể việc ủy quyền đã diễn ra và làm việc với thông tin không đầy đủ. Log không cho thấy lỗi nào. Nguyên nhân nào có khả năng cao nhất?","12":"Trong môi trường thực tế, báo cáo cuối cùng thường xuyên chứa các luận điểm mà không có trích dẫn nguồn rõ ràng. Điều tra cho thấy trong khi agent tìm kiếm web và agent phân tích tài liệu gắn trích dẫn đúng vào đầu ra của chúng, agent tổng hợp lại làm mất dấu vết nguồn nào hỗ trợ cho kết luận nào khi kết hợp các phát hiện lại với nhau. Thay đổi kiến trúc nào hiệu quả nhất?","13":"Sau khi các subagent tìm kiếm web và phân tích tài liệu hoàn thành nhiệm vụ, coordinator cần khởi tạo (spawn) subagent tổng hợp để tổng hợp các phát hiện. Cách tiếp cận đúng để cung cấp cho subagent tổng hợp thông tin nó cần là gì?","14":"Agent tìm kiếm web đã thu thập được một số nguồn liên quan cho một chủ đề nghiên cứu. Agent phân tích tài liệu bây giờ cần xem xét các nguồn này. Thông tin di chuyển giữa hai subagent chuyên biệt này bằng cách nào?","15":"Sau khi agent tìm kiếm web tìm được 25 nguồn (120K token nội dung thô), agent phân tích tài liệu trích xuất các thông tin quan trọng (15K token), và agent tổng hợp tạo ra một bản nháp tường thuật mạch lạc (3K token), coordinator phải truyền ngữ cảnh cho agent tạo báo cáo để cho ra đầu ra cuối cùng kèm trích dẫn nguồn đầy đủ. Chiến lược truyền ngữ cảnh nào mang lại sự cân bằng tốt nhất giữa tính đầy đủ và hiệu quả?","16":"Tool search_products của bạn truy vấn một API danh mục bên ngoài trả về kết quả phân trang (50 mục mỗi lần gọi). Log thực tế cho thấy các truy vấn thường khớp với hơn 200 sản phẩm, và thiết kế tự động tải hết tất cả các trang gây ra độ trễ 15-20 giây. Bạn nên thiết kế lại việc xử lý phân trang như thế nào?","17":"Tool search_flights của bạn gọi một API hãng hàng không bên ngoài, thỉnh thoảng trả về lỗi 503 Service Unavailable. Cách hiệu quả nhất để xử lý lỗi này trong triển khai tool của bạn là gì?","18":"Máy chủ MCP của bạn triển khai tool check_availability để truy vấn một API lịch bên ngoài. Trong quá trình kiểm thử, bạn gặp ba tình huống lỗi: (1) tool được gọi với request không hợp lệ, thiếu tham số bắt buộc user_email; (2) API lịch trả về lỗi 404 vì người dùng được chỉ định không tồn tại trong hệ thống lịch; (3) API lịch trả về lỗi 503 vì dịch vụ tạm thời không khả dụng. Mỗi loại lỗi này nên được báo cáo như thế nào theo đúng thiết kế xử lý lỗi của MCP?","19":"Tool documents(query) của bạn trả về kết quả dạng: Tìm thấy 3 tài liệu: Q2 Budget Proposal, Q2 Budget Forecast, Annual Review. Bạn muốn agent có thể lấy nội dung một tài liệu cụ thể (theo ID) và so sánh nhiều tài liệu với nhau trong các quy trình nhiều bước. Định dạng trả về nào sẽ hỗ trợ tốt nhất cho các quy trình nhiều bước này?","20":"Agent của bạn có quyền truy cập hơn 50 connector API chuyên biệt cho các dịch vụ bên ngoài khác nhau. Khi thư viện connector phát triển lớn hơn, độ chính xác khi chọn tool giảm xuống còn 58%. Bạn thiết kế một tool search_connectors(description) để tìm các connector phù hợp, nhưng khi kiểm thử, agent thường bỏ qua bước tìm kiếm và gọi trực tiếp connector (thường sai), hoặc tìm kiếm rồi vẫn chọn nhầm connector trong số kết quả đã lọc. Bạn nên thiết kế mẫu hình kết hợp tool (tool composition pattern) như thế nào để giải quyết cả hai vấn đề này?","21":"Tool publish_article của bạn gọi một API CMS bên ngoài, thỉnh thoảng trả về lỗi tạm thời (transient — timeout mạng, lỗi 503) và lỗi không thể khắc phục bằng cách thử lại (non-transient — 403 từ chối quyền, 422 lỗi xác thực dữ liệu). Hiện tại, mọi loại lỗi đều được trả thẳng cho agent, khiến agent thử lại cả những lỗi không thể nào thành công, gây lãng phí lượt xử lý. Bạn nên phân chia trách nhiệm xử lý lỗi giữa phần triển khai tool và agent như thế nào?","22":"Tool remove_team_member của bạn dùng tham số dry_run: boolean để xem trước tác động trước khi thực thi. Giám sát thực tế cho thấy agent bỏ qua bước xem trước trong 15% số lần gọi bằng cách gọi trực tiếp với dry_run=false. Bạn cần đảm bảo mọi thao tác xoá thành viên đều phải có bước xem trước và được người dùng xác nhận rõ ràng trước đó. Cách tiếp cận nào đáng tin cậy nhất?","23":"Agent xử lý hoàn ứng chi phí của bạn xử lý các yêu cầu của nhân viên bằng tool process_reimbursement. Chính sách công ty yêu cầu các khoản hoàn ứng trên 500 USD phải được phê duyệt trước khi giải ngân. Agent xử lý hàng trăm yêu cầu mỗi ngày, và bạn cần đảm bảo việc thực thi ngưỡng này không thể bị qua mặt (tamper-proof) dù agent được prompt như thế nào. Cách tiếp cận nào đảm bảo ngưỡng phê duyệt 500 USD không thể bị bỏ qua?","24":"Hệ thống quản lý đơn hàng của bạn cần các tool cho ba thao tác khác nhau: hoàn tiền (cần amount và reason), huỷ đơn hàng (cần reason), và gửi lại đơn hàng (cần địa chỉ giao hàng). Mỗi thao tác đều dùng chung tham số order_id nhưng có các yêu cầu bổ sung khác nhau. Trong quá trình kiểm thử, bạn nhận thấy với thiết kế tool hiện tại, agent thường xuyên bỏ sót tham số bắt buộc hoặc đưa vào tham số không liên quan. Thay đổi thiết kế nào sẽ cải thiện hiệu quả nhất độ chính xác của tham số?","25":"Tool portfolio_value của bạn trả về tổng giá trị danh mục đầu tư của người dùng. Bạn đang phân vân giữa việc trả về một đối tượng JSON có cấu trúc với các trường rõ ràng, hay trả về thông tin dưới dạng một chuỗi văn bản đã định dạng. Lợi ích chính của việc sử dụng đầu ra có cấu trúc với các trường được định nghĩa rõ ràng là gì?","26":"Agent đặt lịch của bạn dùng get_available_slots(date, provider_id) để lấy các khung giờ trống, sau đó dùng book_appointment(provider_id, slot_time, patient_id) để đặt giữ chỗ. Dữ liệu ticket cho thấy 15% số lần đặt lịch thất bại với lỗi khung giờ không còn trống vì một người dùng khác đã đặt mất khung giờ đó trong khoảng thời gian giữa lúc kiểm tra và lúc đặt lịch. Bạn nên thiết kế lại các tool này như thế nào?","27":"Agent của bạn có tool log_workout nhận các tham số exercise_type (string), value (number), và measurement (string). Giám sát thực tế cho thấy agent thường xuyên truyền các tổ hợp không khớp — ví dụ dùng measurement: reps (số lần lặp) cho bài cardio như chạy bộ, hoặc measurement: miles (dặm) cho bài strength như đẩy tạ. Các bài tập của bạn tự nhiên chia thành hai nhóm: cardio (đo bằng thời gian hoặc quãng đường) và strength (đo bằng số lần lặp và số hiệp). 23% số lần gọi tool có tổ hợp không hợp lệ. Cách tiếp cận nào sẽ giảm hiệu quả nhất các lỗi này?","28":"Máy chủ MCP của bạn có các tool archive_file(file_id) và delete_file(file_id). Log thực tế cho thấy agent gọi delete_file khi người dùng yêu cầu xoá các bản backup cũ, trong khi chính sách yêu cầu phải lưu trữ (archive) các file backup thay vì xoá. Cả hai tool hiện chỉ có mô tả tối giản: Archives a file và Deletes a file. Thay đổi nào cải thiện trực tiếp nhất việc chọn đúng tool?","29":"Tool delete_contact trong agent CRM của bạn xử lý các yêu cầu như xoá bản ghi trùng lặp của Acme Corp. Cơ sở dữ liệu chứa các bản ghi có tên gần giống nhau (ví dụ: Acme Corp, Acme Corporation, ACME Corp Inc.), và số liệu thống kê cho thấy 8% các lượt xoá bị hoàn tác trong vòng 24 giờ do xác định nhầm bản ghi. Người dùng cũng phàn nàn rằng quy trình xác nhận nhiều bước hiện tại gây quá nhiều trở ngại cho các tác vụ dọn dẹp thường ngày. Cách tiếp cận nào giảm tỷ lệ lỗi hiệu quả nhất mà vẫn giữ được hiệu suất làm việc?","30":"Sau khi triển khai tool use với các định nghĩa schema chặt chẽ, lỗi cú pháp JSON đã được loại bỏ hoàn toàn, nhưng 5% số lượt trích xuất vẫn cho ra JSON hợp lệ với mảng rỗng hoặc giá trị null ở các trường bắt buộc như citations và methodology. Kiểm tra thủ công cho thấy tài liệu nguồn thực sự có chứa thông tin này, nhưng ở nhiều định dạng khác nhau — trích dẫn nội tuyến so với danh mục tài liệu tham khảo, phần phương pháp luận riêng biệt so với chi tiết được lồng trong phần giới thiệu. Cách hiệu quả nhất để khắc phục những lỗi này là gì?","31":"Hệ thống xử lý đánh giá sản phẩm bằng tool use với schema được định nghĩa: rating (số nguyên 1-5), pros (mảng chuỗi), cons (mảng chuỗi), và overall_sentiment (enum: positive, negative, mixed). Kiểm thử phát hiện hai vấn đề với các đánh giá ngắn hoặc mơ hồ (~20% tập dữ liệu): (1) với các đánh giá như Sản phẩm tuyệt vời!, Claude bịa ra các ưu/nhược điểm cụ thể thay vì chỉ ra rằng thông tin này không được nêu rõ; và (2) với các đánh giá mỉa mai như Ồ, thú vị thật đấy..., Claude chọn sentiment một cách tuỳ tiện vì không có lựa chọn nào cho trường hợp mơ hồ. Thay đổi schema nào giải quyết tốt nhất cả hai vấn đề này?","32":"Hệ thống trích xuất của bạn tự động thử lại khi việc xác thực (validation) thất bại. Mỗi lần thử lại, lỗi xác thực cụ thể được thêm vào prompt. Cách tiếp cận thử lại kèm phản hồi lỗi (retry-with-error-feedback) này giải quyết được hầu hết các lỗi trong vòng 2-3 lần thử. Với dạng lỗi nào thì việc thử lại thêm sẽ ÍT hiệu quả NHẤT?","33":"Việc trích xuất hoá đơn của bạn sử dụng tool use với schema JSON chặt chẽ. Lỗi cú pháp JSON không bao giờ xảy ra, nhưng 12% số lượt trích xuất thất bại ở bước xác thực ngữ nghĩa (semantic validation) — ví dụ, tổng các dòng hàng (line item) không khớp với tổng cộng đã trích xuất, hoặc mã nhà cung cấp không đúng định dạng hợp lệ. Các lỗi này hiện đang được chuyển sang rà soát thủ công. Cách hiệu quả nhất để giảm khối lượng rà soát thủ công mà vẫn giữ được độ chính xác là gì?","34":"Nhóm của bạn đang trích xuất dữ liệu có cấu trúc từ 50.000 hợp đồng pháp lý cũ trong thời hạn hai tuần. Kiểm thử ban đầu với 500 tài liệu mẫu cho thấy 82% đạt schema JSON ngay lần thử đầu tiên, trong khi 18% còn lại thất bại vì nhiều nguyên nhân khác nhau — thiếu trường bắt buộc, định dạng ngày sai, hoặc xác định sai các bên liên quan. Những tài liệu thất bại thường cần được tinh chỉnh nhắm đúng vào nguyên nhân thất bại cụ thể trước khi trích xuất thành công. Chiến lược xử lý theo lô (batch) nào tiết kiệm chi phí nhất mà vẫn kịp thời hạn?","35":"Pipeline trích xuất của bạn xử lý các hợp đồng thường có kèm theo phụ lục sửa đổi (amendment). Khi một hợp đồng chứa cả điều khoản gốc và các sửa đổi sau đó (ví dụ: điều khoản gốc quy định thời hạn thanh toán 30 ngày trong khi Amendment 1 thay đổi thành 45 ngày), mô hình trích xuất không nhất quán — khi thì lấy giá trị này, khi thì lấy giá trị kia, mà không có chỉ dẫn nào cho biết giá trị nào thực sự áp dụng. Cách tiếp cận nào hiệu quả nhất để cải thiện độ chính xác trích xuất cho các tài liệu có sửa đổi?","36":"Hệ thống của bạn phải trích xuất chi tiết sự kiện từ lời mời trên lịch và xuất ra JSON tuân thủ chặt chẽ một schema với các trường title, date, time, location, và attendees. Hệ thống downstream sẽ từ chối bất kỳ JSON nào sai định dạng hoặc không tuân thủ schema. Cách tiếp cận nào đảm bảo tuân thủ schema đáng tin cậy nhất?","37":"Schema của bạn có trường skills: string[]. Giám sát thực tế cho thấy ba vấn đề về tính nhất quán: (1) các cụm từ ghép như Python and SQL đôi khi được giữ nguyên thành một mục, đôi khi bị tách ra; (2) các kỹ năng ngầm hiểu nhưng không được nêu rõ đôi khi vẫn xuất hiện trong kết quả trích xuất; (3) các tài liệu tương tự nhau lại cho ra độ dài mảng chênh lệch rất lớn (5-10 so với hơn 40 mục). Prompt hiện tại của bạn chỉ ghi Extract skills mentioned (Trích xuất các kỹ năng được đề cập). Cải tiến nào hiệu quả nhất?","38":"Pipeline của bạn dùng một tool tên extract_metadata với schema JSON cho chi tiết bài báo. Bạn cũng đã định nghĩa các tool lookup_citations và verify_doi để bổ sung thông tin. Trong quá trình kiểm thử, bạn nhận thấy khi người dùng yêu cầu kiểu trích xuất metadata và cho tôi biết nó được trích dẫn bao nhiêu lần, Claude đôi khi gọi lookup_citations trước, và bị lỗi vì tool này cần DOI mà lẽ ra phải do extract_metadata cung cấp. Cách hiệu quả nhất để đảm bảo việc trích xuất metadata có cấu trúc luôn diễn ra trước là gì?","39":"Hệ thống của bạn đã vận hành với 100% được con người rà soát trong 3 tháng. Phân tích cho thấy các kết quả trích xuất có độ tin cậy của mô hình >90% đạt độ chính xác tổng thể 97%. Để giảm khối lượng công việc cho người rà soát, bạn dự định tự động hoá các trích xuất có độ tin cậy cao. Trước khi triển khai, bước xác thực nào là quan trọng nhất?","40":"Hệ thống trích xuất của bạn dùng tool_use với schema JSON gồm 12 trường và mô tả chi tiết, tổng cộng khoảng 2.500 token cho toàn bộ định nghĩa tool. Xử lý các tài liệu dưới 150K token cho độ chính xác 98%. Với các tài liệu từ 175K-190K token, độ chính xác giảm xuống còn 71%, và thông tin ở một phần ba cuối tài liệu luôn bị bỏ sót. Cửa sổ ngữ cảnh của mô hình là 200K token. Nguyên nhân nào có khả năng cao nhất?","41":"Pipeline trích xuất của bạn xử lý hoá đơn và trích xuất các dòng hàng (line item), tổng phụ, thuế, và tổng cộng cuối cùng. Trong quá trình đánh giá, bạn phát hiện rằng ở 18% số lượt trích xuất, tổng các dòng hàng đã trích xuất không khớp với tổng cộng đã trích xuất — đôi khi do lỗi OCR trong tài liệu gốc, đôi khi do mô hình trích xuất sai. Hệ thống kế toán downstream sẽ từ chối các bản ghi có tổng không khớp. Cách tiếp cận nào hiệu quả nhất để cải thiện độ tin cậy của việc trích xuất?","42":"Hệ thống trích xuất của bạn xử lý hai loại tài liệu: báo cáo hàng tháng thông thường (được lưu trữ sau khi xử lý) và báo cáo ngoại lệ khẩn cấp (phải kích hoạt cảnh báo kinh doanh trong vòng 30 phút kể từ khi nhận). Cả hai đều dùng chung một schema JSON. Bạn muốn giảm thiểu chi phí API trong khi vẫn đáp ứng yêu cầu về độ trễ. Bạn nên thiết kế kiến trúc pipeline xử lý như thế nào?","43":"Pipeline trích xuất của bạn nhận các tài liệu thuộc nhiều loại khác nhau — có loại là hoá đơn, có loại là hợp đồng, có loại là biên lai. Bạn đã định nghĩa các tool trích xuất riêng biệt, mỗi tool có schema riêng phù hợp với từng loại tài liệu. Trong quá trình kiểm thử, bạn nhận thấy với tool_choice: auto, Claude đôi khi trả về văn bản hội thoại thay vì gọi một tool trích xuất, gây lỗi phân tích ở bước downstream. Bạn cần đảm bảo chắc chắn có đầu ra có cấu trúc mà không cần biết trước loại tài liệu. Cách tiếp cận nào hiệu quả nhất?","44":"Giám sát cho thấy 12% số lượt trích xuất thất bại ở bước xác thực Pydantic với các lỗi cụ thể như mong đợi số thực cho quantity nhưng nhận được '2 to 3'. Việc thử lại các yêu cầu này mà không thay đổi gì vẫn tiếp tục thất bại. Cách tiếp cận nào hiệu quả nhất để khắc phục các lỗi xác thực này?","45":"Sau ba tháng với các buổi trò chuyện hàng tuần, lịch sử hội thoại của bạn đã tăng lên tới 85.000 token. Khi người dùng hỏi chúng ta đã kết luận gì về chủ đề sự cô lập, trợ lý đưa ra phân tích văn học chung chung thay vì tham chiếu đến những nhận định cụ thể của nhóm từ các buổi trước. Các buổi thảo luận thường xây dựng dựa trên kết luận của các buổi trước đó, nên việc duy trì mạch ngữ cảnh là rất quan trọng. Cách tiếp cận nào hiệu quả nhất?","46":"Sau một phiên làm việc kéo dài 40 phút giúp lên kế hoạch cho một bữa tiệc tối, cuộc hội thoại đã tăng lên tới 78.000 token. Lịch sử bao gồm: (1) người dùng đề cập một vị khách bị dị ứng nặng với hải sản có vỏ; (2) các số đo để tăng khẩu phần công thức lên 8 người; (3) người dùng làm rõ rằng bơ ở nhiệt độ phòng trong bếp nhà họ nghĩa là 68°F; và (4) các trao đổi qua lại chung chung về thời điểm dùng bữa và cách trình bày món ăn. Bạn cần triển khai quản lý ngữ cảnh trước khi đạt giới hạn cửa sổ ngữ cảnh. Cách tiếp cận nào cân bằng tốt nhất giữa việc giữ lại thông tin và giảm số token?","47":"Bạn đang triển khai một tính năng cho phép người dùng tinh chỉnh sở thích danh sách phát nhạc qua nhiều lượt hội thoại. Sau khi triển khai, bạn nhận thấy phản hồi của Claude không phản ánh những gì đã được nói trước đó trong cùng cuộc hội thoại — ví dụ, người dùng nói họ thích nhạc jazz, nhưng hai tin nhắn sau đó Claude lại hỏi họ thích thể loại nhạc nào. Nguyên nhân nào có khả năng cao nhất?","48":"Trợ lý huấn luyện thể hình của bạn dùng một system prompt với logic điều kiện chi tiết: nếu người dùng đề cập là người mới bắt đầu, hãy cung cấp hướng dẫn tư thế từng bước; nếu họ dùng các thuật ngữ như progressive overload hay superset, hãy trả lời ngắn gọn; nếu họ hỏi về tiền sử chấn thương, luôn khuyên họ tham khảo bác sĩ. Trong quá trình đánh giá, bạn thấy trợ lý thích ứng đúng khi người dùng khai báo rõ trình độ của mình, nhưng gặp khó khăn khi người dùng không nói rõ trình độ — thường mặc định trả lời quá chi tiết bất kể các dấu hiệu ngữ cảnh như thuật ngữ chuyên môn. Thay đổi nào trong system prompt sẽ giải quyết trực tiếp nhất việc bỏ sót các tín hiệu ngầm về trình độ này?","49":"Trong quá trình kiểm thử ban đầu, bạn nhận thấy Claude dường như không nhớ các từ vựng đã được đề cập trước đó trong cuộc hội thoại. Khi một học sinh hỏi liệu Claude có thể kiểm tra mình về những từ đó không, Claude phản hồi như thể chưa từng có từ nào được thảo luận. Giải thích nào có khả năng cao nhất?","50":"Trợ lý lập kế hoạch cải tạo nhà của bạn dùng một system prompt định nghĩa vai một nhà thầu chuyên nghiệp với các hướng dẫn cụ thể: luôn hỏi về ngân sách, đề xuất các phương án ở nhiều mức giá, và xác nhận yêu cầu về thời gian. Trong quá trình kiểm thử, các phản hồi tuân theo các hướng dẫn này ở lượt 1-4, nhưng đến lượt 7, trợ lý lại đưa ra lời khuyên chung chung mà không hỏi về ngân sách hay thời gian. Toàn bộ cuộc hội thoại chỉ có 2.500 token. Nguyên nhân nào có khả năng cao nhất?","51":"Người dùng phản ánh rằng trong các cuộc hội thoại kéo dài, AI làm mất dấu các chủ đề, ví dụ, và sở thích cụ thể mà họ đã đề cập trước đó trong phiên làm việc. Triển khai hiện tại của bạn dùng một cửa sổ trượt (sliding window) chỉ giữ lại 25 cặp tin nhắn gần nhất để nằm trong giới hạn ngữ cảnh. Cách tiếp cận nào hiệu quả nhất để vẫn nắm được nội dung hội thoại trước đó trong khi vẫn kiểm soát được kích thước ngữ cảnh?","52":"Người dùng thường gửi các yêu cầu mơ hồ như đặt địa điểm cho bữa tiệc mà không nêu rõ ngày, số lượng khách, hay ngân sách. Đánh giá của bạn cho thấy trợ lý hỏi trung bình 4 câu trước khi thực hiện bất kỳ hành động nào, khiến 35% người dùng bỏ cuộc giữa chừng. Tuy nhiên, khi giảm số câu hỏi, người dùng đôi khi nhận được đề xuất không phù hợp với sở thích của họ. Cách tiếp cận nào hiệu quả nhất để cải thiện sự đánh đổi này?","53":"Trong quá trình kiểm thử QA, bạn nhận thấy Claude tuân thủ các hướng dẫn trong system prompt một cách nhất quán ở 10-15 lượt đầu, nhưng đến lượt 25-30, các phản hồi bắt đầu lệch hướng — dùng giọng điệu không trang trọng dù yêu cầu phải trang trọng, thỉnh thoảng bỏ qua định dạng bắt buộc, hoặc cung cấp loại thông tin mà hướng dẫn đã hạn chế. Độ dài cuộc hội thoại vẫn còn nằm khá xa giới hạn ngữ cảnh (thường chỉ 30.000/200.000 token khả dụng). Cách tiếp cận nào hiệu quả nhất để duy trì hành vi nhất quán xuyên suốt các cuộc hội thoại dài?","54":"Phân tích hiệu năng cho thấy ngữ cảnh của bạn bao gồm kết quả RAG tích luỹ từ tất cả các truy vấn trước đó, khiến nó chiếm chỗ của lịch sử hội thoại và làm giảm tính mạch lạc sau hơn 15 lượt. Cách tiếp cận nào giải quyết tốt nhất vấn đề này?","55":"Trợ lý khám phá âm nhạc của bạn cần luôn duy trì giọng điệu nhiệt tình, giải thích lý do cho mỗi đề xuất, và đặt câu hỏi làm rõ để hiểu rõ hơn sở thích người dùng. Bạn muốn hành vi này được duy trì ổn định xuyên suốt mọi tương tác với người dùng. Bạn nên định nghĩa các hướng dẫn hành vi này ở đâu?","56":"Trong một cuộc hội thoại về theo dõi đơn hàng, hệ thống bên ngoài của bạn nhận được một webhook cho biết gói hàng của người dùng đã được gửi đi. Người dùng đang trò chuyện tích cực và có khả năng sẽ nhắn tin tiếp theo sau. Bạn muốn trợ lý tự nhiên đưa thông tin thay đổi trạng thái này vào phản hồi tiếp theo của nó. Cách tiếp cận nào hiệu quả nhất?","57":"Tin nhắn đầu tiên của một người dùng mới là thiết lập nhạc tập trung cho tôi. Câu này có thể có nghĩa là cấu hình sở thích, tạo một danh sách phát, hoặc phát nhạc ngay lập tức. Hệ thống của bạn hỗ trợ cả ba hành động này. Cách tiếp cận nào hiệu quả?","58":"Người dùng phản ánh rằng các phản hồi có cảm giác lặp đi lặp lại qua các lượt — mỗi tin nhắn đều bắt đầu bằng những cụm như Chắc chắn rồi! hay Tôi rất vui được giúp bạn! ngay cả khi cuộc hội thoại đã diễn ra khá lâu. Bạn muốn các phản hồi tự nhiên hơn, không còn những câu mở đầu lặp lại này. Cách tiếp cận nào hiệu quả nhất?","60":"Tool process_refund của bạn trả về hai loại lỗi: lỗi kỹ thuật (503 Service Unavailable, Connection timeout) mang tính tạm thời (5% số lần gọi), và lỗi nghiệp vụ (đơn hàng đã vượt quá thời hạn đổi trả 3 ngày, sản phẩm đã được hoàn tiền trước đó) mang tính vĩnh viễn (12% số lần gọi). Giám sát cho thấy agent lãng phí 3-4 lượt thử lại các lỗi nghiệp vụ vốn không bao giờ có thể thành công. Hiện tại, cả hai loại lỗi đều chỉ trả về cho Claude một thông điệp văn bản thuần. Cách hiệu quả nhất để giảm số lần thử lại lãng phí trong khi vẫn cải thiện chất lượng phản hồi cho khách hàng là gì?","61":"Agent của bạn đã gọi lookup_order nhiều lần trong khi xử lý yêu cầu đổi trả của khách hàng. Mỗi phản hồi bao gồm hơn 40 trường (mặt hàng, chi tiết vận chuyển, thông tin thanh toán, lịch sử trạng thái). Kết quả trả về từ tool giờ đây chiếm phần lớn ngữ cảnh của cuộc hội thoại. Khách hàng đề cập thêm hai đơn hàng khác mà họ muốn thảo luận. Cách tiếp cận nào hiệu quả nhất trước khi thực hiện thêm các lượt tra cứu?","62":"Trong quá trình giải quyết tranh chấp hoá đơn, agent của bạn lấy thành công thông tin khách hàng qua get_customer và chi tiết đơn hàng qua lookup_order, nhưng khi cố gọi process_refund, tool trả về lỗi timeout. Agent có đủ thông tin để giải thích các khoản phí và xác minh điều kiện hoàn tiền, nhưng không thể thực sự xử lý hoàn tiền do lỗi ở backend. Cách tiếp cận nào cân bằng tốt nhất giữa việc giải quyết ngay từ lần liên hệ đầu tiên và xử lý lỗi phù hợp?","63":"Agent của bạn đang xử lý một tranh chấp hoá đơn. Sau khi gọi get_customer và lookup_order, nó xác định rằng tranh chấp liên quan đến lỗi giá khuyến mãi cần có sự phê duyệt của quản lý — vượt quá quyền hạn của agent. Quy trình nên xử lý việc chuyển cấp (escalation) giữa chừng này như thế nào?","64":"Log thực tế cho thấy việc xử lý lỗi không nhất quán: khi lookup_order thất bại, agent đôi khi thử lại hơn 5 lần (lãng phí khi order ID không tồn tại), đôi khi chuyển cấp ngay lập tức (quá sớm đối với sự cố mạng tạm thời), và đôi khi hỏi lại người dùng để làm rõ (không phù hợp khi vấn đề là lỗi quyền truy cập ở backend). Điều tra cho thấy tool MCP của bạn trả về phản hồi lỗi đồng nhất: isError true, kèm nội dung văn bản Operation failed. Agent không thể phân biệt được các loại lỗi khác nhau. Cải tiến nào hiệu quả nhất?","65":"Một khách hàng nêu ra ba vấn đề riêng biệt trong cùng một phiên: yêu cầu hoàn tiền (lượt 1-15), câu hỏi về gói đăng ký (lượt 16-30), và cập nhật phương thức thanh toán (lượt 31-45). Đến lượt 48, khách hàng hỏi yêu cầu hoàn tiền của tôi thế nào rồi. Cuộc hội thoại đang tiến gần đến giới hạn ngữ cảnh. Chiến lược nào duy trì tốt nhất khả năng của agent trong việc xử lý tất cả các vấn đề xuyên suốt phiên làm việc?","66":"Tool update_user_profile của bạn nhận tham số user_id (bắt buộc) và một đối tượng fields_to_update (tuỳ chọn). Trong quá trình kiểm thử, Claude thường xuyên bỏ sót user_id hoặc truyền dữ liệu có cấu trúc sai. Điều gì quan trọng nhất để giúp Claude hiểu được cần cung cấp giá trị tham số nào?","67":"Giám sát thực tế cho thấy tool search_catalog của bạn thất bại 12% số lần: 8% là timeout mạng, sẽ thành công nếu thử lại ngay; còn 4% là lỗi cú pháp truy vấn do bộ lọc người dùng cung cấp không hợp lệ, sẽ không bao giờ thành công dù thử lại bao nhiêu lần. Hiện tại, cả hai loại lỗi đều được trả về cho agent giống hệt nhau, khiến nó lãng phí lượt thử lại các lỗi cú pháp và báo người dùng thử lại sau đối với lỗi timeout. Bạn nên chỉnh sửa cách xử lý lỗi của tool như thế nào?","68":"Người dùng thường gửi các yêu cầu mơ hồ như đặt địa điểm cho bữa tiệc mà không nêu rõ ngày, số lượng khách, hay ngân sách. Đánh giá của bạn cho thấy trợ lý hỏi trung bình 4,2 câu làm rõ trước khi thực hiện bất kỳ hành động nào, khiến 35% người dùng bỏ cuộc giữa chừng. Tuy nhiên, khi giảm số câu hỏi, người dùng đôi khi nhận được đề xuất không khớp với sở thích của họ. Cách tiếp cận nào hiệu quả nhất để cải thiện sự đánh đổi này?","69":"Tool trích xuất tài liệu của bạn dùng mô hình ML để trích xuất các trường hoá đơn (nhà cung cấp, số tiền, ngày tháng). Các mô hình trả về điểm tin cậy (0.0-1.0) cho mỗi trường đã trích xuất. Trong thực tế, bạn quan sát thấy: (1) agent vẫn tiếp tục xử lý các kết quả trích xuất có độ tin cậy thấp mà 23% trong số đó là sai; và (2) agent yêu cầu rà soát thủ công không cần thiết cho 31% các kết quả trích xuất thực ra là đúng. Bạn nên tái cấu trúc đầu ra của tool như thế nào?","70":"Agent của bạn có một tool update_game_score nhận các tham số game_date (string), home_team (string), và away_team (string). Log thực tế cho thấy các vấn đề lặp lại: agent dùng biệt danh đội bóng thay vì tên chính thức, áp dụng định dạng ngày không nhất quán, và chọn nhầm trận đấu khi hai đội gặp lại nhau nhiều lần trong cùng mùa giải. Thay đổi giao diện tool nào sẽ ngăn ngừa hiệu quả các lỗi này?","71":"Tool cấp phát tài nguyên của bạn trả về một thông điệp xác nhận đơn giản sau khi có yêu cầu cấp phát. Người dùng thường phê duyệt việc cấp phát rồi ngay lập tức hỏi cái đó tốn bao nhiêu tiền hoặc đó là dự án nào vậy — cho thấy họ đã xác nhận mà không hiểu rõ yêu cầu. Thay đổi thiết kế tool nào sẽ giải quyết hiệu quả nhất vấn đề này?","72":"Lịch sử hội thoại của bạn bao gồm hai loại nội dung: các yếu tố cốt truyện cố định (bối cảnh nhân vật, cấu trúc cốt truyện, luật lệ thế giới) cần được giữ nhất quán xuyên suốt, và các cuộc thảo luận brainstorm dài dòng mà phần lớn chỉ mang tính tạm thời. Sau hơn 40 lượt, bạn gặp giới hạn ngữ cảnh và người dùng phản ánh rằng trợ lý quên các đặc điểm nhân vật đã thiết lập, phá vỡ tính nhất quán của câu chuyện. Cách tiếp cận nào đảm bảo tốt nhất các yếu tố cốt truyện cố định vẫn luôn sẵn có cho mô hình trong khi vẫn giải phóng được không gian ngữ cảnh?","73":"Trợ lý hội thoại của bạn thường đưa ra nhiều câu hỏi làm rõ khi người dùng gửi yêu cầu mơ hồ. Khi người dùng hỏi liệu trợ lý có thể giúp làm báo cáo được không, trợ lý trả lời bằng cách hỏi lại ba câu: báo cáo nào, cần loại hỗ trợ nào (soạn thảo, rà soát, hay định dạng), và hạn chót là khi nào. Số liệu phân tích người dùng cho thấy tỷ lệ bỏ cuộc hội thoại lên tới 40% sau các phản hồi nhiều câu hỏi kiểu này. Cách hiệu quả nhất để giảm bớt trở ngại trong khi vẫn xử lý sự mơ hồ một cách phù hợp là gì?","74":"Người dùng thường xuyên tinh chỉnh tiêu chí tìm kiếm giữa cuộc hội thoại. Bạn nhận thấy một khuôn mẫu: khi người dùng nói những câu như thực ra hãy tăng ngân sách lên 650 nghìn đô, hoặc tôi muốn chọn căn hộ chung cư thay vì nhà riêng, trợ lý đôi khi vẫn tiếp tục tham chiếu đến sở thích ban đầu trong các phản hồi sau đó — mặc dù các cập nhật đã có rõ ràng trong lịch sử hội thoại. Mức sử dụng ngữ cảnh chỉ mới ở 35% dung lượng. Giải pháp nào đảm bảo đáng tin cậy nhất rằng mô hình sẽ dùng đúng sở thích hiện tại?","75":"Trợ lý gia sư AI hội thoại của bạn có một system prompt dài 2.800 token, chứa phương pháp giảng dạy, hướng dẫn về vai trò (persona), và hướng dẫn chi tiết để điều chỉnh cách giải thích theo từng trình độ. Kiểm thử người dùng cho thấy trong các cuộc hội thoại vượt quá 12 lượt (khoảng 4.000 token lịch sử hội thoại), trợ lý ngày càng bỏ qua các hướng dẫn điều chỉnh theo trình độ, mặc định giải thích ở mức trung bình bất kể trình độ người học đã khai báo. Cách tiếp cận nào hiệu quả nhất để đảm bảo tuân thủ nhất quán các hướng dẫn này xuyên suốt các cuộc hội thoại dài?","76":"Sau khi triển khai một system prompt được cập nhật giúp cải thiện chất lượng phản hồi, những người dùng có cuộc hội thoại nhiều phiên kéo dài nhiều tuần phản ánh rằng trợ lý giờ đây mâu thuẫn với các phát biểu trước đó của chính nó và có phong cách giao tiếp khác biệt rõ rệt. Người dùng mới không gặp phải vấn đề này. Cách tiếp cận nào tốt nhất để giải quyết vấn đề này?","77":"Agent coordinator đã được cấu hình AgentDefinitions cho cả bốn subagent chuyên biệt, mỗi cái đều có mô tả, prompt và giới hạn tool phù hợp. Trong quá trình kiểm thử, bạn nhận thấy coordinator lý luận đúng về thời điểm cần ủy quyền (delegate) — nó tạo ra các thông điệp kiểu sẽ nhờ agent tìm kiếm web tìm nguồn về chủ đề này — nhưng việc thực thi subagent không bao giờ thực sự xảy ra. Coordinator sau đó tiếp tục như thể việc ủy quyền đã diễn ra và làm việc với thông tin không đầy đủ. Log không cho thấy lỗi nào. Nguyên nhân nào có khả năng cao nhất?","78":"Rà soát thực tế sản xuất cho thấy việc xử lý sự không chắc chắn trong báo cáo cuối cùng không nhất quán. Đôi khi các phát hiện mâu thuẫn từ các subagent bị tổng hợp thành một phát biểu tự tin duy nhất (làm mất đi các sắc thái), trong khi những lúc khác báo cáo lại rào trước đón sau quá mức với quá nhiều điều kiện ràng buộc (khiến báo cáo kém hữu ích). Khi agent tìm kiếm web trả về nhận định rằng các nhà phân tích ngành ước tính quy mô thị trường 50 tỷ USD (phương pháp luận khác nhau), còn agent phân tích tài liệu trả về một nghiên cứu bình duyệt ước tính 35 tỷ USD (±7 tỷ USD, khoảng tin cậy 95%), coordinator hoặc chọn đại một trong hai, hoặc đưa ra phát biểu mơ hồ kiểu thị trường có thể từ 35-50 tỷ USD tùy yếu tố. Cách tiếp cận hệ thống nào giải quyết tốt nhất vấn đề này?","79":"Bạn đã cấu hình hệ thống sao cho cả bốn subagent đều có quyền truy cập vào toàn bộ 18 tool. Trong quá trình kiểm thử, các agent thường xuyên gọi các tool nằm ngoài phạm vi chuyên môn của mình — agent tổng hợp cố gắng tìm kiếm web, còn agent tạo báo cáo lại cố phân tích tài liệu. Nguyên nhân chính của hành vi chọn tool kém này là gì?","80":"Coordinator cung cấp hướng dẫn chi tiết từng bước cho subagent tìm kiếm web, chỉ định chính xác các truy vấn tìm kiếm, thứ tự ưu tiên nguồn, và bộ lọc theo ngày. Giám sát thực tế cho thấy ba vấn đề: (1) subagent báo cáo không đủ kết quả thay vì thử các cách tiếp cận khác khi các truy vấn được định sẵn thất bại; (2) chất lượng nghiên cứu giảm đối với các chủ đề mới nổi không khớp với các khuôn mẫu đã dự đoán trước; và (3) subagent hiếm khi phát hiện được các nguồn liên quan có giá trị nằm ngoài dự kiến. Cách hiệu quả nhất để cải thiện khả năng thích ứng của subagent là gì?","81":"Agent tổng hợp nhận các phát hiện đã được tóm tắt từ agent tìm kiếm web và agent phân tích tài liệu, sau đó chuyển một bản tóm tắt hợp nhất cho agent tạo báo cáo. Trong quá trình kiểm thử, bạn phát hiện các báo cáo được tạo ra đưa ra các luận điểm thực tế mà không có trích dẫn phù hợp — agent tạo báo cáo không thể gán các phát biểu về đúng nguồn gốc vì metadata đó đã bị mất trong các bước tóm tắt. Cách tiếp cận nào hiệu quả nhất để đảm bảo việc gán nguồn chính xác trong báo cáo cuối cùng?","82":"Một người dùng đang mở rộng hệ thống nghiên cứu vượt ra ngoài agent tìm kiếm web đơn lẻ ban đầu bằng cách thêm các nguồn dữ liệu chuyên biệt. Họ thêm một agent API tài chính trả về JSON có cấu trúc với doanh thu, biên lợi nhuận và tốc độ tăng trưởng; một agent theo dõi tin tức trả về tóm tắt dạng văn xuôi về các diễn biến gần đây; và một agent phân tích bằng sáng chế trả về danh sách có cấu trúc các lĩnh vực công nghệ. Agent tổng hợp kết hợp tất cả những thứ này thành các bản tóm tắt điều hành (executive briefing). Hiện tại, nó chuyển mọi thứ thành các gạch đầu dòng, khiến các so sánh tài chính mất đi tính rõ ràng dạng bảng và các tóm tắt tin tức mất đi mạch văn tự nhiên. Thay đổi nào sẽ cải thiện chất lượng bản tóm tắt nhiều nhất?","83":"Khi agent gọi lookup_order và nhận được chi tiết đơn hàng cho thấy mặt hàng được mua cách đây 45 ngày, vòng lặp agentic xác định như thế nào việc tiếp theo nên gọi process_refund hay escalate_to_human?","84":"Agent xác minh danh tính khách hàng qua một quy trình nhiều bước trước khi đặt lại mật khẩu. Trong quá trình kiểm thử, bạn nhận thấy sau khi khách hàng trả lời câu hỏi xác minh thứ ba, agent lại yêu cầu họ cung cấp tên một lần nữa, như thể trao đổi trước đó chưa từng xảy ra. Nguyên nhân nào có khả năng cao nhất gây ra hành vi này?","85":"Khi triển khai tool MCP lookup_order, backend đôi khi trả về lỗi (ví dụ: Không tìm thấy đơn hàng hoặc sự cố cơ sở dữ liệu tạm thời). Mẫu hình đúng để truyền đạt các lỗi này về cho agent là gì?","86":"Đánh giá cho thấy độ chính xác trích xuất đạt 94% với bản ghi cuộc họp ngắn (dưới 30 phút) nhưng chỉ đạt 68% với bản ghi dài (hơn 60 phút), nơi cuộc thảo luận lan man và thông tin quan trọng nằm rải rác khắp nơi. Cả hai loại bản ghi đều nằm trong giới hạn cửa sổ ngữ cảnh của mô hình. Mẫu hình nào cải thiện hiệu quả nhất độ chính xác đối với các tài liệu dài và phức tạp?","87":"Hệ thống của bạn đã chạy được 3 tuần và người rà soát đã sửa 847 kết quả trích xuất. Phân tích cho thấy một khuôn mẫu lặp lại: khi công thức nấu ăn dùng các đơn vị đo không chính thức như một nắm hay một chút, mô hình hoặc tự bịa ra số lượng cụ thể, hoặc để trống trường đó — chiếm 23% tổng số lần sửa lỗi. Bạn nên dùng phản hồi này như thế nào để cải thiện độ chính xác trích xuất?","88":"Giám sát thực tế cho thấy các truy vấn tiếp theo kiểu tóm tắt những gì chúng ta đã tìm hiểu về xu hướng thị trường luôn mất hơn 40 giây. Điều tra cho thấy coordinator khởi tạo subagent tổng hợp cho mỗi yêu cầu tóm tắt, truyền vào hơn 80K token các phát hiện đã tích luỹ. Coordinator thực ra đã có sẵn các phát hiện này trong ngữ cảnh của nó từ quá trình điều phối nghiên cứu. Cách hiệu quả nhất để cải thiện thời gian phản hồi cho các yêu cầu tóm tắt tiếp theo này là gì?","89":"Agent phân tích tài liệu có một tool duy nhất là analyze_document, nhận vào một tài liệu và một tham số hướng dẫn dạng văn bản tự do. Trong quá trình đánh giá, các yêu cầu như trích xuất các chỉ số tài chính chính thường trả về tóm tắt dạng tường thuật, trong khi tóm tắt phương pháp luận đôi khi lại trả về bảng dữ liệu thô. Agent tổng hợp báo cáo rằng 35% kết quả phân tích cần phải yêu cầu lại với hướng dẫn rõ ràng hơn. Cách hiệu quả nhất để cải thiện độ tin cậy là gì?","90":"Hệ thống của bạn chuyển các tài liệu có độ tin cậy trích xuất dưới 85% sang rà soát thủ công. Một cuộc kiểm toán theo quý cho thấy 12% các kết quả trích xuất có độ tin cậy cao (>85%) vẫn chứa lỗi — những trường hợp mô hình đưa ra giá trị nghe có vẻ hợp lý nhưng sai. Nguồn gốc lỗi rất đa dạng: bảng so sánh thông số đối thủ, phụ lục tham chiếu đến các biến thể sản phẩm khác, và cách diễn đạt mơ hồ mà mô hình hiểu sai. Bạn cần một chiến lược bền vững để phát hiện các lỗi có độ tin cậy cao này và đo lường xem các cải tiến có làm giảm tỷ lệ lỗi theo thời gian hay không. Cách tiếp cận nào hiệu quả nhất?","91":"Việc trích xuất của bạn dùng tool use với schema JSON, trong đó property_type được định nghĩa là một enum: house, apartment, condo, townhouse. Sau khi triển khai, 8% số lượt trích xuất thất bại ở bước xác thực schema. Điều tra cho thấy các tin đăng đề cập đến nhiều loại bất động sản không phổ biến — studio, loft, duplex, nhà di động, nhà siêu nhỏ, nhà kho cải tạo — và các loại mới vẫn liên tục xuất hiện. Giải pháp lâu dài nào hiệu quả nhất?","92":"Hệ thống trích xuất của bạn phân tích mô tả sản phẩm thương mại điện tử để trích xuất các thông số như kích thước, trọng lượng, và chất liệu thành JSON. Mặc dù đã có schema được định nghĩa rõ ràng, mô hình vẫn trích xuất trường materials (chất liệu) không nhất quán — khi thì trả về cotton blend, khi thì Cotton/Polyester mix, và đôi khi bỏ trống trường này dù thông tin chất liệu rõ ràng có trong nguồn. Cách hiệu quả nhất để cải thiện tính nhất quán khi trích xuất là gì?","93":"Tài liệu liên tục được gửi đến trong giờ làm việc và cần được trích xuất dữ liệu có cấu trúc. Để giảm chi phí, bạn muốn dùng Message Batches API (giảm 50% chi phí, thời gian xử lý tối đa 24 giờ). SLA của bạn quy định rằng kết quả trích xuất phải sẵn sàng trong vòng 30 giờ kể từ khi tài liệu đến, với độ tin cậy 99,9%. Chiến lược xử lý theo lô nào phù hợp nhất?","94":"Pipeline trích xuất của bạn xử lý thực đơn nhà hàng và phải xuất ra JSON có cấu trúc với các trường tên món, mô tả, giá, và nhãn chế độ ăn. Một số thực đơn dùng định dạng không nhất quán — giá dạng $12 so với 12.00, thông tin chế độ ăn dạng biểu tượng so với văn bản. Cách tiếp cận nào đáng tin cậy nhất?","95":"Hệ thống của bạn trích xuất metadata sự kiện (ngày, địa điểm, người tổ chức, số lượng người tham dự) từ các bài báo bằng một schema JSON với tất cả các trường đều có thể null. Trong quá trình đánh giá, bạn nhận thấy mô hình thường xuyên tạo ra các giá trị nghe có vẻ hợp lý nhưng sai cho các trường không được đề cập trong bài báo — ví dụ, xuất ra 500 cho attendee_count trong khi nguồn không hề có thông tin về số người tham dự. Cách hiệu quả nhất để giảm các trường hợp trích xuất sai này là gì?","96":"Trợ lý nghiên cứu của bạn giúp người dùng phân tích các bài báo học thuật qua các cuộc hội thoại kéo dài. Kiểm thử người dùng cho thấy một vấn đề lặp lại: sau khi cuộc hội thoại vượt quá 60K token, người dùng đặt các câu hỏi tiếp theo đòi hỏi chi tiết số liệu chính xác từ các bài báo đã thảo luận trước đó — cỡ mẫu, giá trị p chính xác, tiêu chí lựa chọn cụ thể. Cách tiếp cận hiện tại của bạn tóm tắt các cuộc thảo luận về bài báo sau mỗi 8 lượt để nằm trong giới hạn ngữ cảnh. Người dùng phản ánh rằng các câu trả lời cho những câu hỏi đòi hỏi độ chính xác cao này thường mơ hồ hoặc không chính xác. Thay đổi kiến trúc nào hiệu quả nhất?","97":"Trợ lý huấn luyện thể hình của bạn dùng một system prompt với logic điều kiện chi tiết: nếu người dùng đề cập là người mới bắt đầu, hãy cung cấp hướng dẫn tư thế từng bước; nếu họ dùng các thuật ngữ như progressive overload hay superset, hãy trả lời ngắn gọn; nếu họ hỏi về tiền sử chấn thương, luôn khuyên họ tham khảo bác sĩ. Trong quá trình đánh giá, bạn thấy trợ lý thích ứng đúng khi người dùng khai báo rõ trình độ của mình, nhưng gặp khó khăn khi người dùng không nói rõ trình độ — thường mặc định trả lời quá chi tiết bất kể các dấu hiệu ngữ cảnh như thuật ngữ chuyên môn. Thay đổi nào trong system prompt sẽ giải quyết trực tiếp nhất việc bỏ sót các tín hiệu ngầm về trình độ này?","98":"Bạn đang xây dựng một quy trình quét bảo mật. Khi kỹ sư cần tìm tất cả các vị trí xuất hiện của một hàm nguy hiểm như eval() trong một codebase lớn, agent của bạn nên dùng tool nào để tìm kiếm theo nội dung?","99":"Agent đã xác định rằng logic caching trải rộng trên 15 file, bao gồm decorator, middleware, và các lớp service (tổng cộng khoảng 8.000 dòng). Bước tiếp theo nào giúp xây dựng hiểu biết trong khi vẫn kiểm soát được giới hạn ngữ cảnh?","100":"Hôm nay, cô ấy muốn tiếp tục đúng investigation (điều tra) đó. Từ đó đến nay cô đã làm việc trên ba codebase khác và biết phiên làm việc trước đó đã tìm hiểu khá sâu. Cô nên tiếp tục (resume) như thế nào?","101":"Bạn là Lead Data Scientist/Engineer của một dự án quan trọng. Có điều gì đó không hoàn toàn ổn với chi tiết kỹ thuật hoặc dữ liệu, gây ảnh hưởng tiêu cực đến kết quả đầu ra mong đợi. Nhóm cần phát triển độc lập hai cách tiếp cận khác nhau để đánh giá dữ liệu... Bạn nên quản lý tình huống này như thế nào?","102":"Một cuộc kiểm toán bảo mật yêu cầu nâng cấp thư viện xác thực của bạn từ v2 lên v3. Tài liệu hướng dẫn di chuyển (migration guide) ghi rõ các thay đổi phá vỡ tương thích (breaking changes): authenticate() giờ trả về một Promise thay vì nhận callback, kiểu User đã được tái cấu trúc lại các trường, và ba phương thức đã lỗi thời (deprecated) bị loại bỏ. Grep cho thấy thư viện này được import ở 45 file trên nhiều module khác nhau. Cách tiếp cận nào hiệu quả nhất?","103":"Trong quá trình kiểm thử, bạn nhận thấy trong các phiên khám phá kéo dài (hơn 30 phút), agent bắt đầu đưa ra câu trả lời không nhất quán về những gì đã được thảo luận trước đó. Kỹ sư phản ánh rằng họ phải lặp lại thông tin về các module đã từng khám phá. Cách tiếp cận nào hiệu quả nhất để giải quyết vấn đề này?","104":"Tham số old_string không thể tìm thấy đoạn văn bản duy nhất để khớp — file này có nhiều docstring, tên biến, và cấu trúc lặp lại giống nhau. Cách nào đáng tin cậy để hoàn thành việc chèn (insertion) này?","105":"Bạn cần thêm một bước kiểm tra hợp lệ về ngày tháng để đảm bảo ngày sự kiện phải nằm trong tương lai. Việc này chỉ cần thêm một câu lệnh điều kiện vào một hàm đã có sẵn trong một file duy nhất. Cách tiếp cận nào phù hợp nhất?","106":"File CLAUDE.md của nhóm bạn có một quy tắc: dùng thụt lề 4 dấu cách và luôn chạy định dạng Prettier. Dù vậy, các buổi code review cho thấy khoảng 30% số file do Claude Code tạo ra có định dạng không nhất quán — khi thì thụt lề 2 dấu cách, khi thì thiếu dấu phẩy cuối dòng. Việc nhấn mạnh thêm (QUAN TRỌNG: Bạn PHẢI dùng định dạng Prettier) giảm tỷ lệ vi phạm xuống còn khoảng 15%, nhưng không loại bỏ hoàn toàn. Cách hiệu quả nhất để đảm bảo mọi đoạn code được tạo ra đều có định dạng nhất quán là gì?","107":"Bạn đã yêu cầu Claude Code xây dựng một tính năng tạo báo cáo PDF. Phiên bản triển khai ban đầu truy vấn cơ sở dữ liệu đúng, nhưng đầu ra có vấn đề về định dạng: cột bảng quá hẹp khiến nội dung bị cắt bớt, ngày tháng hiển thị không đúng định dạng, và việc ngắt trang xử lý sai. Bạn nhận thấy các vấn đề này ảnh hưởng lẫn nhau — thay đổi độ rộng cột ảnh hưởng đến cách hiển thị ngày tháng, và việc ngắt trang lại phụ thuộc vào chiều cao nội dung. Cách tiếp cận nào hiệu quả nhất để lặp lại dần tới một giải pháp hoạt động đúng?","108":"Bạn đang triển khai một lớp caching cho các phản hồi API để tăng tốc endpoint /products. Bạn có một ý tưởng sơ bộ — dùng Redis với TTL 5 phút — nhưng bạn còn mới với việc caching trong môi trường production và chưa chắc còn những yếu tố nào khác cần cân nhắc để có một triển khai chắc chắn. Cách hiệu quả nhất để bắt đầu quy trình làm việc lặp (iterative) của bạn là gì?","109":"Bạn đang triển khai một thuật toán duyệt đồ thị (graph traversal) phức tạp với các yêu cầu hiệu năng cụ thể và các trường hợp biên cần xử lý (node bị cô lập, chu trình, cạnh có trọng số). Bạn muốn tổ chức quy trình làm việc để tinh chỉnh lặp đi lặp lại một cách hiệu quả cùng Claude. Cách tiếp cận nào sẽ giúp cải thiện dần dần qua nhiều lượt lặp một cách hiệu quả nhất?","110":"Nhóm của bạn đang cấu hình các máy chủ MCP trong Claude Code. Bạn muốn thêm một máy chủ tra cứu địa điểm (venue lookup) dùng chung mà mọi thành viên trong nhóm đều có thể truy cập, và cá nhân bạn cũng muốn thêm một máy chủ danh sách phát nhạc thử nghiệm mà chỉ mình bạn đang thử. Cách cấu hình nào áp dụng đúng phạm vi (scope) của máy chủ MCP?","111":"Repository infrastructure-as-code của bạn bao gồm các module Terraform (/terraform/), manifest Kubernetes (/kubernetes/), và script pipeline CI/CD (/pipelines/). Mỗi loại đòi hỏi quy ước khác nhau, nhưng file CLAUDE.md gốc duy nhất của bạn đã phình to lên hơn 500 dòng. Khi lập trình viên làm việc với file Kubernetes, các quy tắc riêng của Terraform vẫn được nạp vào ngữ cảnh một cách không cần thiết, tốn token. Cách tốt nhất để tổ chức lại sao cho chỉ hướng dẫn liên quan được nạp khi chỉnh sửa từng loại file cụ thể là gì?","112":"Nhóm của bạn thường xuyên chuyển đổi các component React sang Vue. Bạn đã viết một quy trình từng bước để Claude Code làm theo trong mỗi lần chuyển đổi, và bạn muốn mọi lập trình viên trong nhóm có thể gọi nó bằng cách gõ /migrate-component. Quy trình này cần luôn được đồng bộ khi nhóm tiếp tục chỉnh sửa nó. Bạn nên đặt file skill này ở đâu?","113":"Một lỗi nghiêm trọng đang ảnh hưởng đến người dùng ở môi trường production. Log lỗi cho thấy exception trong module OrderProcessing với stack trace chỉ rõ đến một hàm cụ thể. Bạn chưa từng làm việc với module này trước đây. Cách tiếp cận nào hiệu quả nhất?","114":"Bạn đang triển khai một module xử lý thanh toán mới, cần tuân theo các mẫu hình (pattern) đã thiết lập của dự án cho giao dịch cơ sở dữ liệu, xử lý lỗi, và ghi log kiểm toán (audit logging). Bạn đã xác định được ba module hiện có minh hoạ rõ các mẫu hình này: db_utils.py, error_handlers.py, và audit_logger.py. Đây là một tác vụ tích hợp một lần — các mẫu hình này đã được ghi chép đầy đủ trong wiki của nhóm và không cần thêm tài liệu ở cấp dự án. Cách tiếp cận nào hiệu quả nhất?","115":"Bạn đã yêu cầu Claude viết một script di chuyển dữ liệu (data migration), nhưng kết quả ban đầu không xử lý đúng các bản ghi có giá trị null ở các trường bắt buộc. Cách hiệu quả nhất để lặp lại dần tới một giải pháp hoạt động đúng là gì?","116":"Bạn đã ghi lại các quy ước xử lý lỗi API trong một file CLAUDE.md ở thư mục gốc của dự án, quy định rằng các handler endpoint nên dùng một lớp ApiError tuỳ chỉnh. Sau vài phiên làm việc, bạn nhận thấy Claude Code đôi khi tuân theo các quy ước này, đôi khi lại dùng khối try/catch chung chung với thông điệp dạng chuỗi. Sự không nhất quán này có vẻ ngẫu nhiên qua các phiên coding khác nhau. Bước chẩn đoán đầu tiên nào hiệu quả nhất?","117":"Monorepo của bạn chứa các tiêu chuẩn coding dùng chung trong /docs/standards/security-rules.md (cho các service xử lý dữ liệu người dùng), testing-patterns.md (cho tất cả các package), và api-conventions.md (cho các service hướng API). 15 package của bạn được tổ chức theo miền tính năng (/packages/auth/, /packages/billing/, /packages/notifications/, v.v.) mà không có quy ước đặt tên nào cho biết package nào xử lý dữ liệu người dùng hay expose API. Người quản trị từng package được kỳ vọng tự cấu hình cài đặt phát triển cục bộ của riêng mình, vì họ hiểu rõ yêu cầu miền của package đó. Hiện tại, tất cả các file CLAUDE.md của các package đều sao chép lại cả ba tiêu chuẩn, áp dụng cả những hướng dẫn không liên quan. Cách tiếp cận nào hiệu quả nhất?","118":"Hệ thống xử lý đánh giá sản phẩm bằng tool use với schema được định nghĩa: rating (số nguyên 1-5), pros (mảng chuỗi), cons (mảng chuỗi), và overall_sentiment (enum: positive, negative, mixed). Kiểm thử phát hiện hai vấn đề với các đánh giá ngắn hoặc mơ hồ (~20% tập dữ liệu): (1) với các đánh giá như Sản phẩm tuyệt vời!, Claude bịa ra các ưu/nhược điểm cụ thể thay vì chỉ ra rằng thông tin này không được nêu rõ; và (2) với các đánh giá mỉa mai như Ồ, thú vị thật đấy..., Claude chọn sentiment một cách tuỳ tiện vì không có lựa chọn nào cho trường hợp mơ hồ. Thay đổi schema nào giải quyết tốt nhất cả hai vấn đề này?","119":"Sau khi lô xử lý hàng ngày 10.000 tài liệu hoàn tất, 300 tài liệu (3%) bị lỗi context_length_exceeded (vượt quá độ dài ngữ cảnh). File kết quả xác định từng lỗi theo custom_id. Cách tiếp cận nào tiết kiệm chi phí nhất để xử lý các tài liệu lỗi này?","120":"Hệ thống cần trích xuất thông tin ứng viên (họ tên, thông tin liên hệ, kỹ năng, kinh nghiệm làm việc, học vấn) từ các CV được tải lên. Dữ liệu trích xuất phải tuân thủ nghiêm ngặt một schema JSON đã định nghĩa trước, vì thiếu trường bắt buộc hoặc sai kiểu dữ liệu sẽ gây lỗi xác thực ở bước downstream. Cách tiếp cận nào đáng tin cậy nhất để đảm bảo đầu ra của Claude luôn khớp với schema?","121":"Sau khi triển khai review code tự động, lập trình viên phản ánh rằng khoảng 35% các phát hiện được gắn cờ là false positive (báo động giả), rơi vào các khuôn mẫu lặp lại: gợi ý về phong cách mâu thuẫn với quy ước của nhóm, cảnh báo bảo mật cho các mẫu vốn an toàn trong bối cảnh triển khai của bạn, và gợi ý về hiệu năng thực ra sẽ làm giảm hiệu năng cho trường hợp sử dụng cụ thể của bạn. Bạn muốn giảm false positive trong khi vẫn giữ được khả năng phát hiện các vấn đề thực sự. Cách tiếp cận nào giúp mô hình tổng quát hoá tốt nhất khả năng phán đoán của nó với các mẫu code mới mà nó chưa từng gặp?","122":"Sau khi mở rộng các tool MCP của agent với các khả năng chuyên biệt cho giao hàng (check_delivery_status, contact_driver, issue_credit, apply_promo_code, update_delivery_address, reschedule_delivery), tổng số tool đã tăng từ 4 lên 10. Bộ đánh giá của bạn cho thấy độ chính xác khi chọn tool đã giảm xuống còn 71%. Phân tích log cho thấy phần lớn lỗi liên quan đến việc agent chọn nhầm giữa các tool có ý nghĩa chồng chéo nhau — gọi issue_credit trong khi lẽ ra phải gọi process_refund, hay gọi check_delivery_status trong khi lookup_order đã trả về đủ dữ liệu cần thiết. Cách tiếp cận nào loại bỏ tận gốc (về mặt cấu trúc) các chồng chéo ngữ nghĩa đang là nguyên nhân gây lỗi?","123":"Tài liệu về tool use của Anthropic ghi rõ: hãy viết các thông báo lỗi mang tính chỉ dẫn — thay vì các lỗi chung chung như failed, hãy nêu rõ điều gì đã sai và Claude nên thử gì tiếp theo. Một agent xử lý tranh chấp hoá đơn dùng lookup_order, tool này bắt tất cả các exception và trả về một tool_result với is_error: true cùng thông điệp execution failed (thực thi thất bại). Giám sát cho thấy hai kiểu lỗi: agent thử lại đúng lệnh cũ cho đến khi chạm giới hạn số lượt, hoặc nó gọi ngay escalate_to_human mà không thử tool nào khác. Thay đổi nào tuân theo đúng khuyến nghị trong tài liệu và cung cấp cho Claude thông tin cần thiết để chọn đúng hành động khắc phục cho từng loại lỗi?","124":"Prompt review code của bạn bao gồm cả các thay đổi trong implementation lẫn file test tương ứng, nhưng các nhận xét review của LLM lại không chỉ ra được các nhánh code chưa được kiểm thử. Phân tích cho thấy mô hình gắn cờ đúng các hàm hoàn toàn không có test, nhưng lại không phát hiện được khi các nhánh điều kiện hoặc luồng xử lý lỗi bên trong những hàm đã có test vẫn thiếu độ phủ (coverage). Cách hiệu quả nhất để cải thiện việc phát hiện các khoảng trống coverage ở cấp độ nhánh mà không làm phức tạp hoá pipeline là gì?","125":"Sau khi triển khai review tự động, bạn nhận thấy độ chính xác (precision) cao nhưng độ bao phủ (recall) thấp — các lỗi thật sự đang lọt qua mà không bị phát hiện. Điều tra cho thấy prompt review của bạn yêu cầu Claude chỉ báo cáo các vấn đề mà bạn hoàn toàn chắc chắn và thà không nhận xét còn hơn. Lập trình viên đánh giá cao việc ít nhiễu, nhưng một race condition từng gây ra sự cố ở production lại hiện diện rõ trong một PR đã được review mà không hề bị báo cáo. Bạn cần cải thiện đáng kể khả năng phát hiện lỗi trong khi vẫn giữ tỷ lệ false positive ở mức nhóm bạn có thể chấp nhận được. Cách tiếp cận nào hiệu quả nhất?","126":"Công cụ review tự động của bạn dùng một prompt duy nhất bao quát cả vấn đề bảo mật, thiết kế API, và tính đúng đắn của logic nghiệp vụ. Bộ đánh giá của bạn cho thấy recall (độ bao phủ) tốt đối với thiết kế API (82%) nhưng recall kém đối với các trường hợp biên của logic nghiệp vụ trong việc chấm điểm quiz (34%). Khi bạn thêm các ví dụ few-shot về lỗi logic vào prompt, recall về logic tăng lên 41% nhưng recall về thiết kế API lại giảm xuống 68%. Bạn nên xử lý sự đánh đổi này như thế nào để cải thiện khả năng phát hiện ở cả hai nhóm?","127":"Agent của bạn đang xử lý một tranh chấp hoá đơn. Sau khi gọi get_customer và lookup_order, nó xác định rằng tranh chấp liên quan đến lỗi giá khuyến mãi cần có sự phê duyệt của quản lý — vượt quá quyền hạn của agent. Quy trình nên xử lý việc chuyển cấp (escalation) giữa chừng này như thế nào?","128":"Agent của bạn đã gọi lookup_order nhiều lần trong khi xử lý yêu cầu đổi trả của khách hàng. Mỗi phản hồi bao gồm hơn 40 trường (mặt hàng, chi tiết vận chuyển, thông tin thanh toán, lịch sử trạng thái). Kết quả trả về từ tool giờ đây chiếm phần lớn ngữ cảnh của cuộc hội thoại. Khách hàng đề cập thêm hai đơn hàng khác mà họ muốn thảo luận. Cách tiếp cận nào hiệu quả nhất trước khi thực hiện thêm các lượt tra cứu?","129":"Log thực tế cho thấy khi agent xử lý các tranh chấp hoá đơn phức tạp cần hơn 6 lượt gọi tool, nó đôi khi chạm giới hạn max_turns sau khi đã thu thập xong dữ liệu nhưng trước khi hoàn tất việc giải quyết hoặc chuyển cấp. Mục tiêu của nhóm là đảm bảo mọi tương tác với khách hàng đều kết thúc bằng một trong hai: giải quyết xong hoặc chuyển cấp cho con người, bất kể vòng lặp agent kết thúc như thế nào. Cách tiếp cận nào đảm bảo được điều này?","130":"Agent phân tích tài liệu có một tool duy nhất là analyze_document, nhận vào một tài liệu và một tham số hướng dẫn dạng văn bản tự do. Trong quá trình đánh giá, các yêu cầu như trích xuất các chỉ số tài chính chính thường trả về tóm tắt dạng tường thuật, trong khi tóm tắt phương pháp luận đôi khi lại trả về bảng dữ liệu thô. Agent tổng hợp báo cáo rằng 35% kết quả phân tích cần phải yêu cầu lại với hướng dẫn rõ ràng hơn. Cách hiệu quả nhất để cải thiện độ tin cậy là gì?","131":"Trong môi trường thực tế, bạn nhận thấy các truy vấn kiểm tra sự kiện đơn giản (ví dụ: Hiệp định Paris về khí hậu được ký vào năm nào?) vẫn phải đi qua tuần tự cả bốn subagent, tiêu tốn hơn 40 giây và một lượng token đáng kể. Trong khi đó, các nghiên cứu so sánh phức tạp thực sự được hưởng lợi từ toàn bộ pipeline này. Phân bố truy vấn của bạn đa dạng và liên tục thay đổi khi người dùng khám phá thêm những cách sử dụng mới. Cách tiếp cận nào hiệu quả nhất để tối ưu hoá cho độ phức tạp truy vấn khác nhau?","132":"Pipeline nghiên cứu đa agent của bạn bị crash sau khi xử lý được 12/28 tài liệu. Agent tìm kiếm web đã xác định được các nguồn liên quan, agent phân tích tài liệu đã hoàn thành một phần, và agent tổng hợp đã bắt đầu nhận diện các mẫu (pattern). Bạn cần tiếp tục xử lý mà không lặp lại công việc đã làm hay làm mất độ chính xác của các phát hiện trước đó. Cách tiếp cận quản lý trạng thái nào cân bằng tốt nhất giữa độ trung thực thông tin và hiệu quả sử dụng ngữ cảnh khi khôi phục trạng thái agent?","133":"Agent của bạn đã phân tích một module dịch vụ phức tạp — đọc 23 file mã nguồn, truy vết luồng xử lý request, và xác định các mẫu xử lý lỗi. Một lập trình viên cần phát triển hai chiến lược kiểm thử trước khi quyết định chọn một: test end-to-end với các dịch vụ bên ngoài được mock, so với test snapshot ghi lại đầu ra mong đợi. Lập trình viên cần phát triển độc lập cả hai cách tiếp cận để đánh giá sự đánh đổi giữa chúng. Bạn nên quản lý các phiên làm việc (session) như thế nào?","134":"Giám sát thực tế cho thấy giai đoạn nghiên cứu mất nhiều thời gian hơn dự kiến. Phân tích cho thấy coordinator gọi subagent tìm kiếm web, rồi mới gọi subagent phân tích tài liệu và lại chờ tiếp. Hai tác vụ này độc lập với nhau — không tác vụ nào cần đầu ra của tác vụ kia. Cách hiệu quả nhất để chạy song song hai subagent này là gì?","135":"Hôm qua, một kỹ sư đã dùng agent để phân tích một module xác thực cũ, xác định được hai hướng tái cấu trúc khác nhau: tách ra thành microservice riêng, hoặc tái cấu trúc tại chỗ (in-place). Hôm nay, họ muốn tìm hiểu sâu cả hai hướng — để agent đề xuất các thay đổi code cụ thể cho từng hướng — trước khi quyết định chọn hướng nào để triển khai. Cách hiệu quả nhất để tổ chức việc tìm hiểu này là gì?","136":"Một kỹ sư nhờ agent của bạn thêm test toàn diện cho một codebase cũ gồm 200 file với độ phủ test hiện có rất thấp. Kỹ sư này chưa dành nhiều thời gian tìm hiểu codebase, nên họ nhờ agent giúp xác định module nào nên ưu tiên trước. Agent nên chia nhỏ (decompose) tác vụ mở này như thế nào?","137":"Công cụ review tự động của bạn gọi Claude API cho mỗi PR, dùng tool_use với một tool report_findings trả về một mảng JSON các đối tượng phát hiện (mỗi đối tượng gồm file_path, line_number, severity, category, và description). Trong quá trình kiểm thử trên một PR lớn chạm đến hơn 30 file, phản hồi chạm giới hạn max_tokens và đầu ra bị cắt giữa chừng JSON, khiến bộ phân tích (parser) của pipeline bị lỗi. Cách hiệu quả nhất để xử lý tình huống này là gì?","138":"Bạn đang thiết lập một pipeline review code tự động, không tương tác (non-interactive), dùng Claude Code. Bạn muốn Claude phân tích một git diff so với nhánh main và áp dụng một bộ hướng dẫn review tuỳ chỉnh. Tuy nhiên, bạn nhận thấy khi chạy pipeline, Claude chỉ nhìn vào văn bản diff thô và hoàn toàn không dùng các tool đọc file hay điều hướng code của nó nữa. Kết quả là nó không kiểm tra được bối cảnh rộng hơn của repository, điều này rất quan trọng vì diff đó sửa đổi một hàm cốt lõi được gọi bởi nhiều module khác. Thay đổi nào trong cách gọi CLI sẽ khiến Claude đọc các file liên quan trong repository trong khi vẫn áp dụng đúng các hướng dẫn review tuỳ chỉnh của bạn?","139":"Nhóm phát triển của bạn đang dùng Claude Code để tự động tạo test trên một codebase lớn. Tuy nhiên, lập trình viên thường xuyên từ chối các bộ test được tạo ra vì Claude tạo ra rất nhiều assertion tầm thường hoặc các test chỉ nhằm tối đa hoá độ phủ dòng code mà không thực sự kiểm chứng logic hành vi có ý nghĩa hay các trường hợp biên. Bạn muốn hướng dẫn Claude tạo ra ngay từ đầu các test chất lượng cao, sẵn sàng cho production, mà không làm tăng độ trễ hay phải sửa script pipeline cốt lõi. Chiến lược nào đảm bảo tốt nhất việc tạo ra các test chất lượng cao, có ý nghĩa ngay từ đầu?","140":"Một lập trình viên dùng Claude Code để tái cấu trúc một hàm trong phiên làm việc của họ. Trước khi commit, họ nhờ chính phiên Claude đó review lại code để tìm vấn đề. Sau đó, một quy trình CI review tự động riêng biệt lại phát hiện ra vài lỗi mà lượt review trong cùng phiên đã bỏ sót. Điều gì giải thích tốt nhất cho sự khác biệt này?","141":"Công cụ review tự động của bạn dùng một prompt duy nhất bao quát cả vấn đề bảo mật, thiết kế API, và tính đúng đắn của logic nghiệp vụ. Bộ đánh giá của bạn cho thấy recall (độ bao phủ) tốt đối với thiết kế API (82%) nhưng recall kém đối với các trường hợp biên của logic nghiệp vụ trong việc chấm điểm quiz (34%). Khi bạn thêm các ví dụ few-shot về lỗi logic vào prompt, recall về logic tăng lên 41% nhưng recall về thiết kế API lại giảm xuống 68%. Bạn nên xử lý sự đánh đổi này như thế nào để cải thiện khả năng phát hiện ở cả hai nhóm?","142":"Công cụ khám phá codebase của bạn lưu session ID để kỹ sư có thể tiếp tục việc điều tra qua nhiều phiên làm việc. Hôm qua, một kỹ sư đã dành một giờ để phân tích một module xác thực cũ, xây dựng hiểu biết về kiến trúc và các phụ thuộc của nó. Hôm nay họ muốn tiếp tục. Session ID vẫn còn hợp lệ, nhưng version control cho thấy 3 trong số 12 file mà agent đã đọc trước đó đã bị một đồng nghiệp chỉnh sửa qua đêm khi merge. Cách tiếp cận nào cân bằng tốt nhất giữa hiệu quả và độ chính xác?","143":"Một kỹ sư thấy một thông báo lỗi lạ SYNC_CONFLICT: entity version mismatch detected trong log production nhưng không biết dịch vụ nào trong số 12 dịch vụ của codebase tạo ra nó. Họ nhờ agent giúp xác định vị trí mã nguồn. Cách tiếp cận khám phá nào sẽ tìm ra đoạn code chịu trách nhiệm một cách hiệu quả nhất?","144":"Bạn đã cấu hình agent Claude của mình với ba máy chủ MCP: một cho các thao tác git, một để quản lý ticket Jira, và một để tìm kiếm tài liệu. Khi người dùng yêu cầu agent tạo một branch cho JIRA-123 và thêm liên kết tài liệu vào ticket đó, agent truy cập các tool trên các máy chủ này như thế nào?","145":"Yêu cầu tuân thủ (compliance) quy định rằng các khoản hoàn tiền vượt quá 500 USD phải tự động được chuyển cấp cho một nhân viên con người — quy tắc này không thể để mô hình tự quyết định. Mặc dù đã có hướng dẫn rõ ràng trong system prompt, log thực tế cho thấy agent thỉnh thoảng vẫn tự xử lý trực tiếp các khoản hoàn tiền giá trị cao (tỷ lệ vi phạm 3%). Bạn nên làm gì để đảm bảo tuân thủ chắc chắn?","146":"Log thực tế cho thấy việc xử lý lỗi không nhất quán: khi gọi tool thất bại, agent đôi khi thử lại 5 lần (ngay cả khi ID không tồn tại), đôi khi chuyển cấp ngay lập tức (quá sớm với sự cố mạng tạm thời), và đôi khi thêm lời giải thích thân thiện với người dùng (không phù hợp khi vấn đề là lỗi quyền truy cập ở backend). Điều tra cho thấy các tool MCP đều trả về phản hồi lỗi đồng nhất dạng status error kèm message Operation failed. Agent không thể phân biệt được các loại lỗi khác nhau. Cải tiến nào hiệu quả nhất?","147":"Log thực tế cho thấy việc xử lý lỗi không nhất quán. Khi tra cứu thông tin, agent đôi khi thử lại hơn 5 lần (dù ID không tồn tại), đôi khi chuyển cấp ngay lập tức (quá sớm với sự cố mạng tạm thời), và đôi khi hỏi lại người dùng để làm rõ (không phù hợp khi vấn đề là lỗi quyền truy cập ở backend). Điều tra cho thấy tool MCP của bạn trả về phản hồi lỗi đồng nhất dạng isError true kèm message Operation failed. Agent không thể phân biệt được các loại lỗi khác nhau. Cải tiến nào hiệu quả nhất?","148":"Sau khi mở rộng các tool MCP của agent với các khả năng chuyên biệt cho giao hàng (apply_promo_code, update_delivery_address, reconcile_delivery), tổng số tool đã tăng từ 1 lên 7. Bạn quan sát thấy độ chính xác khi chọn tool của agent đã giảm từ 86% xuống còn 71%. Phân tích log cho thấy phần lớn lỗi liên quan đến việc agent chọn nhầm giữa các tool có ý nghĩa chồng chéo nhau — gọi issue_credit trong khi lẽ ra phải gọi process_refund, hay gọi check_delivery_status trong khi lookup_order đã trả về đủ dữ liệu cần thiết. Cách tiếp cận nào loại bỏ tận gốc (về mặt cấu trúc) sự chồng chéo ngữ nghĩa được xác định là nguyên nhân gây lỗi?","149":"Agent của bạn đã dành 25 phút để khám phá hệ thống con rendering của một game engine — đọc code shader, quản lý buffer, và logic đồng bộ khung hình. Một kỹ sư giờ đây nhờ nó tìm hiểu cách physics engine tích hợp với rendering để hiển thị lớp debug va chạm (collision debug overlay). Bạn nhận thấy các phản hồi gần đây chỉ nhắc đến các mẫu rendering thông thường thay vì các lớp VulkanPipeline và FrameGraph cụ thể mà nó đã phát hiện trước đó. Cách tiếp cận nào hiệu quả nhất?","150":"Một kỹ sư nhờ agent tìm tất cả những nơi gọi đến một hàm trước khi xoá nó. Hàm này được định nghĩa trong một thư viện lõi nhưng cũng được expose qua các module wrapper đổi tên hàm cho mục đích sử dụng riêng theo từng miền (ví dụ: calculateTax trong thư viện trở thành computeOrderTax trong module orders). Chiến lược khám phá nào sẽ xác định đáng tin cậy nhất tất cả những nơi gọi đến hàm này?","151":"Sau khi thêm một máy chủ MCP với các tool tái cấu trúc code chuyên biệt (extract_function, rename_variable, inline_function), bạn nhận thấy agent vẫn dùng thao tác văn bản cơ bản qua Write và lệnh sed trong Bash cho các tác vụ tái cấu trúc. Máy chủ MCP đã kết nối và hoạt động bình thường. Khi kiểm tra cấu hình, bạn thấy mỗi tool MCP chỉ có mô tả tối giản kiểu extract_function: trích xuất một hàm từ code. Cách hiệu quả nhất để cải thiện việc agent sử dụng các tool tái cấu trúc MCP này là gì?","152":"Một kỹ sư nhờ agent điều tra cách xử lý lỗi trong một module xử lý thanh toán cũ trải rộng trên 15 file. Sau khi đọc 8 file đầu tiên, các phản hồi của agent bắt đầu trở nên kém chính xác rõ rệt — nó quên các mẫu code đã phát hiện trước đó và vẫn chưa tìm ra hết các file test hay truy vết đầy đủ luồng dữ liệu. Cách tiếp cận nào hiệu quả nhất để hoàn thành cuộc điều tra này?","153":"Một kỹ sư vừa mới gia nhập nhóm nhờ agent giúp họ hiểu kiến trúc xác thực (authentication) và phân quyền (authorization) trước khi thực hiện các cải tiến bảo mật. Codebase có hơn 800 file trải trên nhiều dịch vụ. Chiến lược khám phá nào sẽ xây dựng hiểu biết hiệu quả nhất, xét đến các tool có sẵn của Claude và giới hạn ngữ cảnh?","154":"Sau khi tích hợp một máy chủ MCP cục bộ cung cấp các tool phân tích code (analyze_dependencies, find_dead_code, calculate_complexity), bạn nhận thấy agent vẫn tiếp tục dùng Grep để kiểm tra các phụ thuộc ngay cả khi người dùng hỏi thẳng về các phụ thuộc trong code. Định nghĩa tool cho thấy: analyze_dependencies trả về một đồ thị phụ thuộc bằng cách phân tích các câu lệnh import. Cách tiếp cận nào hiệu quả nhất để cải thiện việc agent chọn đúng các tool MCP?","155":"Sau khi triển khai, bạn phát hiện 12% số lượt trích xuất chứa lỗi ngữ nghĩa dù vẫn vượt qua bước xác thực schema JSON (ví dụ: một khoảng thời gian như 30 phút bị đặt nhầm vào trường số lượng nguyên liệu). Người rà soát chỉ có khả năng kiểm tra 20% số lượt trích xuất. Cách tiếp cận nào phân bổ sự chú ý của người rà soát hiệu quả nhất?","156":"Trong môi trường thực tế, bạn đang phân phối các truy vấn phức tạp cho các subagent chuyên biệt. Phân bố truy vấn không đồng đều và liên tục thay đổi khi người dùng khám phá thêm những cách sử dụng mới. Cách tiếp cận nào hiệu quả nhất để tối ưu hoá theo độ phức tạp của truy vấn?","157":"Bạn đang triển khai logic chuyển cấp (escalation) cho việc khi nào agent nên gọi escalate_to_human. Nhóm của bạn đề xuất bốn cách tiếp cận khác nhau để kích hoạt việc chuyển cấp. Cách tiếp cận nào xác định đáng tin cậy nhất các trường hợp thực sự cần đến sự can thiệp của con người?","158":"Khi agent gọi lookup_order và nhận được chi tiết đơn hàng cho thấy mặt hàng được mua cách đây 45 ngày, vòng lặp agentic xác định như thế nào việc tiếp theo nên gọi process_refund hay escalate_to_human?","159":"Một khách hàng viết: tôi đã qua lại về việc đổi trả này nhiều ngày rồi, tôi chỉ muốn nói chuyện với ai đó thực sự có thể giúp tôi. Agent đã xác nhận qua lookup_order rằng việc đổi trả này đơn giản — nằm trong chính sách và đủ điều kiện xử lý ngay lập tức. Agent nên làm gì?","160":"Một khách hàng quay lại sau 4 giờ kể từ phiên làm việc đầu tiên về cùng một tranh chấp hoá đơn. Phiên trước đó gồm 32 lượt trao đổi có chứa ngữ cảnh: các thông điệp lookup_status_result với nội dung Status: Pending Refund và một lượng token đáng kể từ các kết quả tra cứu trước đó. Agent cần sẵn sàng để trả lời khách hàng một cách đầy đủ. Cách tiếp cận nào xử lý đáng tin cậy nhất các khách hàng quay lại?","161":"Một kỹ sư nhờ agent của bạn xác định các nhánh code chưa được kiểm thử trong một module xử lý thanh toán cũ trải rộng trên 45 file. Sau khi đọc 8 file mã nguồn đầu tiên, các phản hồi của agent bắt đầu trở nên kém chính xác rõ rệt — nó quên các mẫu code đã thảo luận trước đó và vẫn chưa tìm ra hết các file test hay truy vết các luồng thanh toán quan trọng. Cách tiếp cận nào hiệu quả nhất để hoàn thành cuộc điều tra này?","162":"Hiện tại việc này đòi hỏi phải copy-paste nội dung thủ công vào cuộc hội thoại. Nhóm muốn agent có thể truy cập trực tiếp dữ liệu ticket Jira theo cách chuẩn hoá. Cách tiếp cận nào hiệu quả nhất?","163":"Pipeline của bạn review mỗi PR bằng một lệnh gọi API duy nhất với một prompt tĩnh chứa diff và toàn bộ nội dung của mỗi file bị thay đổi — các file không thay đổi thì không được đưa vào. Kết quả review được đăng bất đồng bộ và không chặn việc tạo PR. Lập trình viên phản ánh rằng các bản review liên tục bỏ sót các lỗi liên quan đến tương tác giữa nhiều file — ví dụ, một PR đổi tên tham số của một hàm nhưng bản review không gắn cờ những nơi gọi hàm đó trong các file không thay đổi vẫn còn dùng thứ tự tham số cũ. Đánh giá cho thấy các lỗi liên-file (cross-file) chiếm 35% số sự cố production từ các PR đã được review. Thay đổi nào hiệu quả nhất cho thiết kế review của bạn?","164":"Agent năng suất của bạn kết nối tới ba máy chủ MCP: một hệ thống theo dõi issue (search_issues, get_issue, create_comment), một wiki tài liệu (search_docs, get_page, list_spaces), và một công cụ khám phá cơ sở dữ liệu (run_query, get_schema, list_databases). Khi kỹ sư đặt các câu hỏi liên hệ thống như những bảng cơ sở dữ liệu nào bị ảnh hưởng bởi việc tái cấu trúc xác thực trong PROJ-1234, giám sát cho thấy agent thực hiện 8-10 lượt gọi tool tuần tự, thường xuyên phải gọi dò tìm (exploratory) vì không biết trước nội dung mỗi máy chủ chứa gì, và cạn kiệt không gian ngữ cảnh trước khi hoàn thành các cuộc điều tra phức tạp. Thay đổi kiến trúc nào tận dụng tốt nhất các khả năng của MCP để giải quyết những vấn đề này?","165":"Pipeline CI của bạn thực hiện review code tập trung vào bảo mật cho khoảng 50 PR mỗi ngày, hiện tốn 150 USD/ngày khi dùng API đồng bộ. Các bản review không chặn (non-blocking) — lập trình viên vẫn merge sau khi test qua và xử lý các phát hiện trong các commit tiếp theo. Bạn đang cân nhắc dùng Message Batches API để giảm 50% chi phí. Yếu tố nào quyết định nhiều nhất việc xử lý theo lô (batch) có phù hợp với trường hợp sử dụng này hay không?","166":"Trợ lý review code của bạn cần phân tích pull request và đưa ra nhận xét về ba khía cạnh: tuân thủ phong cách code, các vấn đề bảo mật tiềm ẩn, và mức độ đầy đủ của tài liệu. Mỗi khía cạnh đều cần đọc file, chạy công cụ phân tích, và tạo ra một phần báo cáo. Quy trình review luôn theo cùng một quy trình ba bước cho mọi PR. Mẫu hình phân rã tác vụ (task decomposition) nào phù hợp nhất cho quy trình này?","167":"Một kỹ sư nhờ agent tìm tất cả các file trong monorepo có import package @company/auth để hiểu cách xác thực được sử dụng xuyên suốt các dịch vụ. Tool có sẵn nào phù hợp nhất cho tác vụ này?"};
 const QUIZ_DATA = [
 {
 "num": 1,
@@ -517,7 +521,9 @@ const QUIZ_DATA = [
 "approachEn": "The coordinator did not include the outputs from the previous agents in the synthesis agent's prompt.",
 "approachVi": "coordinator phải chủ động đưa output của các agent trước vào prompt khi gọi agent tiếp theo; đây là nguyên nhân trực tiếp và phổ biến nhất.",
 "group": "orchestration",
-"decisive": "did not include the outputs from the previous agents"
+"decisive": "did not include the outputs from the previous agents",
+"qKey": "no research findings were provided",
+"noKey": false
 },
 {
 "num": 2,
@@ -552,7 +558,9 @@ const QUIZ_DATA = [
 "approachEn": "Require subagents to include publication or data collection dates in their structured outputs.",
 "approachVi": "có ngày thu thập dữ liệu, synthesis agent tự suy luận được đây là xu hướng tăng theo thời gian chứ không phải mâu thuẫn.",
 "group": "orchestration",
-"decisive": "include publication or data collection dates"
+"decisive": "include publication or data collection dates",
+"qKey": "growth over time",
+"noKey": false
 },
 {
 "num": 3,
@@ -587,7 +595,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator review analysis output for gap indicators and re-invoke search with gap-informed queries when gaps are detected.",
 "approachVi": "coordinator (vai trò điều phối trung tâm) rà soát output phân tích để phát hiện gap, rồi gọi lại tìm kiếm với truy vấn nhắm đúng chỗ thiếu — biến pipeline thành vòng lặp có phản hồi.",
 "group": "orchestration",
-"decisive": "re-invoke search with gap-informed queries"
+"decisive": "re-invoke search with gap-informed queries",
+"qKey": "identifies gaps",
+"noKey": false
 },
 {
 "num": 4,
@@ -622,7 +632,9 @@ const QUIZ_DATA = [
 "approachEn": "Have each agent persist a structured export to a known location. On resume, the coordinator loads the manifest and injects relevant state into agent prompts.",
 "approachVi": "mỗi agent tự lưu export có cấu trúc, coordinator đọc manifest và chỉ bơm đúng phần liên quan vào từng agent — cân bằng tốt giữa độ trung thực và hiệu quả ngữ cảnh.",
 "group": "orchestration",
-"decisive": "persist a structured export to a known location"
+"decisive": "persist a structured export to a known location",
+"qKey": "resume processing without repeating work",
+"noKey": false
 },
 {
 "num": 5,
@@ -657,7 +669,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator evaluate synthesis output for gaps, then re-delegate to web search and document analysis with targeted queries before Invoking synthesis again.",
 "approachVi": "coordinator đánh giá gap từ synthesis rồi giao lại việc tìm kiếm/phân tích với truy vấn nhắm đúng gap trước khi tổng hợp lại — vòng lặp cải thiện độ đầy đủ.",
 "group": "orchestration",
-"decisive": "re-delegate to web search and document analysis with targeted queries"
+"decisive": "re-delegate to web search and document analysis with targeted queries",
+"qKey": "remain unanswered",
+"noKey": false
 },
 {
 "num": 6,
@@ -692,7 +706,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator spawn parallel document analysis subagents, each handling a subset of precedents, then aggregate results before synthesis",
 "approachVi": "coordinator tự sinh song song các subagent phân tích, mỗi subagent một phần tiền lệ, rồi gộp kết quả — giảm độ trễ mà coordinator vẫn kiểm soát và có thể debug trực tiếp.",
 "group": "orchestration",
-"decisive": "spawn parallel document analysis subagents"
+"decisive": "spawn parallel document analysis subagents",
+"qKey": "reduce this latency while preserving the coordinator's ability to monitor",
+"noKey": false
 },
 {
 "num": 7,
@@ -727,7 +743,9 @@ const QUIZ_DATA = [
 "approachEn": "Structure the coordinator to emit both Task tool calls (for web search and document analysis) in a single response message rather than across separate conversation turns.",
 "approachVi": "khi coordinator phát cả hai lời gọi Task trong cùng một message, chúng được thực thi song song — đây là cơ chế kỹ thuật đúng để chạy đồng thời.",
 "group": "orchestration",
-"decisive": "in a single response message"
+"decisive": "emit both Task tool calls",
+"qKey": "run these subagents concurrently",
+"noKey": false
 },
 {
 "num": 8,
@@ -762,7 +780,9 @@ const QUIZ_DATA = [
 "approachEn": "Instruct the synthesis agent to structure reports with explicit sections distinguishing well-established findings from contested ones, preserving original source characterization and methodological context.",
 "approachVi": "cấu trúc báo cáo với các phần tách biệt rõ ràng (đã xác lập / còn tranh cãi), giữ nguyên bối cảnh phương pháp luận gốc — xử lý sự không chắc chắn một cách minh bạch, hệ thống.",
 "group": "orchestration",
-"decisive": "distinguishing well-established findings from contested ones"
+"decisive": "distinguishing well-established findings from contested ones",
+"qKey": "inconsistent handling of uncertainty",
+"noKey": false
 },
 {
 "num": 9,
@@ -797,7 +817,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator analyze each query and dynamically decide which subagents to invoke based on its assessment of query requirements.",
 "approachVi": "để coordinator (vốn đã có khả năng suy luận) tự đánh giá độ phức tạp và chọn subagent phù hợp là cách thích ứng tự nhiên nhất với phân bố truy vấn luôn thay đổi.",
 "group": "orchestration",
-"decisive": "dynamically decide which subagents to invoke"
+"decisive": "dynamically decide which subagents to invoke",
+"qKey": "varying query complexity",
+"noKey": false
 },
 {
 "num": 10,
@@ -832,7 +854,9 @@ const QUIZ_DATA = [
 "approachEn": "Update the synthesis agent to render each content type appropriately—financial data as tables, news as prose, and technical lists as structured points.",
 "approachVi": "mỗi loại nội dung có định dạng tự nhiên phù hợp nhất (bảng, văn xuôi, gạch đầu dòng); ép về một định dạng chung sẽ mất đặc trưng của dữ liệu.",
 "group": "orchestration",
-"decisive": "render each content type appropriately"
+"decisive": "render each content type appropriately",
+"qKey": "lose tabular clarity",
+"noKey": false
 },
 {
 "num": 11,
@@ -867,7 +891,9 @@ const QUIZ_DATA = [
 "approachEn": "The coordinator’s allowed Tools configuration doesn’t include “Task”, so while it can reason about delegation, cannot invoke the tool required to spawn subagents.",
 "approachVi": "tool \"Task\" (dùng để gọi subagent) không nằm trong allowedTools, nên coordinator có thể lý luận về việc gọi nhưng không thể thực sự thực thi — không gây lỗi log vì đơn giản là hành động bị chặn ở tầng cấu hình.",
 "group": "orchestration",
-"decisive": "cannot invoke the tool required to spawn subagents"
+"decisive": "doesn’t include “Task”",
+"qKey": "no subagent execution ever occurs",
+"noKey": false
 },
 {
 "num": 12,
@@ -902,7 +928,9 @@ const QUIZ_DATA = [
 "approachEn": "Require all subagents to output structured claim-source mappings that the synthesis agent must preserve and merge when combining findings from multiple sources.",
 "approachVi": "yêu cầu mọi subagent xuất claim-source mapping có cấu trúc và synthesis phải bảo toàn khi gộp — nguồn được giữ theo cấu trúc dữ liệu, không phụ thuộc suy luận lại.",
 "group": "orchestration",
-"decisive": "structured claim-source mappings"
+"decisive": "structured claim-source mappings",
+"qKey": "loses track of which sources support which conclusions",
+"noKey": false
 },
 {
 "num": 13,
@@ -937,7 +965,9 @@ const QUIZ_DATA = [
 "approachEn": "Include the complete findings from both subagents directly in the synthesis subagent's prompt",
 "approachVi": "đưa trực tiếp toàn bộ phát hiện cần thiết vào prompt khi khởi tạo subagent là cách tường minh, đáng tin cậy nhất để đảm bảo nó có đủ thông tin.",
 "group": "orchestration",
-"decisive": "directly in the synthesis subagent's prompt"
+"decisive": "directly in the synthesis subagent's prompt",
+"qKey": "providing the synthesis subagent with the information it needs",
+"noKey": false
 },
 {
 "num": 14,
@@ -972,7 +1002,9 @@ const QUIZ_DATA = [
 "approachEn": "\"The coordinator agent receives the web search agent's output and includes relevant findings in the prompt when invoking the document analysis agent.",
 "approachVi": "coordinator luôn là điểm trung chuyển: nhận output của agent này và đưa vào prompt khi gọi agent kia.",
 "group": "orchestration",
-"decisive": "includes relevant findings in the prompt when invoking"
+"decisive": "includes relevant findings in the prompt when invoking",
+"qKey": "How does information flow between",
+"noKey": false
 },
 {
 "num": 15,
@@ -1007,7 +1039,9 @@ const QUIZ_DATA = [
 "approachEn": "Pass the synthesis draft along with a structured source index that maps key claims to their source URLs and ant Irant excerpts.",
 "approachVi": "bản nháp tổng hợp (súc tích) + chỉ mục nguồn có cấu trúc (ánh xạ luận điểm → URL/trích đoạn) cho đủ thông tin để trích dẫn chính xác mà không cần mang theo toàn bộ dữ liệu gốc.",
 "group": "orchestration",
-"decisive": "structured source index that maps key claims to their source"
+"decisive": "structured source index that maps key claims to their source",
+"qKey": "proper source citations",
+"noKey": false
 },
 {
 "num": 16,
@@ -1042,7 +1076,9 @@ const QUIZ_DATA = [
 "approachEn": "Return the first page with total match count and cursor for additional pages.",
 "approachVi": "trả về trang đầu kèm tổng số kết quả và con trỏ cho các trang tiếp theo để agent chủ động quyết định có cần lấy thêm hay không — giải quyết đúng gốc rễ độ trễ do tự động tải hết.",
 "group": "tooldesign",
-"decisive": "cursor for additional pages"
+"decisive": "first page with total match count and cursor",
+"qKey": "15-20 second delays",
+"noKey": false
 },
 {
 "num": 17,
@@ -1077,7 +1113,9 @@ const QUIZ_DATA = [
 "approachEn": "Automatically retry the request up to five times with exponential backoff before returning results to the agent.",
 "approachVi": "vì 503 là lỗi tạm thời, tự động thử lại với backoff lũy thừa ngay trong tool trước khi trả kết quả về agent là cách xử lý hiệu quả nhất, giảm gánh nặng suy luận không cần thiết cho agent.",
 "group": "errorhandling",
-"decisive": "retry the request up to five times with exponential backoff"
+"decisive": "retry the request up to five times with exponential backoff",
+"qKey": "occasionally returns a 503 Service Unavailable",
+"noKey": false
 },
 {
 "num": 18,
@@ -1112,7 +1150,9 @@ const QUIZ_DATA = [
 "approachEn": "Report error 1 as a JSON-RPC protocol error, report errors 2 and 3 as tool results with isError: true",
 "approachVi": "thiếu tham số là lỗi giao thức JSON-RPC (invalid params); còn 404 và 503 đều là kết quả thực thi tool (tool chạy được nhưng gặp vấn đề) nên trả về dạng tool result với isError:true để mô hình đọc và phản ứng.",
 "group": "errorhandling",
-"decisive": "isError: true"
+"decisive": "JSON-RPC protocol error",
+"qKey": "three error conditions",
+"noKey": false
 },
 {
 "num": 19,
@@ -1147,7 +1187,9 @@ const QUIZ_DATA = [
 "approachEn": "Structured data containing document IDs and metadata for each result.",
 "approachVi": "dữ liệu có cấu trúc gồm document ID và metadata cho phép agent dùng trực tiếp ID này ở bước gọi tool tiếp theo mà không cần suy luận lại từ văn bản.",
 "group": "tooldesign",
-"decisive": "document IDs and metadata"
+"decisive": "document IDs and metadata",
+"qKey": "multi-step workflows",
+"noKey": false
 },
 {
 "num": 20,
@@ -1182,7 +1224,9 @@ const QUIZ_DATA = [
 "approachEn": "Enhance all connector descriptions with detailed usage samples, edge cases, and input requirements. Add few-shot examples showing the correct search-then-use workflow.",
 "approachVi": "mô tả rõ ràng, chi tiết hơn cho các connector kèm ví dụ few-shot minh hoạ đúng quy trình tìm-rồi-dùng giúp agent hiểu tại sao cần tìm kiếm trước và chọn đúng kết quả.",
 "group": "tooldesign",
-"decisive": "few-shot examples showing the correct search-then-use workflow"
+"decisive": "few-shot examples showing the correct search-then-use workflow",
+"qKey": "frequently skip searching",
+"noKey": false
 },
 {
 "num": 21,
@@ -1217,7 +1261,9 @@ const QUIZ_DATA = [
 "approachEn": "Handle transient errors (timeouts, 503s) with automatic retries inside the tool implementation, and surface non-transient errors (permission denied, validation fallures) to the agent with descriptive messages so it can take corrective action.",
 "approachVi": "lỗi tạm thời (timeout, 503) nên được thử lại ngay trong tool; lỗi vĩnh viễn (403, 422) cần đưa ra cho agent kèm thông báo rõ ràng để agent hành động khắc phục — phân chia đúng theo bản chất lỗi.",
 "group": "errorhandling",
-"decisive": "automatic retries inside the tool implementation"
+"decisive": "automatic retries inside the tool implementation",
+"qKey": "partition error-handling responsibility",
+"noKey": false
 },
 {
 "num": 22,
@@ -1252,7 +1298,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace with two tools: preview_remove_member returns impact details and a single-use confirmation token; execute_remove_member requires that token, binding execution to the specific previewed action.",
 "approachVi": "tách hai tool với token xác nhận dùng một lần ràng buộc việc thực thi vào đúng bản xem trước cụ thể — đảm bảo về mặt kỹ thuật, không thể bị bỏ qua.",
 "group": "errorhandling",
-"decisive": "single-use confirmation token"
+"decisive": "single-use confirmation token",
+"qKey": "ensure every removal is preceded by a preview",
+"noKey": false
 },
 {
 "num": 23,
@@ -1287,7 +1335,9 @@ const QUIZ_DATA = [
 "approachEn": "The process reimbursement tool accepts amount and details, and internally enforces the threshold; amounts <$500 are auto-disbursed and the tool returns a success confirmation. Amounts >$500 cause the tool to create a pending approval request and return a status indicating manager review is pending.",
 "approachVi": "tool tự kiểm tra ngưỡng ở phía server: dưới 500 tự giải ngân, trên 500 tự tạo yêu cầu chờ duyệt — logic nghiệp vụ nằm trong tool, hoàn toàn không phụ thuộc vào việc agent có làm đúng theo prompt hay không.",
 "group": "errorhandling",
-"decisive": "internally enforces the threshold"
+"decisive": "internally enforces the threshold",
+"qKey": "tamper-proof",
+"noKey": false
 },
 {
 "num": 24,
@@ -1322,7 +1372,9 @@ const QUIZ_DATA = [
 "approachEn": "Split into three separate tools (each defining only the parameters required for that specific operation.",
 "approachVi": "tách ba tool riêng biệt, mỗi tool chỉ định nghĩa tham số cần thiết cho đúng thao tác đó, giúp mô hình không phải đoán tham số nào bắt buộc.",
 "group": "tooldesign",
-"decisive": "Split into three separate tools"
+"decisive": "Split into three separate tools",
+"qKey": "frequently omits required parameters or includes irrelevant ones",
+"noKey": false
 },
 {
 "num": 25,
@@ -1357,7 +1409,9 @@ const QUIZ_DATA = [
 "approachEn": "The agent can reliably extract specific values without parsing free form text, reducing errors in subsequent operations.",
 "approachVi": "lợi ích cốt lõi là agent có thể trích xuất tin cậy giá trị cụ thể theo trường đã định nghĩa, không cần phân tích cú pháp văn bản tự do dễ sai.",
 "group": "extraction",
-"decisive": "without parsing free form text"
+"decisive": "without parsing free form text",
+"qKey": "primary advantage of using structured output",
+"noKey": false
 },
 {
 "num": 26,
@@ -1392,7 +1446,9 @@ const QUIZ_DATA = [
 "approachEn": "Combine both tools into a single find_and_book_appointment that atomically checks availability and books, returning either the confirmed booking or available alternatives.",
 "approachVi": "gộp kiểm tra và đặt chỗ thành một thao tác nguyên tử (atomic) loại bỏ hoàn toàn khoảng hở thời gian gây ra race condition, đảm bảo về mặt kỹ thuật chứ không phụ thuộc hành vi agent.",
 "group": "tooldesign",
-"decisive": "atomically checks availability and books"
+"decisive": "atomically checks availability and books",
+"qKey": "between the availability check and the booking call",
+"noKey": false
 },
 {
 "num": 27,
@@ -1427,7 +1483,9 @@ const QUIZ_DATA = [
 "approachEn": "Split into log_cardio_workout (with duration_minutes or distance_miles parameters) and log_strength_workout (with reps and sets parameters).",
 "approachVi": "tách thành hai tool riêng theo đúng bản chất khác nhau của bài tập (cardio/strength), mỗi tool chỉ chấp nhận tham số phù hợp — loại bỏ khả năng kết hợp sai ngay từ thiết kế.",
 "group": "tooldesign",
-"decisive": "Split into log_cardio_workout"
+"decisive": "Split into log_cardio_workout",
+"qKey": "mismatched combinations",
+"noKey": false
 },
 {
 "num": 28,
@@ -1462,7 +1520,9 @@ const QUIZ_DATA = [
 "approachEn": "Expand tool descriptions to clarify use cases, adding guidance like \"Do not use for backup files\" to delete_file.",
 "approachVi": "mở rộng mô tả tool để làm rõ ràng ranh giới sử dụng (ví dụ ghi rõ không dùng cho file backup) là cách trực tiếp nhất cải thiện lựa chọn tool đúng từ đầu.",
 "group": "tooldesign",
-"decisive": "Do not use for backup files"
+"decisive": "Expand tool descriptions to clarify use cases",
+"qKey": "minimal descriptions",
+"noKey": false
 },
 {
 "num": 29,
@@ -1497,7 +1557,9 @@ const QUIZ_DATA = [
 "approachEn": "Present matched records with differentiating fields and require single-click confirmation of the intended target before executing deletion.",
 "approachVi": "hiển thị các bản ghi khớp kèm trường phân biệt và chỉ cần một cú xác nhận đúng mục tiêu giảm nhầm lẫn định danh mà không thêm nhiều bước rườm rà.",
 "group": "tooldesign",
-"decisive": "single-click confirmation of the intended target"
+"decisive": "differentiating fields",
+"qKey": "misidentified records",
+"noKey": false
 },
 {
 "num": 30,
@@ -1532,7 +1594,9 @@ const QUIZ_DATA = [
 "approachEn": "Add few-shot examples demonstrating extractions from documents with varied structures—showing how to identify citations in different formats and locate methodology details across section types.",
 "approachVi": "ví dụ few-shot minh hoạ cách nhận diện thông tin trong các cấu trúc tài liệu khác nhau (trích dẫn nội tuyến vs danh mục, v.v.) giúp mô hình học cách tìm đúng vị trí thông tin thay vì bỏ trống.",
 "group": "extraction",
-"decisive": "extractions from documents with varied structures"
+"decisive": "extractions from documents with varied structures",
+"qKey": "in varied formats",
+"noKey": false
 },
 {
 "num": 31,
@@ -1567,7 +1631,9 @@ const QUIZ_DATA = [
 "approachEn": "Allow empty arrays for pros/cons as valid output, and add \"unclear\" ss the sentiment enum",
 "approachVi": "cho phép mảng rỗng hợp lệ (tránh bịa nội dung khi không có thông tin) và thêm 'unclear' vào enum sentiment (xử lý mỉa mai) giải quyết đúng cả hai vấn đề nêu ra.",
 "group": "extraction",
-"decisive": "empty arrays for pros/cons as valid output"
+"decisive": "add \"unclear\"",
+"qKey": "fabricates specific pros and cons",
+"noKey": false
 },
 {
 "num": 32,
@@ -1602,7 +1668,9 @@ const QUIZ_DATA = [
 "approachEn": "The model extracts \"et al.\" for co-authors when the full list exists only in an external document not in the input",
 "approachVi": "khi thông tin (danh sách đồng tác giả đầy đủ) không hề tồn tại trong tài liệu đầu vào, không có số lần thử lại nào giúp mô hình 'tạo ra' thông tin không có sẵn.",
 "group": "extraction",
-"decisive": "exists only in an external document not in the input"
+"decisive": "exists only in an external document not in the input",
+"qKey": "LEAST effective",
+"noKey": false
 },
 {
 "num": 33,
@@ -1637,7 +1705,9 @@ const QUIZ_DATA = [
 "approachEn": "When validation falls, make a follow-up request with the document, extraction, and validation errors for model correction.",
 "approachVi": "gửi yêu cầu tiếp theo kèm tài liệu, kết quả trích xuất và lỗi xác thực cụ thể để mô hình tự sửa là cách có mục tiêu, giữ được độ chính xác cao hơn tự động hoá mù.",
 "group": "extraction",
-"decisive": "make a follow-up request with the document, extraction, and validation errors"
+"decisive": "make a follow-up request with the document, extraction, and validation errors",
+"qKey": "semantic validation",
+"noKey": false
 },
 {
 "num": 34,
@@ -1672,7 +1742,9 @@ const QUIZ_DATA = [
 "approachEn": "Process 2,000 sample documents via real time API to identify failure patterns and refine prompts, then batch process all 50,000 with the optimized prompts.",
 "approachVi": "dùng mẫu nhỏ qua API thời gian thực để phát hiện nhanh các dạng lỗi và tinh chỉnh prompt trước, rồi mới xử lý hàng loạt bằng Batch API đã tối ưu — tiết kiệm chi phí mà vẫn đúng hạn.",
 "group": "extraction",
-"decisive": "Process 2,000 sample documents via real time API"
+"decisive": "Process 2,000 sample documents via real time API",
+"qKey": "most cost-efficient while still meeting the deadline",
+"noKey": false
 },
 {
 "num": 35,
@@ -1707,7 +1779,9 @@ const QUIZ_DATA = [
 "approachEn": "Redesign the schema so amended fields capture multiple values, each with source location and effective date.",
 "approachVi": "thiết kế lại schema để trường có thể chứa nhiều giá trị kèm vị trí nguồn và ngày hiệu lực phản ánh đúng bản chất dữ liệu (có gốc và có sửa đổi), giải quyết tận gốc sự mơ hồ.",
 "group": "extraction",
-"decisive": "amended fields capture multiple values, each with source location"
+"decisive": "capture multiple values, each with source location and effective date",
+"qKey": "amendments",
+"noKey": false
 },
 {
 "num": 36,
@@ -1742,7 +1816,9 @@ const QUIZ_DATA = [
 "approachEn": "Define a tool with your target schema as input parameters and have Claude call it with the extracted data.",
 "approachVi": "định nghĩa tool với schema mục tiêu làm tham số đầu vào, để Claude gọi tool đó — cơ chế tool use đảm bảo tuân thủ cấu trúc ở tầng API, đáng tin cậy nhất trong các lựa chọn.",
 "group": "extraction",
-"decisive": "Define a tool with your target schema as input parameters"
+"decisive": "Define a tool with your target schema as input parameters",
+"qKey": "strictly conforms to a schema",
+"noKey": false
 },
 {
 "num": 37,
@@ -1777,7 +1853,9 @@ const QUIZ_DATA = [
 "approachEn": "Add few-shot examples demonstrating compound phrase handling, explicit mention criteria, and appropriate entry granularity.",
 "approachVi": "ví dụ few-shot minh hoạ cụ thể cách xử lý cụm từ ghép, tiêu chí chỉ trích thông tin nêu rõ ràng, và mức độ chi tiết phù hợp giúp mô hình học được quy tắc nhất quán cho cả ba vấn đề cùng lúc.",
 "group": "extraction",
-"decisive": "compound phrase handling, explicit mention criteria"
+"decisive": "compound phrase handling, explicit mention criteria",
+"qKey": "consistency issues",
+"noKey": false
 },
 {
 "num": 38,
@@ -1812,7 +1890,9 @@ const QUIZ_DATA = [
 "approachEn": "Set tool choice to (\"type\": \"tool\", \"name\": \"extract_metadata\") and process the enrichment requests in subsequent turns after receiving the extracted metadata.",
 "approachVi": "ép tool_choice vào extract_metadata cho lượt gọi đầu tiên đảm bảo nó luôn chạy trước, các yêu cầu làm giàu dữ liệu (cần DOI) được xử lý ở lượt tiếp theo khi đã có metadata.",
 "group": "extraction",
-"decisive": "Set tool choice to"
+"decisive": "Set tool choice to",
+"qKey": "ensure structured metadata extraction happens first",
+"noKey": false
 },
 {
 "num": 39,
@@ -1847,7 +1927,9 @@ const QUIZ_DATA = [
 "approachEn": "Analyze accuracy by document type and field to verify high-confidence extractions perform consistently across all segments, not just in aggregate.",
 "approachVi": "phân tích độ chính xác theo từng loại tài liệu và trường dữ liệu đảm bảo độ tin cậy cao nhất quán ở mọi phân khúc, không chỉ đúng ở mức tổng thể — đây là bước xác thực quan trọng nhất trước khi tự động hoá rộng.",
 "group": "extraction",
-"decisive": "verify high-confidence extractions perform consistently across all segments"
+"decisive": "not just in aggregate",
+"qKey": "97% accuracy overall",
+"noKey": false
 },
 {
 "num": 40,
@@ -1882,7 +1964,9 @@ const QUIZ_DATA = [
 "approachEn": "Tool definitions consume input context tokens. Combined with system prompts and document content, the total approaches the context limit, degrading end-of-document processing.",
 "approachVi": "định nghĩa tool (2.500 token), system prompt và nội dung tài liệu cộng dồn tiến gần giới hạn 200K, khiến việc xử lý phần cuối tài liệu (175-190K) bị suy giảm — đây là hệ quả cơ học của tiêu thụ ngân sách ngữ cảnh.",
 "group": "extraction",
-"decisive": "the total approaches the context limit"
+"decisive": "Tool definitions consume input context tokens",
+"qKey": "information from the final third consistently missed",
+"noKey": false
 },
 {
 "num": 41,
@@ -1917,7 +2001,9 @@ const QUIZ_DATA = [
 "approachEn": "Add a \"calculated total\" field where the model sums extracted line items alongside a \"stated_total\" field. Flag records for human review when values differ.",
 "approachVi": "thêm trường 'calculated_total' (mô hình tự cộng) song song 'stated_total' (giá trị nêu) rồi gắn cờ khi lệch nhau là cách kiểm tra chéo minh bạch, dễ kiểm chứng và không tự ý sửa sai dữ liệu gốc.",
 "group": "extraction",
-"decisive": "calculated total"
+"decisive": "calculated total",
+"qKey": "sum of extracted line item amounts doesn't match the extracted grand total",
+"noKey": false
 },
 {
 "num": 42,
@@ -1952,7 +2038,9 @@ const QUIZ_DATA = [
 "approachEn": "Route standard reports to the Batch API for 50% cost savings, and route urgent exception reports to the real-time Messages API.",
 "approachVi": "định tuyến báo cáo định kỳ (không gấp) qua Batch API để tiết kiệm chi phí, còn báo cáo khẩn cấp qua API thời gian thực để đáp ứng đúng yêu cầu độ trễ — tối ưu cả chi phí lẫn thời gian theo đúng nhu cầu từng loại.",
 "group": "extraction",
-"decisive": "Route standard reports to the Batch API"
+"decisive": "Route standard reports to the Batch API",
+"qKey": "minimize API costs while meeting latency requirements",
+"noKey": false
 },
 {
 "num": 43,
@@ -1987,7 +2075,9 @@ const QUIZ_DATA = [
 "approachEn": "Add a preliminary classification call, then make a second call with tool_choice forced to the identified extraction tool.",
 "approachVi": "một lượt gọi phân loại sơ bộ xác định loại tài liệu trước, sau đó ép tool_choice vào đúng tool trích xuất tương ứng — đảm bảo cả structured output lẫn đúng schema phù hợp.",
 "group": "extraction",
-"decisive": "preliminary classification call"
+"decisive": "preliminary classification call",
+"qKey": "without knowing the document type in advance",
+"noKey": false
 },
 {
 "num": 44,
@@ -2022,7 +2112,9 @@ const QUIZ_DATA = [
 "approachEn": "Send a follow-up request including the validation error, asking the model to correct its output",
 "approachVi": "gửi yêu cầu tiếp theo kèm thông báo lỗi xác thực cụ thể để mô hình tự sửa là cách phục hồi có mục tiêu và hiệu quả nhất, tận dụng đúng thông tin lỗi đã có.",
 "group": "extraction",
-"decisive": "asking the model to correct its output"
+"decisive": "including the validation error",
+"qKey": "Retrying these requests without modification",
+"noKey": false
 },
 {
 "num": 45,
@@ -2057,7 +2149,9 @@ const QUIZ_DATA = [
 "approachEn": "Implement progressive summarization where older conversation blocks are replaced with concise summaries that explicitly extract key conclusions, decisions, and recurring themes, keeping recent exchanges verbatim.",
 "approachVi": "tóm tắt tiến triển giữ các khối cũ dưới dạng tóm tắt súc tích nêu rõ kết luận/quyết định/chủ đề lặp lại, trong khi các lượt gần đây vẫn nguyên văn — vừa giảm token vừa bảo toàn thông tin quan trọng đã thảo luận.",
 "group": "context",
-"decisive": "progressive summarization"
+"decisive": "progressive summarization",
+"qKey": "referencing the group's specific insights from earlier sessions",
+"noKey": false
 },
 {
 "num": 46,
@@ -2092,7 +2186,9 @@ const QUIZ_DATA = [
 "approachEn": "Extract critical structured data (allergies, serving counts, user-defined terms) into a compact reference section, summarize general discussion, and retain recent exchanges verbatim.",
 "approachVi": "trích riêng dữ liệu cấu trúc quan trọng (dị ứng, khẩu phần, định nghĩa riêng) vào một phần tham chiếu gọn nhẹ đảm bảo không bao giờ bị mất khi tóm tắt phần còn lại, đặc biệt quan trọng với thông tin an toàn như dị ứng.",
 "group": "context",
-"decisive": "compact reference section"
+"decisive": "compact reference section",
+"qKey": "information preservation with token reduction",
+"noKey": false
 },
 {
 "num": 47,
@@ -2127,7 +2223,9 @@ const QUIZ_DATA = [
 "approachEn": "Your application isn't including prior messages in the messages array",
 "approachVi": "API của Claude không có trạng thái (stateless); nếu ứng dụng không gửi lại các message trước đó trong mảng messages, mô hình sẽ không biết gì về những gì đã nói.",
 "group": "context",
-"decisive": "isn't including prior messages in the messages array"
+"decisive": "isn't including prior messages in the messages array",
+"qKey": "don't reflect what us earlier in the same conversation",
+"noKey": false
 },
 {
 "num": 48,
@@ -2162,7 +2260,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace most conditionals with a general principle: \"Adapt explanation depth to match user expertise, mirroring their terminology.\" Keep only the safety-critical conditional abou consultations.",
 "approachVi": "thay các điều kiện rẽ nhánh cụ thể bằng một nguyên tắc tổng quát ('điều chỉnh độ chi tiết theo trình độ, phản chiếu thuật ngữ người dùng') khái quát hoá tốt hơn cho các tín hiệu ngầm mà danh sách điều kiện cứng không thể liệt kê hết, chỉ giữ điều kiện an toàn quan trọng.",
 "group": "context",
-"decisive": "Replace most conditionals with a general principle"
+"decisive": "Replace most conditionals with a general principle",
+"qKey": "implicit expertise signals",
+"noKey": false
 },
 {
 "num": 49,
@@ -2197,7 +2297,9 @@ const QUIZ_DATA = [
 "approachEn": "You're not including prior messages in each API request—the stateless API doesn't retain conversation history.",
 "approachVi": "API không có trạng thái; nếu các message trước không được gửi lại trong mỗi yêu cầu, Claude hoàn toàn không có cách nào biết những gì đã được thảo luận trước đó, kể cả từ vựng vừa học.",
 "group": "context",
-"decisive": "the stateless API doesn't retain conversation history"
+"decisive": "the stateless API doesn't retain conversation history",
+"qKey": "doesn't seem to remember vocabulary words",
+"noKey": false
 },
 {
 "num": 50,
@@ -2232,7 +2334,9 @@ const QUIZ_DATA = [
 "approachEn": "The system prompt is only sent with the first API request.",
 "approachVi": "vì hội thoại rất ngắn (2.500 token, loại trừ vấn đề ngữ cảnh), nguyên nhân khả dĩ nhất là lỗi triển khai: system prompt chỉ được gửi trong yêu cầu API đầu tiên chứ không được gửi lại ở các lượt sau.",
 "group": "context",
-"decisive": "only sent with the first API request"
+"decisive": "only sent with the first API request",
+"qKey": "only 2,500 tokens",
+"noKey": false
 },
 {
 "num": 51,
@@ -2267,7 +2371,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace the sliding window with a hybrid approach: summarize older messages while keeping recent messages verbatim.",
 "approachVi": "kết hợp lai: tóm tắt các tin nhắn cũ trong khi vẫn giữ nguyên văn các tin nhắn gần đây — cân bằng tốt nhất giữa duy trì nhận biết nội dung cũ và kiểm soát kích thước, khắc phục đúng nhược điểm của cửa sổ trượt (mất hoàn toàn nội dung cũ).",
 "group": "context",
-"decisive": "hybrid approach: summarize older messages while keeping recent messages verbatim"
+"decisive": "hybrid approach: summarize older messages while keeping recent messages verbatim",
+"qKey": "sliding window that keeps only the most recent 25 message pairs",
+"noKey": false
 },
 {
 "num": 52,
@@ -2302,7 +2408,9 @@ const QUIZ_DATA = [
 "approachEn": "Instruct the assistant to state explicit assumptions based on conversation status proceed with recommendations while inviting corrections, and reserve clarifying questions only Irreversible actions like confirming bookings.",
 "approachVi": "nêu rõ giả định dựa trên ngữ cảnh, tiến hành đề xuất luôn trong khi mời chỉnh sửa, chỉ hỏi làm rõ khi hành động không thể đảo ngược — giảm ma sát tối đa mà vẫn minh bạch và an toàn cho các hành động quan trọng.",
 "group": "context",
-"decisive": "reserve clarifying questions only"
+"decisive": "state explicit assumptions",
+"qKey": "ambiguous requests",
+"noKey": false
 },
 {
 "num": 53,
@@ -2337,7 +2445,9 @@ const QUIZ_DATA = [
 "approachEn": "Insert user-role messages that reinforce critical guidelines at natural conversation breakpoints, especially before complex requests.",
 "approachVi": "chèn tin nhắn vai user nhắc lại hướng dẫn quan trọng tại các điểm ngắt tự nhiên, đặc biệt trước yêu cầu phức tạp, là kỹ thuật thực tế giúp duy trì tuân thủ khi hội thoại kéo dài dù vẫn còn nhiều ngữ cảnh trống.",
 "group": "context",
-"decisive": "reinforce critical guidelines at natural conversation breakpoints"
+"decisive": "reinforce critical guidelines at natural conversation breakpoints",
+"qKey": "by turn 25-30, responses begin deviating",
+"noKey": false
 },
 {
 "num": 54,
@@ -2372,7 +2482,9 @@ const QUIZ_DATA = [
 "approachEn": "Implement a sliding window for RAG results from the last 2-3 queries while preserving conversation history",
 "approachVi": "áp dụng cửa sổ trượt chỉ giữ kết quả RAG của 2-3 truy vấn gần nhất trong khi vẫn bảo toàn lịch sử hội thoại — giải quyết đúng nguyên nhân gốc là kết quả RAG tích luỹ không giới hạn.",
 "group": "context",
-"decisive": "sliding window for RAG results from the last 2-3 queries"
+"decisive": "sliding window for RAG results from the last 2-3 queries",
+"qKey": "accumulated RAG results",
+"noKey": false
 },
 {
 "num": 55,
@@ -2407,7 +2519,9 @@ const QUIZ_DATA = [
 "approachEn": "In the system prompt",
 "approachVi": "system prompt là nơi được thiết kế để chứa các hướng dẫn hành vi bền vững, được gửi kèm ở mọi lượt gọi API trong suốt cuộc hội thoại.",
 "group": "context",
-"decisive": "In the system prompt"
+"decisive": "In the system prompt",
+"qKey": "persist reliably across all user interactions",
+"noKey": false
 },
 {
 "num": 56,
@@ -2442,7 +2556,9 @@ const QUIZ_DATA = [
 "approachEn": "Add the current shipping status to the system prompt before the next API call.",
 "approachVi": "cập nhật trạng thái mới nhất vào system prompt trước lượt gọi tiếp theo cho phép assistant tự nhiên lồng ghép thông tin khi trả lời, không cần gửi tin nhắn giả mạo hay làm gián đoạn.",
 "group": "context",
-"decisive": "Add the current shipping status to the system prompt"
+"decisive": "Add the current shipping status to the system prompt",
+"qKey": "naturally incorporate this status change in its next response",
+"noKey": false
 },
 {
 "num": 57,
@@ -2477,7 +2593,9 @@ const QUIZ_DATA = [
 "approachEn": "Ask one clarifying question about action type: play now or configure for later",
 "approachVi": "vì ba cách hiểu khác biệt đáng kể, một câu hỏi làm rõ duy nhất về loại hành động là cách hiệu quả nhất để tránh hành động sai mà không gây phiền hà quá mức.",
 "group": "support",
-"decisive": "Ask one clarifying question about action type"
+"decisive": "Ask one clarifying question about action type",
+"qKey": "This could mean configure preferences, create a playlist, or play music immediately",
+"noKey": false
 },
 {
 "num": 58,
@@ -2512,7 +2630,9 @@ const QUIZ_DATA = [
 "approachEn": "Add system prompt instructions specifying phrases to avoid, such as \"Never begin responses with 'Certainly' or similar affirmations\"",
 "approachVi": "thêm hướng dẫn cụ thể trong system prompt liệt kê các cụm từ cần tránh là cách trực tiếp và đáng tin cậy nhất để định hình phong cách mở đầu của mô hình.",
 "group": "context",
-"decisive": "specifying phrases to avoid"
+"decisive": "specifying phrases to avoid",
+"qKey": "repetitive openers",
+"noKey": false
 },
 {
 "num": 60,
@@ -2547,7 +2667,9 @@ const QUIZ_DATA = [
 "approachEn": "Return structured error responses with retriable false for business errors and a customer-friendly explanation for Claude to use.",
 "approachVi": "trả về phản hồi lỗi có cấu trúc với cờ retriable:false cho lỗi nghiệp vụ (ngăn agent lãng phí lượt thử) kèm giải thích thân thiện để Claude dùng ngay khi trả lời khách hàng — giải quyết cả hai vấn đề cùng lúc.",
 "group": "errorhandling",
-"decisive": "retriable false for business errors"
+"decisive": "retriable false for business errors",
+"qKey": "wastes 3-4 turns retrying business errors",
+"noKey": false
 },
 {
 "num": 61,
@@ -2582,7 +2704,9 @@ const QUIZ_DATA = [
 "approachEn": "Extract only return-relevant fields (items, purchase date, return window, status) from each existing order response, removing verbose details",
 "approachVi": "trích xuất chỉ những trường liên quan đến việc trả hàng, loại bỏ chi tiết dư thừa từ các kết quả tra cứu đã có — giải phóng ngữ cảnh có mục tiêu trước khi tra cứu thêm.",
 "group": "context",
-"decisive": "removing verbose details"
+"decisive": "Extract only return-relevant fields",
+"qKey": "majority of the conversation's context",
+"noKey": false
 },
 {
 "num": 62,
@@ -2617,7 +2741,9 @@ const QUIZ_DATA = [
 "approachEn": "Explain the billing, confirm refund eligibility, acknowledge the system issue preventing immediate processing, and offer escalation or retry later",
 "approachVi": "giải thích khoản phí, xác nhận đủ điều kiện hoàn tiền, thông báo trung thực về sự cố hệ thống, và đề xuất chuyển tiếp hoặc thử lại sau — cân bằng tốt giữa hỗ trợ đầy đủ và trung thực về hạn chế kỹ thuật.",
 "group": "support",
-"decisive": "acknowledge the system issue preventing immediate processing"
+"decisive": "acknowledge the system issue preventing immediate processing",
+"qKey": "cannot actually process the refund",
+"noKey": false
 },
 {
 "num": 63,
@@ -2652,7 +2778,9 @@ const QUIZ_DATA = [
 "approachEn": "Compile a structured handoff with customer details, order info, and the identified issue before calling escalate_to_human.",
 "approachVi": "biên soạn bản bàn giao có cấu trúc gồm thông tin khách hàng, đơn hàng và vấn đề đã xác định trước khi chuyển cho con người giúp người xử lý tiếp theo nắm bắt nhanh, không phải tự dò lại từ đầu.",
 "group": "support",
-"decisive": "structured handoff with customer details, order info"
+"decisive": "structured handoff with customer details, order info",
+"qKey": "mid-process escalation",
+"noKey": false
 },
 {
 "num": 64,
@@ -2687,7 +2815,9 @@ const QUIZ_DATA = [
 "approachEn": "Enhance error responses with structured metadata: include errorCategory (transient/validation/permission), isRetryable boolean, and a description of what caused the failure.",
 "approachVi": "làm giàu phản hồi lỗi với metadata có cấu trúc (errorCategory, isRetryable, mô tả nguyên nhân) cho phép agent chọn đúng hành động (thử lại/leo thang/hỏi lại) tương ứng với từng loại lỗi cụ thể.",
 "group": "errorhandling",
-"decisive": "errorCategory (transient/validation/permission), isRetryable boolean"
+"decisive": "errorCategory (transient/validation/permission), isRetryable boolean",
+"qKey": "cannot distinguish between error types",
+"noKey": false
 },
 {
 "num": 65,
@@ -2722,7 +2852,9 @@ const QUIZ_DATA = [
 "approachEn": "Extract and persist structured issue data (order IDs, amounts, statuses) into a separate context layer.",
 "approachVi": "trích xuất và lưu trữ dữ liệu vấn đề có cấu trúc (mã đơn hàng, số tiền, trạng thái) vào một lớp ngữ cảnh riêng đảm bảo agent luôn truy cập được thông tin cốt lõi của cả ba vấn đề dù hội thoại đã rất dài.",
 "group": "context",
-"decisive": "persist structured issue data"
+"decisive": "persist structured issue data",
+"qKey": "approaching context limits",
+"noKey": false
 },
 {
 "num": 66,
@@ -2757,7 +2889,9 @@ const QUIZ_DATA = [
 "approachEn": "Clear parameter descriptions explaining expected format, such as \"user_id : UUID of the user to update (required)\"",
 "approachVi": "mô tả tham số rõ ràng, giải thích định dạng mong đợi giúp Claude hiểu cần lấy giá trị gì và từ đâu — đây là yếu tố then chốt để cung cấp đúng GIÁ TRỊ, khác với việc chỉ đảm bảo đúng CẤU TRÚC.",
 "group": "tooldesign",
-"decisive": "explaining expected format"
+"decisive": "explaining expected format",
+"qKey": "frequently omits user_id or passes incorrectly structured data",
+"noKey": false
 },
 {
 "num": 67,
@@ -2792,7 +2926,9 @@ const QUIZ_DATA = [
 "approachEn": "Implement automatic retry with backoff for network timeouts inside the tool; return syntax errors immediately with parameter validation details.",
 "approachVi": "tự động thử lại ngay trong tool cho lỗi timeout mạng (tạm thời), còn lỗi cú pháp (vĩnh viễn) trả về ngay cho agent kèm chi tiết xác thực tham số — đúng bản chất của từng loại lỗi, tránh lãng phí lượt thử.",
 "group": "errorhandling",
-"decisive": "return syntax errors immediately with parameter validation details"
+"decisive": "automatic retry with backoff for network timeouts inside the tool",
+"qKey": "never succeed regardless of retry attempts",
+"noKey": false
 },
 {
 "num": 68,
@@ -2827,7 +2963,9 @@ const QUIZ_DATA = [
 "approachEn": "Instruct the assistant to state explicit assumptions based on conversation history, proceed with recommendations while inviting corrections, and reserve clarifying questions only for irreversible actions like confirming bookings.",
 "approachVi": "nêu rõ giả định dựa trên ngữ cảnh, tiến hành đề xuất ngay trong khi mời chỉnh sửa, chỉ hỏi làm rõ khi hành động không thể đảo ngược — giảm tỷ lệ bỏ cuộc tối đa mà vẫn đảm bảo độ chính xác khi thực sự cần thiết.",
 "group": "support",
-"decisive": "reserve clarifying questions only for irreversible actions"
+"decisive": "state explicit assumptions",
+"qKey": "ambiguous requests",
+"noKey": false
 },
 {
 "num": 69,
@@ -2862,7 +3000,9 @@ const QUIZ_DATA = [
 "approachEn": "Return fields with confidence scores, plus a requires_review boolean computed using your tested confidence thresholds, along with a review_reasons array explaining which fields triggered review.",
 "approachVi": "trả về điểm tin cậy từng trường kèm cờ requires_review tính từ ngưỡng đã kiểm định thực tế, cùng mảng review_reasons giải thích lý do — vừa giảm rà soát thừa (nhờ ngưỡng đã tối ưu) vừa giảm bỏ sót lỗi (nhờ tính theo từng trường).",
 "group": "extraction",
-"decisive": "requires_review boolean computed using your tested confidence thresholds"
+"decisive": "requires_review boolean computed using your tested confidence thresholds",
+"qKey": "confidence scores",
+"noKey": false
 },
 {
 "num": 70,
@@ -2897,7 +3037,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace the three parameters with a single game_id parameter and a separate search_games lookup tool that returns matching game IDs.",
 "approachVi": "thay ba tham số dễ sai bằng một game_id duy nhất cùng tool search_games riêng để tìm đúng ID — loại bỏ tận gốc mọi khả năng nhập sai tên/định dạng/nhầm trận đấu, vì agent chỉ cần dùng đúng ID đã được xác định.",
 "group": "tooldesign",
-"decisive": "single game_id parameter"
+"decisive": "single game_id parameter",
+"qKey": "team nicknames",
+"noKey": false
 },
 {
 "num": 71,
@@ -2932,7 +3074,9 @@ const QUIZ_DATA = [
 "approachEn": "Return structured data including cost estimate, target project, resource specifications, and impact summary in the tool response",
 "approachVi": "trả về dữ liệu có cấu trúc gồm chi phí ước tính, dự án, thông số kỹ thuật và tóm tắt tác động ngay trong phản hồi tool — đảm bảo agent luôn có đủ thông tin để trình bày rõ ràng cho người dùng xem xét trước khi xác nhận.",
 "group": "support",
-"decisive": "cost estimate, target project, resource specifications, and impact summary"
+"decisive": "cost estimate, target project, resource specifications, and impact summary",
+"qKey": "confirmed without understanding the request",
+"noKey": false
 },
 {
 "num": 72,
@@ -2967,7 +3111,9 @@ const QUIZ_DATA = [
 "approachEn": "Separate persistent story elements into a retained \"story bible\" section at context start, applying trimming or summarization only to brainstorming discussion.",
 "approachVi": "tách riêng các yếu tố cốt truyện bền vững vào một phần 'story bible' được giữ nguyên ở đầu ngữ cảnh, chỉ cắt/tóm tắt phần brainstorm mang tính tạm thời — đảm bảo tính nhất quán nhân vật không bao giờ bị mất trong khi vẫn giải phóng được không gian.",
 "group": "context",
-"decisive": "retained \"story bible\" section"
+"decisive": "retained \"story bible\" section",
+"qKey": "persistent story elements",
+"noKey": false
 },
 {
 "num": 73,
@@ -3002,7 +3148,9 @@ const QUIZ_DATA = [
 "approachEn": "Modify the system prompt to instruct the assistant to make reasonable assumptions from available context, state those assumptions explicitly, and offer to adjust if the interpretation is wrong.",
 "approachVi": "khớp với khuyến nghị chính thức của Anthropic: khi ý định người dùng không rõ ràng, hãy suy luận ra hành động hữu ích nhất, nêu rõ giả định, tiến hành ngay và mời người dùng chỉnh sửa nếu sai — giảm ma sát tối đa mà vẫn minh bạch về những gì đã giả định.",
 "group": "support",
-"decisive": "make reasonable assumptions from available context"
+"decisive": "make reasonable assumptions from available context",
+"qKey": "multi-question responses",
+"noKey": false
 },
 {
 "num": 74,
@@ -3037,7 +3185,9 @@ const QUIZ_DATA = [
 "approachEn": "Maintain a structured state object with current preferences, update it on changes, and include it in each request.",
 "approachVi": "duy trì một đối tượng trạng thái có cấu trúc lưu sở thích hiện tại, cập nhật mỗi khi có thay đổi và đưa vào mỗi yêu cầu — cách đáng tin cậy nhất, không phụ thuộc vào việc mô hình tự nhận diện đúng thông tin mới nhất trong một lịch sử dài.",
 "group": "context",
-"decisive": "structured state object with current preferences"
+"decisive": "structured state object with current preferences",
+"qKey": "continues referencing the original preferences",
+"noKey": false
 },
 {
 "num": 75,
@@ -3072,7 +3222,9 @@ const QUIZ_DATA = [
 "approachEn": "Inject a condensed reminder of the proficiency requirements into the conversation as a system message every 4-5 turns.",
 "approachVi": "chèn một bản nhắc gọn về yêu cầu điều chỉnh trình độ vào hội thoại dưới dạng system message sau mỗi 4-5 lượt — giúp duy trì sự tuân thủ hướng dẫn theo thời gian mà không cần viết lại toàn bộ prompt.",
 "group": "context",
-"decisive": "condensed reminder of the proficiency requirements"
+"decisive": "condensed reminder of the proficiency requirements",
+"qKey": "increasingly ignores the proficiency-adaptation guidelines",
+"noKey": false
 },
 {
 "num": 76,
@@ -3107,7 +3259,9 @@ const QUIZ_DATA = [
 "approachEn": "Version system prompts and associate each conversation with the prompt version under which it started, applying updates only to new conversations.",
 "approachVi": "gắn phiên bản cho system prompt và liên kết mỗi hội thoại với phiên bản mà nó bắt đầu, chỉ áp dụng bản cập nhật cho hội thoại mới — tránh hoàn toàn xung đột giữa phong cách/nội dung cũ và mới trong cùng một cuộc trò chuyện đang diễn ra.",
 "group": "context",
-"decisive": "Version system prompts and associate each conversation with the prompt version"
+"decisive": "Version system prompts and associate each conversation with the prompt version",
+"qKey": "multi-session conversations spanning several weeks",
+"noKey": false
 },
 {
 "num": 77,
@@ -3142,7 +3296,9 @@ const QUIZ_DATA = [
 "approachEn": "The coordinator's allowedTools configuration doesn't include \"Task\", so while it can reason about delegation, it cannot invoke the tool required to spawn subagents.",
 "approachVi": "tool 'Task' (dùng để gọi subagent) không nằm trong allowedTools, nên coordinator có thể lý luận về việc ủy quyền nhưng không thể thực sự thực thi được — hành động bị chặn âm thầm ở tầng cấu hình, không sinh ra lỗi log.",
 "group": "orchestration",
-"decisive": "allowedTools configuration doesn't include \"Task\""
+"decisive": "allowedTools configuration doesn't include \"Task\"",
+"qKey": "no subagent execution ever occurs",
+"noKey": false
 },
 {
 "num": 78,
@@ -3177,7 +3333,9 @@ const QUIZ_DATA = [
 "approachEn": "Instruct the synthesis agent to structure reports with explicit sections distinguishing well-established findings from contested ones, preserving original source characterizations and methodological context.",
 "approachVi": "cấu trúc báo cáo với các phần tách biệt rõ ràng (đã xác lập/còn tranh cãi), giữ nguyên đặc điểm và bối cảnh phương pháp luận gốc — xử lý sự không chắc chắn minh bạch, không vừa quá tự tin vừa quá rào đón.",
 "group": "orchestration",
-"decisive": "distinguishing well-established findings from contested ones"
+"decisive": "distinguishing well-established findings from contested ones",
+"qKey": "inconsistent handling of uncertainty",
+"noKey": false
 },
 {
 "num": 79,
@@ -3212,7 +3370,9 @@ const QUIZ_DATA = [
 "approachEn": "Choosing from 18 tools instead of 4-5 relevant ones increases decision complexity beyond reliable selection thresholds.",
 "approachVi": "việc phải chọn giữa 18 tool thay vì chỉ 4-5 tool liên quan làm tăng độ phức tạp quyết định vượt ngưỡng lựa chọn tin cậy — nguyên tắc cốt lõi là chỉ cấp cho mỗi subagent đúng những tool phù hợp với vai trò của nó.",
 "group": "orchestration",
-"decisive": "increases decision complexity beyond reliable selection thresholds"
+"decisive": "increases decision complexity beyond reliable selection thresholds",
+"qKey": "complete set of 18 tools",
+"noKey": false
 },
 {
 "num": 80,
@@ -3247,7 +3407,9 @@ const QUIZ_DATA = [
 "approachEn": "Specify research goals and quality criteria (coverage breadth, source diversity, recency) rather than procedural steps, letting the subagent determine its search strategy.",
 "approachVi": "chỉ định mục tiêu nghiên cứu và tiêu chí chất lượng (độ bao phủ, đa dạng nguồn, tính thời sự) thay vì các bước quy trình cứng nhắc, để subagent tự quyết định chiến lược tìm kiếm phù hợp — giải quyết cả ba vấn đề (không thử cách khác, kém với chủ đề mới, bỏ lỡ nguồn tangential).",
 "group": "orchestration",
-"decisive": "letting the subagent determine its search strategy"
+"decisive": "Specify research goals and quality criteria",
+"qKey": "detailed step-by-step instructions",
+"noKey": false
 },
 {
 "num": 81,
@@ -3282,7 +3444,9 @@ const QUIZ_DATA = [
 "approachEn": "Have each agent output structured data separating content summaries from source metadata (URLs, document names, page numbers).",
 "approachVi": "mỗi agent xuất dữ liệu có cấu trúc tách riêng phần tóm tắt nội dung và metadata nguồn (URL, tên tài liệu, số trang) — đảm bảo thông tin trích dẫn không bao giờ bị mất qua các bước tóm tắt trung gian.",
 "group": "orchestration",
-"decisive": "separating content summaries from source metadata"
+"decisive": "separating content summaries from source metadata",
+"qKey": "metadata was lost during the summarization steps",
+"noKey": false
 },
 {
 "num": 82,
@@ -3317,7 +3481,9 @@ const QUIZ_DATA = [
 "approachEn": "Update the synthesis agent to render each content type appropriately—financial data as tables, news as prose",
 "approachVi": "mỗi loại nội dung có định dạng tự nhiên phù hợp nhất (bảng cho tài chính, văn xuôi cho tin tức); ép về gạch đầu dòng làm mất đặc trưng và tính rõ ràng của từng loại dữ liệu.",
 "group": "orchestration",
-"decisive": "render each content type appropriately"
+"decisive": "render each content type appropriately",
+"qKey": "lose tabular clarity",
+"noKey": false
 },
 {
 "num": 83,
@@ -3352,7 +3518,9 @@ const QUIZ_DATA = [
 "approachEn": "The order details are added to the conversation and the model reasons about which action to take.",
 "approachVi": "kết quả tool (chi tiết đơn hàng) được thêm vào hội thoại, và chính mô hình sẽ suy luận dựa trên nội dung đó để quyết định hành động tiếp theo — đây là bản chất của vòng lặp agentic tiêu chuẩn.",
 "group": "tooldesign",
-"decisive": "the model reasons about which action to take"
+"decisive": "the model reasons about which action to take",
+"qKey": "how does the agentic loop determine",
+"noKey": false
 },
 {
 "num": 84,
@@ -3387,7 +3555,9 @@ const QUIZ_DATA = [
 "approachEn": "The conversation history isn't being passed in subsequent API requests.",
 "approachVi": "nếu lịch sử hội thoại không được gửi lại trong các yêu cầu API tiếp theo, agent sẽ hoàn toàn 'quên' các bước xác minh trước đó — đây là hệ quả trực tiếp của API không trạng thái (stateless).",
 "group": "context",
-"decisive": "conversation history isn't being passed in subsequent API requests"
+"decisive": "conversation history isn't being passed in subsequent API requests",
+"qKey": "as if the earlier exchange never happened",
+"noKey": false
 },
 {
 "num": 85,
@@ -3422,7 +3592,9 @@ const QUIZ_DATA = [
 "approachEn": "Return the error message in the tool result content with the isError flag set to true",
 "approachVi": "trả về nội dung lỗi trong tool result kèm cờ isError:true là đúng mẫu chuẩn MCP, cho phép mô hình đọc và tự quyết định phản ứng phù hợp (thử lại, hỏi thêm, báo người dùng).",
 "group": "errorhandling",
-"decisive": "isError flag set to true"
+"decisive": "isError flag set to true",
+"qKey": "correct pattern for communicating these errors",
+"noKey": false
 },
 {
 "num": 86,
@@ -3457,7 +3629,9 @@ const QUIZ_DATA = [
 "approachEn": "Add a pre-extraction step where the model summarizes key discussions and conclusions before performing structured extraction.",
 "approachVi": "thêm bước tiền xử lý để mô hình tự tóm tắt các nội dung thảo luận và kết luận chính trước khi trích xuất có cấu trúc — giúp 'gom' thông tin rải rác lại gần nhau trước khi thực hiện trích xuất chi tiết, cải thiện đáng kể độ chính xác.",
 "group": "extraction",
-"decisive": "summarizes key discussions and conclusions before performing structured extraction"
+"decisive": "summarizes key discussions and conclusions before performing structured extraction",
+"qKey": "key information is scattered throughout",
+"noKey": false
 },
 {
 "num": 87,
@@ -3492,7 +3666,9 @@ const QUIZ_DATA = [
 "approachEn": "Add few-shot examples to your prompt demonstrating correct handling of informal measurements— extracting them verbatim rather than converting or omitting them.",
 "approachVi": "ví dụ few-shot minh hoạ cách xử lý đúng đơn vị đo phi chính thức (trích xuất nguyên văn thay vì tự quy đổi hay bỏ trống) giải quyết trực tiếp mẫu lỗi lặp lại chiếm 23% các trường hợp sửa.",
 "group": "extraction",
-"decisive": "extracting them verbatim rather than converting or omitting them"
+"decisive": "extracting them verbatim rather than converting or omitting them",
+"qKey": "informal measurements",
+"noKey": false
 },
 {
 "num": 88,
@@ -3527,7 +3703,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator handle straightforward summarization requests directly using its existing context, reserving subagent spawning for complex analy",
 "approachVi": "vì coordinator đã có sẵn toàn bộ dữ liệu nghiên cứu trong ngữ cảnh của nó, để coordinator trực tiếp xử lý các yêu cầu tóm tắt đơn giản, chỉ sinh subagent tổng hợp cho các phân tích thực sự phức tạp — loại bỏ hoàn toàn việc truyền lại 80K+ token không cần thiết.",
 "group": "orchestration",
-"decisive": "handle straightforward summarization requests directly using its existing context"
+"decisive": "handle straightforward summarization requests directly using its existing context",
+"qKey": "The coordinator already has these findings in its context",
+"noKey": false
 },
 {
 "num": 89,
@@ -3562,7 +3740,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the generic tool into purpose-specific tools - extract_data_points, summarize_content, verify_claim_against_source - each with defined input/output contracts",
 "approachVi": "tách tool phân tích chung chung thành các tool chuyên biệt theo mục đích (trích xuất số liệu, tóm tắt, xác minh), mỗi tool có hợp đồng đầu vào/đầu ra rõ ràng — loại bỏ tận gốc sự mơ hồ khiến kết quả trả sai định dạng.",
 "group": "tooldesign",
-"decisive": "purpose-specific tools"
+"decisive": "purpose-specific tools",
+"qKey": "free-text instruction parameter",
+"noKey": false
 },
 {
 "num": 90,
@@ -3597,7 +3777,9 @@ const QUIZ_DATA = [
 "approachEn": "Implement stratified random sampling reviewing a fixed percentage of high-confidence extractions weekly, enabling error rate measurement and novel pattern detection.",
 "approachVi": "lấy mẫu ngẫu nhiên phân tầng, rà soát một tỷ lệ cố định các kết quả tin cậy cao mỗi tuần cho phép vừa đo lường liên tục tỷ lệ lỗi theo thời gian vừa phát hiện các mẫu lỗi mới chưa biết trước — đáp ứng đúng yêu cầu 'đo lường cải thiện theo thời gian'.",
 "group": "extraction",
-"decisive": "stratified random sampling"
+"decisive": "stratified random sampling",
+"qKey": "high-confidence errors and measure whether improvements reduce the error rate over time",
+"noKey": false
 },
 {
 "num": 91,
@@ -3632,7 +3814,9 @@ const QUIZ_DATA = [
 "approachEn": "Add an \"other\" value to your enum with a separate property_type_detail string field for specifics when \"other\" is selected.",
 "approachVi": "thêm giá trị 'other' kèm trường string riêng để ghi chi tiết cụ thể là giải pháp lâu dài linh hoạt: schema không cần sửa liên tục mà vẫn giữ được cấu trúc rõ ràng cho các loại phổ biến.",
 "group": "tooldesign",
-"decisive": "separate property_type_detail string field"
+"decisive": "Add an \"other\" value to your enum",
+"qKey": "new types continue appearing regularly",
+"noKey": false
 },
 {
 "num": 92,
@@ -3667,7 +3851,9 @@ const QUIZ_DATA = [
 "approachEn": "Add few-shot examples showing 2-3 complete Input-output pairs with standardized material description formats",
 "approachVi": "ví dụ few-shot với 2-3 cặp input-output hoàn chỉnh minh hoạ định dạng mô tả vật liệu chuẩn hoá giúp mô hình học được quy ước nhất quán để áp dụng cho các trường hợp tương tự.",
 "group": "extraction",
-"decisive": "2-3 complete Input-output pairs"
+"decisive": "2-3 complete Input-output pairs",
+"qKey": "inconsistently extracts",
+"noKey": false
 },
 {
 "num": 93,
@@ -3702,7 +3888,9 @@ const QUIZ_DATA = [
 "approachEn": "Submit batches every 4 hours containing documents from that window",
 "approachVi": "gửi batch mỗi 4 giờ: trường hợp xấu nhất tài liệu chờ 4 giờ trong hàng đợi + tối đa 24 giờ xử lý = 28 giờ, vẫn nằm trong hạn 30 giờ với biên độ an toàn 2 giờ cho độ tin cậy 99,9%.",
 "group": "extraction",
-"decisive": "Submit batches every 4 hours"
+"decisive": "Submit batches every 4 hours",
+"qKey": "within 30 hours",
+"noKey": false
 },
 {
 "num": 94,
@@ -3737,7 +3925,9 @@ const QUIZ_DATA = [
 "approachEn": "Define a strict output schema and include format normalization rules in your prompt.",
 "approachVi": "định nghĩa schema đầu ra nghiêm ngặt kèm quy tắc chuẩn hoá định dạng ngay trong prompt để Claude tự chuẩn hoá khi trích xuất — tận dụng khả năng hiểu ngữ cảnh của mô hình thay vì viết logic chuẩn hoá riêng cho từng biến thể.",
 "group": "extraction",
-"decisive": "include format normalization rules in your prompt"
+"decisive": "include format normalization rules in your prompt",
+"qKey": "inconsistent formatting",
+"noKey": false
 },
 {
 "num": 95,
@@ -3772,7 +3962,9 @@ const QUIZ_DATA = [
 "approachEn": "Add prompt instructions to return null for any field where information is not directly stated in the source.",
 "approachVi": "thêm hướng dẫn rõ ràng trả về null khi thông tin không được nêu trực tiếp trong nguồn là cách đơn giản, trực tiếp nhất giải quyết đúng nguyên nhân: mô hình chưa được hướng dẫn rõ ràng về việc nên làm gì khi thiếu thông tin.",
 "group": "extraction",
-"decisive": "return null for any field where information is not directly stated"
+"decisive": "return null for any field where information is not directly stated",
+"qKey": "plausible but incorrect values for fields not mentioned",
+"noKey": false
 },
 {
 "num": 96,
@@ -3807,7 +3999,9 @@ const QUIZ_DATA = [
 "approachEn": "Maintain a structured database of key facts extracted from each paper (sample sizes, statistics, methods) and retrieve relevant entries into context when precision-dependent questions are detected.",
 "approachVi": "khớp chính xác với kỹ thuật \"structured note-taking\" mà Anthropic mô tả trong bài viết chính thức về context engineering: trích xuất sự kiện quan trọng (cỡ mẫu, số liệu, phương pháp) của từng bài báo vào một cơ sở dữ liệu có cấu trúc gọn nhẹ, chỉ kéo lại vào ngữ cảnh khi cần — mở rộng tốt dù thảo luận bao nhiêu bài báo.",
 "group": "context",
-"decisive": "structured database of key facts extracted from each paper"
+"decisive": "structured database of key facts extracted from each paper",
+"qKey": "precise numerical details",
+"noKey": false
 },
 {
 "num": 97,
@@ -3842,7 +4036,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace most conditionals with a general principle: \"Adapt explanation depth to match user expertise, mirroring their terminology.\" Keep only the safety-critical conditional about injury consultations.",
 "approachVi": "thay các điều kiện rẽ nhánh cụ thể bằng một nguyên tắc tổng quát ('điều chỉnh độ chi tiết theo trình độ, phản chiếu thuật ngữ người dùng'), chỉ giữ điều kiện an toàn quan trọng — khái quát hoá tốt hơn cho các tín hiệu ngầm mà danh sách điều kiện cứng không thể liệt kê hết.",
 "group": "context",
-"decisive": "Replace most conditionals with a general principle"
+"decisive": "Replace most conditionals with a general principle",
+"qKey": "implicit expertise signals",
+"noKey": false
 },
 {
 "num": 98,
@@ -3877,7 +4073,9 @@ const QUIZ_DATA = [
 "approachEn": "Use Grep to search for the pattern \"eval(\" across all files in the codebase.",
 "approachVi": "Grep là công cụ tìm kiếm nội dung theo mẫu (pattern) trên toàn bộ file, chính xác là công cụ phù hợp để tìm mọi vị trí xuất hiện của chuỗi 'eval(' trong codebase lớn.",
 "group": "claudecode",
-"decisive": "Use Grep to search for the pattern"
+"decisive": "Use Grep to search for the pattern",
+"qKey": "content search",
+"noKey": false
 },
 {
 "num": 99,
@@ -3912,7 +4110,9 @@ const QUIZ_DATA = [
 "approachEn": "Analyze imports and class hierarchies to identify the base cache class, Read that file to understand the interface, then trace specific invalidation implementations.",
 "approachVi": "phân tích import và cây phân cấp lớp để xác định lớp cache cơ sở, đọc file đó trước để hiểu interface tổng thể, rồi mới lần theo các cài đặt cụ thể — cách tiếp cận từ kiến trúc tổng quan xuống chi tiết giúp xây dựng hiểu biết có hệ thống và tiết kiệm ngữ cảnh hơn.",
 "group": "claudecode",
-"decisive": "identify the base cache class"
+"decisive": "identify the base cache class",
+"qKey": "managing context constraints",
+"noKey": false
 },
 {
 "num": 100,
@@ -3947,7 +4147,9 @@ const QUIZ_DATA = [
 "approachEn": "Use --resume auth-deep-dive to load that specific session by name",
 "approachVi": "dùng --resume auth-deep-dive để tải chính xác phiên làm việc đã đặt tên đó — đảm bảo khôi phục đúng ngữ cảnh cụ thể cần tiếp tục, không phụ thuộc vào việc đó có phải phiên gần nhất hay không.",
 "group": "claudecode",
-"decisive": "load that specific session by name"
+"decisive": "load that specific session by name",
+"qKey": "continue that specific investigation",
+"noKey": false
 },
 {
 "num": 101,
@@ -3982,7 +4184,9 @@ const QUIZ_DATA = [
 "approachEn": "Resume the analysis session with fork_session enabled, creating a separate branch for each testing strategy.",
 "approachVi": "resume lại phiên phân tích với fork_session để tạo nhánh riêng cho mỗi chiến lược — tận dụng ngữ cảnh đã phân tích mà không phải đọc lại, đồng thời hai nhánh phát triển hoàn toàn độc lập, không ảnh hưởng lẫn nhau, phù hợp để so sánh khách quan.",
 "group": "claudecode",
-"decisive": "fork_session enabled, creating a separate branch"
+"decisive": "",
+"qKey": "",
+"noKey": true
 },
 {
 "num": 102,
@@ -4017,7 +4221,9 @@ const QUIZ_DATA = [
 "approachEn": "Enter plan mode to explore library usage across modules, map affected code paths, then create a migration strategy before implementing.",
 "approachVi": "vào chế độ plan mode để khảo sát cách thư viện được dùng trên các module, lập bản đồ các đường mã bị ảnh hưởng, rồi mới xây chiến lược di trú trước khi thực thi — cách tiếp cận thận trọng phù hợp với quy mô và độ phức tạp của một cuộc di trú lớn nhiều breaking changes.",
 "group": "claudecode",
-"decisive": "Enter plan mode to explore library usage across modules"
+"decisive": "Enter plan mode to explore library usage across modules",
+"qKey": "breaking changes",
+"noKey": false
 },
 {
 "num": 103,
@@ -4052,7 +4258,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the agent maintain a scratchpad file that records key findings, referencing it for subsequent questions.",
 "approachVi": "cho agent duy trì một file scratchpad ghi lại các phát hiện chính, để tham chiếu lại khi trả lời các câu hỏi tiếp theo — giữ được tính nhất quán qua thời gian mà không cần nạp lại toàn bộ ngữ cảnh cũ, và kỹ sư cũng không phải lặp lại thông tin đã khám phá.",
 "group": "claudecode",
-"decisive": "maintain a scratchpad file"
+"decisive": "maintain a scratchpad file",
+"qKey": "extended exploration sessions",
+"noKey": false
 },
 {
 "num": 104,
@@ -4087,7 +4295,9 @@ const QUIZ_DATA = [
 "approachEn": "Use Read to load the file, add the function at the appropriate location, then Write the updated file",
 "approachVi": "khi không thể tìm chuỗi duy nhất, đọc toàn bộ file, chèn hàm mới vào đúng vị trí trong bộ nhớ, rồi ghi lại toàn bộ file là cách an toàn nhất — tránh hoàn toàn rủi ro Edit khớp nhầm vị trí do nội dung lặp lại.",
 "group": "claudecode",
-"decisive": "Write the updated file"
+"decisive": "Write the updated file",
+"qKey": "cannot find unique text to match",
+"noKey": false
 },
 {
 "num": 105,
@@ -4122,7 +4332,9 @@ const QUIZ_DATA = [
 "approachEn": "Use direct execution to make the change",
 "approachVi": "với một thay đổi đơn giản, phạm vi rõ ràng (thêm điều kiện vào một hàm, trong một file), thực thi trực tiếp là hợp lý và hiệu quả nhất — không cần các bước lập kế hoạch phức tạp cho một tác vụ nhỏ gọn như vậy.",
 "group": "claudecode",
-"decisive": "Use direct execution to make the change"
+"decisive": "Use direct execution to make the change",
+"qKey": "one existing function in a single file",
+"noKey": false
 },
 {
 "num": 106,
@@ -4157,7 +4369,9 @@ const QUIZ_DATA = [
 "approachEn": "Configure a Post ToolUse hook with an Edit|Write matcher that automatically runs Prettier on each file Claude modifies.",
 "approachVi": "Post ToolUse hook chạy Prettier TỰ ĐỘNG (một chương trình xác định, không phải mô hình) ngay sau khi Claude sửa/ghi file — đây là cơ chế thực thi tất định ở tầng hệ thống, đảm bảo 100% code luôn được format đúng bất kể Claude có tuân theo hướng dẫn hay không.",
 "group": "claudecode",
-"decisive": "Post ToolUse hook"
+"decisive": "Post ToolUse hook",
+"qKey": "doesn't eliminate them",
+"noKey": false
 },
 {
 "num": 107,
@@ -4192,7 +4406,9 @@ const QUIZ_DATA = [
 "approachEn": "Address the column width issue first with specific measurements, verify it works, then fix date formatting within the corrected columns, then adjust page breaks— testing after each change.",
 "approachVi": "vì các vấn đề liên quan chặt chẽ với nhau (độ rộng cột ảnh hưởng cách hiển thị ngày, ngắt trang phụ thuộc chiều cao nội dung), sửa từng vấn đề một với thông số cụ thể và xác minh xong mới chuyển tiếp giúp cô lập được nguyên nhân của mỗi thay đổi, tránh gỡ rối một mớ thay đổi chồng chéo cùng lúc.",
 "group": "claudecode",
-"decisive": "testing after each change"
+"decisive": "verify it works",
+"qKey": "these issues interact",
+"noKey": false
 },
 {
 "num": 108,
@@ -4227,7 +4443,9 @@ const QUIZ_DATA = [
 "approachEn": "Ask Claude to interview you about the caching requirements before implementing, surfacing considerations like invalidation strategies, cache layers, consistency guarantees, and failure modes.",
 "approachVi": "để Claude chủ động phỏng vấn ngược lại nhằm làm rõ các yêu cầu (chiến lược invalidation, tầng cache, tính nhất quán, xử lý lỗi) trước khi triển khai giúp bù đắp đúng khoảng trống kiến thức mà người dùng tự nhận là chưa chắc chắn, tránh xây nhầm hướng ngay từ đầu.",
 "group": "claudecode",
-"decisive": "interview you about the caching requirements"
+"decisive": "interview you about the caching requirements",
+"qKey": "aren't sure what other considerations",
+"noKey": false
 },
 {
 "num": 109,
@@ -4262,7 +4480,9 @@ const QUIZ_DATA = [
 "approachEn": "Write a test suite covering expected behavior, edge cases, and performance requirements before implementation. Ask Claude to write code that passes the tests, then iterate by sharing test failures with each refinement request.",
 "approachVi": "viết bộ test bao phủ hành vi mong đợi, trường hợp biên và yêu cầu hiệu năng trước khi triển khai, sau đó lặp lại bằng cách chia sẻ các lỗi kiểm thử cụ thể ở mỗi lần tinh chỉnh — cách tiếp cận kiểu TDD cho phép đo lường tiến độ khách quan và cải tiến có mục tiêu qua nhiều vòng lặp.",
 "group": "claudecode",
-"decisive": "iterate by sharing test failures"
+"decisive": "Write a test suite",
+"qKey": "progressive improvement across multiple iterations",
+"noKey": false
 },
 {
 "num": 110,
@@ -4297,7 +4517,9 @@ const QUIZ_DATA = [
 "approachEn": "Add venue server to .mcp.json and playlist server to ~/.claude.json",
 "approachVi": "server dùng chung cho cả nhóm (venue lookup) đặt ở .mcp.json (phạm vi project, chia sẻ qua version control để mọi thành viên đều có); server thử nghiệm cá nhân (playlist) đặt ở ~/.claude.json (phạm vi người dùng, chỉ ảnh hưởng máy của riêng mình) — đúng nguyên tắc phân bổ theo mục đích sử dụng.",
 "group": "claudecode",
-"decisive": "venue server to .mcp.json and playlist server to ~/.claude.json"
+"decisive": "venue server to .mcp.json and playlist server to ~/.claude.json",
+"qKey": "only you are testing",
+"noKey": false
 },
 {
 "num": 111,
@@ -4332,7 +4554,9 @@ const QUIZ_DATA = [
 "approachEn": "Split content into subdirectory CLAUDE.md files (/terraform/CLAUDE.md, /kubernetes/CLAUDE.md), so Claude loads directory-specific guidance.",
 "approachVi": "tách nội dung thành các file CLAUDE.md riêng theo từng thư mục con tương ứng với ba loại công nghệ khác biệt, không chồng chéo — Claude tự động chỉ nạp đúng hướng dẫn của thư mục đang làm việc, tiết kiệm token cho phần không liên quan.",
 "group": "claudecode",
-"decisive": "Split content into subdirectory CLAUDE.md files"
+"decisive": "Split content into subdirectory CLAUDE.md files",
+"qKey": "only relevant guidance loads",
+"noKey": false
 },
 {
 "num": 112,
@@ -4367,7 +4591,9 @@ const QUIZ_DATA = [
 "approachEn": "In .claude/skills/migrate-component/SKILL.md at the project root, committed to version control",
 "approachVi": "đặt tại .claude/skills/migrate-component/SKILL.md ở gốc project và commit vào version control cho phép mọi thành viên gọi được bằng /migrate-component và luôn tự động đồng bộ khi nhóm cập nhật (qua git pull), đáp ứng đúng cả hai yêu cầu.",
 "group": "claudecode",
-"decisive": ".claude/skills/migrate-component/SKILL.md at the project root"
+"decisive": "committed to version control",
+"qKey": "every developer on the team",
+"noKey": false
 },
 {
 "num": 113,
@@ -4402,7 +4628,9 @@ const QUIZ_DATA = [
 "approachEn": "Use direct execution to examine the stack trace, read the relevant code, and implement a fix once you identify the root cause.",
 "approachVi": "với stack trace đã chỉ rõ vị trí gây lỗi, thực thi trực tiếp để xem stack trace, đọc mã liên quan và sửa ngay khi xác định được nguyên nhân gốc là cách nhanh và hiệu quả nhất cho một sự cố khẩn cấp có manh mối rõ ràng.",
 "group": "claudecode",
-"decisive": "Use direct execution to examine the stack trace"
+"decisive": "Use direct execution to examine the stack trace",
+"qKey": "clear stack trace",
+"noKey": false
 },
 {
 "num": 114,
@@ -4437,7 +4665,9 @@ const QUIZ_DATA = [
 "approachEn": "Use @references to include the three modules directly in your prompt, giving Claude concrete code examples of the patterns to follow.",
 "approachVi": "dùng @references để đưa trực tiếp ba module mẫu vào prompt cho Claude ví dụ mã cụ thể, chính xác để làm theo — phù hợp nhất cho một tác vụ MỘT LẦN không cần đầu tư thêm tài liệu ở cấp project.",
 "group": "claudecode",
-"decisive": "Use @references to include the three modules directly"
+"decisive": "Use @references to include the three modules directly",
+"qKey": "one-off integration task",
+"noKey": false
 },
 {
 "num": 115,
@@ -4472,7 +4702,9 @@ const QUIZ_DATA = [
 "approachEn": "Provide a test case with example input containing null values and the expected output, then ask Claude to fix it.",
 "approachVi": "cung cấp một test case cụ thể với input chứa giá trị null và output kỳ vọng, rồi yêu cầu Claude sửa — cách tiếp cận có mục tiêu, cụ thể và kiểm chứng được, hiệu quả hơn nhiều so với mô tả chung chung.",
 "group": "claudecode",
-"decisive": "test case with example input containing null values"
+"decisive": "test case with example input containing null values",
+"qKey": "records with null values",
+"noKey": false
 },
 {
 "num": 116,
@@ -4507,7 +4739,9 @@ const QUIZ_DATA = [
 "approachEn": "Run /memory to check which memory files are loaded and verify your CLAUDE.md is included.",
 "approachVi": "chạy /memory để kiểm tra chính xác những file bộ nhớ nào đang được nạp và xác nhận CLAUDE.md có được bao gồm hay không là bước chẩn đoán rẻ, nhanh và nên làm đầu tiên trước khi đi sâu vào các giả thuyết phức tạp hơn.",
 "group": "claudecode",
-"decisive": "Run /memory"
+"decisive": "Run /memory",
+"qKey": "sometimes follows these conventions",
+"noKey": false
 },
 {
 "num": 117,
@@ -4542,7 +4776,9 @@ const QUIZ_DATA = [
 "approachEn": "Use @imports in each package's CLAUDE.md to reference only the specific standard files relevant to that package, based on the maintainer's domain knowledge.",
 "approachVi": "dùng @imports trong CLAUDE.md của TỪNG package để chỉ tham chiếu đúng những standard liên quan đến package đó, dựa trên hiểu biết domain của chính maintainer — đúng theo mô hình phân quyền tự quản đã nêu, tránh nạp thừa các quy tắc không áp dụng.",
 "group": "claudecode",
-"decisive": "@imports in each package's CLAUDE.md"
+"decisive": "reference only the specific standard files relevant",
+"qKey": "without naming conventions",
+"noKey": false
 },
 {
 "num": 118,
@@ -4577,7 +4813,9 @@ const QUIZ_DATA = [
 "approachEn": "Allow empty arrays for pros/cons as valid output, and add \"unclear\" to the sentiment enum.",
 "approachVi": "cho phép mảng rỗng hợp lệ (tránh bịa nội dung khi không có thông tin) và thêm 'unclear' vào enum sentiment (xử lý mỉa mai) giải quyết đúng cả hai vấn đề nêu ra một cách tự nhiên, phù hợp với ngữ nghĩa từng loại trường.",
 "group": "extraction",
-"decisive": "empty arrays for pros/cons as valid output"
+"decisive": "add \"unclear\" to the sentiment enum",
+"qKey": "fabricates specific pros and cons",
+"noKey": false
 },
 {
 "num": 119,
@@ -4612,7 +4850,9 @@ const QUIZ_DATA = [
 "approachEn": "Resubmit only the 300 failed documents after chunking them into smaller pieces, then combine the partial extractions",
 "approachVi": "chỉ cần chia nhỏ (chunk) 300 tài liệu bị lỗi thành các phần nhỏ hơn rồi gửi lại, sau đó gộp kết quả trích xuất từng phần — giải quyết đúng nguyên nhân gốc (tài liệu quá dài vượt giới hạn) mà không cần xử lý lại 9.700 tài liệu đã thành công.",
 "group": "extraction",
-"decisive": "chunking them into smaller pieces"
+"decisive": "Resubmit only the 300 failed documents",
+"qKey": "context_length_exceeded",
+"noKey": false
 },
 {
 "num": 120,
@@ -4647,7 +4887,9 @@ const QUIZ_DATA = [
 "approachEn": "Define a tool with an input schema matching your required JSON structure and extract the data from Claude's tool_use response.",
 "approachVi": "định nghĩa một tool với input schema khớp đúng cấu trúc JSON cần thiết và trích xuất dữ liệu từ phản hồi tool_use — cơ chế tool use đảm bảo tuân thủ cấu trúc ở tầng API, đáng tin cậy nhất trong các lựa chọn.",
 "group": "extraction",
-"decisive": "extract the data from Claude's tool_use response"
+"decisive": "Define a tool with an input schema",
+"qKey": "strictly conform to a predefined JSON schema",
+"noKey": false
 },
 {
 "num": 121,
@@ -4682,7 +4924,9 @@ const QUIZ_DATA = [
 "approachEn": "Include few-shot examples in your prompt showing annotated code snippets that distinguish acceptable patterns from genuine issues in each category.",
 "approachVi": "ví dụ few-shot gồm các đoạn mã đã chú thích, phân biệt rõ mẫu chấp nhận được và vấn đề thực sự trong từng nhóm giúp mô hình học được RANH GIỚI PHÁN ĐOÁN, từ đó khái quát hoá tốt hơn sang các mẫu mã mới — đáp ứng đúng yêu cầu 'khái quát hoá' trong đề bài.",
 "group": "codereview",
-"decisive": "annotated code snippets that distinguish acceptable patterns"
+"decisive": "annotated code snippets that distinguish acceptable patterns",
+"qKey": "generalize its judgment to novel",
+"noKey": false
 },
 {
 "num": 122,
@@ -4717,7 +4961,9 @@ const QUIZ_DATA = [
 "approachEn": "Consolidate semantically overlapping tools-merge issue_credit and process_refund into a single resolve_compensation tool with an optional include_tracking flag.",
 "approachVi": "gộp trực tiếp hai tool trùng lặp về ngữ nghĩa (issue_credit và process_refund) thành một tool duy nhất là cách DUY NHẤT thực sự loại bỏ tận gốc sự chồng lấn — vì không còn hai lựa chọn để nhầm lẫn nữa.",
 "group": "tooldesign",
-"decisive": "merge issue_credit and process_refund into a single resolve_compensation tool"
+"decisive": "Consolidate semantically overlapping tools",
+"qKey": "structurally eliminates the semantic overlaps",
+"noKey": false
 },
 {
 "num": 123,
@@ -4752,7 +4998,9 @@ const QUIZ_DATA = [
 "approachEn": "Return error-type-specific messages with is_error: true, e.g., \"order not found-try get_customer to search by phone\" for data errors and \"Database timeout (transient)-retry should succeed\" for infrastructure errors.",
 "approachVi": "trả về thông báo lỗi khác nhau, cụ thể tuỳ loại lỗi (ví dụ gợi ý dùng get_customer cho lỗi dữ liệu, gợi ý thử lại cho lỗi hạ tầng tạm thời) đúng theo khuyến nghị của Anthropic: nêu rõ điều gì đã sai VÀ Claude nên thử gì tiếp theo.",
 "group": "errorhandling",
-"decisive": "error-type-specific messages with is_error: true"
+"decisive": "error-type-specific messages with is_error: true",
+"qKey": "select the correct recovery action for each error type",
+"noKey": false
 },
 {
 "num": 124,
@@ -4787,7 +5035,9 @@ const QUIZ_DATA = [
 "approachEn": "Add explicit instructions directing the model to enumerate each conditional branch and exception path, then verify each has a corresponding test assertion.",
 "approachVi": "hướng dẫn tường minh yêu cầu mô hình liệt kê từng nhánh điều kiện/ngoại lệ rồi xác minh mỗi nhánh có assertion tương ứng là cách trực tiếp, có hệ thống nhất để đảm bảo không bỏ sót các nhánh nhỏ mà không cần thêm bước phức tạp nào vào pipeline.",
 "group": "codereview",
-"decisive": "enumerate each conditional branch and exception path"
+"decisive": "enumerate each conditional branch and exception path",
+"qKey": "branch-level coverage gaps",
+"noKey": false
 },
 {
 "num": 125,
@@ -4822,7 +5072,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the review into a finding stage where Claude's goal is coverage - flagging every potential issue with confidence and severity metadata - and a separate thresholds those findings.",
 "approachVi": "tách thành giai đoạn PHÁT HIỆN (tối đa hoá độ bao phủ, gắn kèm độ tin cậy/mức độ nghiêm trọng cho mọi vấn đề khả nghi) và giai đoạn LỌC riêng biệt áp dụng ngưỡng — tách biệt rõ hai mục tiêu recall và precision đang mâu thuẫn nhau trong MỘT hướng dẫn duy nhất hiện tại.",
 "group": "codereview",
-"decisive": "Split the review into a finding stage"
+"decisive": "Split the review into a finding stage",
+"qKey": "high precision but low recall",
+"noKey": false
 },
 {
 "num": 126,
@@ -4857,7 +5109,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the review into separate focused prompts - one for security and API design, another for business logic - each with dedicated examples, then combine findings before posting.",
 "approachVi": "tách thành các prompt tập trung riêng biệt (một cho bảo mật/API design, một cho logic nghiệp vụ), mỗi prompt có ví dụ chuyên biệt, rồi gộp kết quả — giải quyết đánh đổi vì hai loại vấn đề cần các ví dụ và trọng tâm khác biệt mà MỘT prompt chung không thể cân bằng tốt cả hai cùng lúc.",
 "group": "codereview",
-"decisive": "Split the review into separate focused prompts"
+"decisive": "Split the review into separate focused prompts",
+"qKey": "logic recall is 41% but API design recall drops to 68%",
+"noKey": false
 },
 {
 "num": 127,
@@ -4892,7 +5146,9 @@ const QUIZ_DATA = [
 "approachEn": "Compile a structured handoff with customer details, order info, and the identified issue before calling escalate_to_human",
 "approachVi": "biên soạn bản bàn giao có cấu trúc gồm thông tin khách hàng, đơn hàng và vấn đề đã xác định trước khi chuyển cho con người giúp người xử lý tiếp theo nắm bắt nhanh, không phải tự dò lại từ đầu.",
 "group": "support",
-"decisive": "structured handoff with customer details, order info"
+"decisive": "structured handoff with customer details, order info",
+"qKey": "mid-process escalation",
+"noKey": false
 },
 {
 "num": 128,
@@ -4927,7 +5183,9 @@ const QUIZ_DATA = [
 "approachEn": "Extract only return-relevant fields (items, purchase date, return window, status) from each existing order response, removing verbose details",
 "approachVi": "trích xuất chỉ những trường liên quan đến việc trả hàng, loại bỏ chi tiết dư thừa từ các kết quả tra cứu đã có — giải phóng ngữ cảnh có mục tiêu trước khi tra cứu thêm.",
 "group": "context",
-"decisive": "removing verbose details"
+"decisive": "Extract only return-relevant fields",
+"qKey": "majority of the conversation's context",
+"noKey": false
 },
 {
 "num": 129,
@@ -4962,7 +5220,9 @@ const QUIZ_DATA = [
 "approachEn": "Add orchestration-layer code that checks the agent's outcome after each loop termination - if the loop ended without a completed resolution or escalation, programmatically call escalate_to_human with the accumulated conversation context and tool results.",
 "approachVi": "thêm logic ở tầng orchestration (bên ngoài agent) kiểm tra kết quả sau khi vòng lặp kết thúc: nếu chưa có giải quyết hoặc chuyển tiếp, TỰ ĐỘNG gọi escalate_to_human — đây là cơ chế đảm bảo tất định, độc lập với việc agent có tuân theo hướng dẫn prompt hay không, đáp ứng đúng yêu cầu 'guarantee' trong đề bài.",
 "group": "errorhandling",
-"decisive": "checks the agent's outcome after each loop termination"
+"decisive": "checks the agent's outcome after each loop termination",
+"qKey": "regardless of how the agent loop terminates",
+"noKey": false
 },
 {
 "num": 130,
@@ -4997,7 +5257,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the generic tool into purpose specific tools—extract data points, summarize content, verify claim against source—each with",
 "approachVi": "tách tool phân tích chung chung thành các tool chuyên biệt theo mục đích (trích xuất số liệu, tóm tắt, xác minh), mỗi tool có hợp đồng đầu vào/đầu ra rõ ràng — loại bỏ tận gốc sự mơ hồ khiến kết quả trả sai định dạng.",
 "group": "tooldesign",
-"decisive": "purpose specific tools"
+"decisive": "purpose specific tools",
+"qKey": "free-text instruction parameter",
+"noKey": false
 },
 {
 "num": 131,
@@ -5032,7 +5294,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator analyze each query and dynamically decide which subagents to invoke based on its assessment of query requirements.",
 "approachVi": "để coordinator (vốn đã có khả năng suy luận) tự đánh giá độ phức tạp và chọn subagent phù hợp là cách thích ứng tự nhiên nhất với phân bố truy vấn luôn thay đổi, không cần huấn luyện hay bảo trì bộ phân loại riêng.",
 "group": "orchestration",
-"decisive": "dynamically decide which subagents to invoke"
+"decisive": "dynamically decide which subagents to invoke",
+"qKey": "varying query complexity",
+"noKey": false
 },
 {
 "num": 132,
@@ -5067,7 +5331,9 @@ const QUIZ_DATA = [
 "approachEn": "Have each agent persist a structured export to a known location. On resume, the coordinator loads the manifest and injects relevant state into agent prompts.",
 "approachVi": "mỗi agent tự lưu export có cấu trúc, coordinator đọc manifest tổng hợp và chỉ bơm đúng phần liên quan vào từng agent — cân bằng tốt giữa độ trung thực thông tin và hiệu quả ngữ cảnh.",
 "group": "orchestration",
-"decisive": "persist a structured export to a known location"
+"decisive": "persist a structured export to a known location",
+"qKey": "best balances information fidelity with context efficiency",
+"noKey": false
 },
 {
 "num": 133,
@@ -5102,7 +5368,9 @@ const QUIZ_DATA = [
 "approachEn": "Resume the analysis session with fork_session enabled, creating a separate branch for each testing strategy.",
 "approachVi": "dùng fork_session để tạo hai nhánh từ phiên phân tích đã có, khám phá mỗi chiến lược trong một nhánh riêng — tận dụng ngữ cảnh đã phân tích 23 file mà không phải đọc lại, đồng thời hai hướng phát triển hoàn toàn độc lập, phù hợp để so sánh khách quan.",
 "group": "claudecode",
-"decisive": "fork_session enabled, creating a separate branch"
+"decisive": "fork_session enabled, creating a separate branch",
+"qKey": "independently develop both approaches",
+"noKey": false
 },
 {
 "num": 134,
@@ -5137,7 +5405,9 @@ const QUIZ_DATA = [
 "approachEn": "Structure the coordinator to emit both Task tool calls (for web search and document analysis) in a single response message.",
 "approachVi": "khi coordinator phát cả hai lời gọi Task trong cùng một message, chúng được thực thi song song — đây là cơ chế kỹ thuật đúng để chạy đồng thời, không cần hạ tầng phức tạp bên ngoài.",
 "group": "orchestration",
-"decisive": "in a single response message"
+"decisive": "emit both Task tool calls",
+"qKey": "run these subagents concurrently",
+"noKey": false
 },
 {
 "num": 135,
@@ -5172,7 +5442,9 @@ const QUIZ_DATA = [
 "approachEn": "Use fork_session to create two branches from yesterday's analysis, exploring one approach in each fork.",
 "approachVi": "dùng fork_session để tạo hai nhánh từ phiên phân tích hôm qua, khám phá chi tiết từng hướng tái cấu trúc trong mỗi nhánh riêng biệt — giữ được ngữ cảnh đã phân tích (module, dependencies) mà không cần tái tạo thủ công, và hai hướng phát triển độc lập.",
 "group": "claudecode",
-"decisive": "Use fork_session to create two branches"
+"decisive": "Use fork_session to create two branches",
+"qKey": "explore both approaches in depth",
+"noKey": false
 },
 {
 "num": 136,
@@ -5207,7 +5479,9 @@ const QUIZ_DATA = [
 "approachEn": "Use Glob and Grep to map codebase structure, identify heavily-coupled modules, create a prioritized plan for high-impact areas, and revise as dependencies are discovered.",
 "approachVi": "dùng Glob và Grep để lập bản đồ cấu trúc codebase, xác định các module có độ kết hợp cao (nhiều phụ thuộc, tác động lớn), lập kế hoạch ưu tiên rồi điều chỉnh khi phát hiện thêm — cách tiếp cận thăm dò dần dựa trên dữ liệu thực tế, phù hợp cho một codebase chưa quen thuộc.",
 "group": "claudecode",
-"decisive": "identify heavily-coupled modules"
+"decisive": "Use Glob and Grep to map codebase structure",
+"qKey": "open-ended task",
+"noKey": false
 },
 {
 "num": 137,
@@ -5242,7 +5516,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the review into multiple API calls that each analyze a subset of the changed files, then merge the resulting findings arrays.",
 "approachVi": "chia việc review thành nhiều lượt gọi API, mỗi lượt phân tích một tập con file đã thay đổi, sau đó gộp các mảng phát hiện — giải quyết trực tiếp nguyên nhân gốc là lượng nội dung cần phân tích/sinh ra vượt quá giới hạn một lượt gọi.",
 "group": "codereview",
-"decisive": "Split the review into multiple API calls"
+"decisive": "Split the review into multiple API calls",
+"qKey": "truncated mid-JSON",
+"noKey": false
 },
 {
 "num": 138,
@@ -5277,7 +5553,9 @@ const QUIZ_DATA = [
 "approachEn": "Replace --system-prompt with --append-system-prompt so your review instructions are added to Claude Code's default prompt instead of overwriting the built-in guidance for using file-reading and code navigation tools.",
 "approachVi": "thay --system-prompt (GHI ĐÈ hoàn toàn prompt mặc định, bao gồm cả hướng dẫn sử dụng công cụ) bằng --append-system-prompt (THÊM VÀO bên cạnh, giữ nguyên hướng dẫn mặc định về việc dùng file-reading và code navigation tools) giải quyết đúng nguyên nhân gốc của vấn đề.",
 "group": "claudecode",
-"decisive": "Replace --system-prompt with --append-system-prompt"
+"decisive": "Replace --system-prompt with --append-system-prompt",
+"qKey": "completely stops using its file-reading or code navigation tools",
+"noKey": false
 },
 {
 "num": 139,
@@ -5312,7 +5590,9 @@ const QUIZ_DATA = [
 "approachEn": "Document testing standards in CLAUDE.md including valuable test criteria, available fixtures with intended use cases, and examples distinguishing meaningful behavioral tests from trivial assertions.",
 "approachVi": "ghi rõ tiêu chuẩn kiểm thử trong CLAUDE.md (tiêu chí test có giá trị, fixture sẵn có, ví dụ phân biệt test ý nghĩa với assertion hời hợt) định hướng chất lượng NGAY TỪ KHI SINH, không cần thêm độ trễ hay sửa pipeline lõi — đúng theo mọi ràng buộc của đề bài.",
 "group": "claudecode",
-"decisive": "distinguishing meaningful behavioral tests from trivial assertions"
+"decisive": "Document testing standards in CLAUDE.md",
+"qKey": "in the first place",
+"noKey": false
 },
 {
 "num": 140,
@@ -5347,7 +5627,9 @@ const QUIZ_DATA = [
 "approachEn": "Claude retains context about its prior reasoning in the session, making it less likely to question its own decisions",
 "approachVi": "vì vẫn ở cùng một phiên đã thực hiện việc refactor, Claude có xu hướng giữ nguyên mạch lý luận trước đó và ít nghi ngờ lại quyết định của chính mình (thiên kiến tự xác nhận trong cùng ngữ cảnh) — trong khi review độc lập không bị ràng buộc bởi ngữ cảnh lý luận cũ nên phát hiện lỗi khách quan hơn.",
 "group": "codereview",
-"decisive": "less likely to question its own decisions"
+"decisive": "less likely to question its own decisions",
+"qKey": "same Claude session to review",
+"noKey": false
 },
 {
 "num": 141,
@@ -5377,7 +5659,9 @@ const QUIZ_DATA = [
 "approachEn": "Split the review into separate focused prompts — one for security and API design, another for business logic — each with dedicated examples, then consolidate findings before posting.",
 "approachVi": "tách thành các prompt tập trung riêng biệt (bảo mật/API design và logic nghiệp vụ), mỗi prompt có ví dụ chuyên biệt, rồi gộp kết quả — giải quyết đánh đổi vì hai loại vấn đề cần trọng tâm khác nhau mà một prompt chung không thể cân bằng tốt cả hai.",
 "group": "codereview",
-"decisive": "Split the review into separate focused prompts"
+"decisive": "Split the review into separate focused prompts",
+"qKey": "logic recall improves to 41% but API design recall drops to 68%",
+"noKey": false
 },
 {
 "num": 142,
@@ -5412,7 +5696,9 @@ const QUIZ_DATA = [
 "approachEn": "Resume the session and inform the agent which specific files changed for targeted re-analysis",
 "approachVi": "resume lại phiên và cho agent biết chính xác những file nào đã thay đổi để nó chỉ cần phân tích lại có mục tiêu vào đúng phần đó — cân bằng tốt nhất giữa hiệu quả (không đọc lại toàn bộ) và độ chính xác (không dùng giả định lỗi thời cho 3 file đã đổi).",
 "group": "claudecode",
-"decisive": "inform the agent which specific files changed"
+"decisive": "inform the agent which specific files changed",
+"qKey": "3 of the 12 files the agent previously read were modified",
+"noKey": false
 },
 {
 "num": 143,
@@ -5447,7 +5733,9 @@ const QUIZ_DATA = [
 "approachEn": "Use Grep to search for distinctive text from the error message (like \"SYNC_CONFLICT\" or \"entity version mismatch\"), then Read the matching files to understand context.",
 "approachVi": "Grep tìm kiếm theo văn bản đặc trưng của thông báo lỗi ('SYNC_CONFLICT', 'entity version mismatch') trên toàn bộ 12 service là cách trực tiếp và hiệu quả nhất để định vị đúng mã nguồn phát sinh lỗi, vì chuỗi lỗi thường xuất hiện trực tiếp (hoặc gần đúng) trong code.",
 "group": "claudecode",
-"decisive": "search for distinctive text from the error message"
+"decisive": "search for distinctive text from the error message",
+"qKey": "unfamiliar error message",
+"noKey": false
 },
 {
 "num": 144,
@@ -5482,7 +5770,9 @@ const QUIZ_DATA = [
 "approachEn": "Tools from all configured MCP servers are discovered at connection time and available simultaneously to the agent.",
 "approachVi": "tool từ MỌI MCP server đã cấu hình được khám phá (discover) ngay khi kết nối và tất cả đều sẵn sàng sử dụng ĐỒNG THỜI cho agent — agent có thể tự do kết hợp gọi tool từ git, Jira và documentation search trong cùng một yêu cầu phức hợp.",
 "group": "errorhandling",
-"decisive": "discovered at connection time and available simultaneously"
+"decisive": "discovered at connection time and available simultaneously",
+"qKey": "access tools across these servers",
+"noKey": false
 },
 {
 "num": 145,
@@ -5517,7 +5807,9 @@ const QUIZ_DATA = [
 "approachEn": "Implement a hook to intercept tool calls when the refund process amount exceeds $500, block it and invoke human escalation.",
 "approachVi": "hook chặn (intercept) lời gọi tool NGAY KHI số tiền vượt 500 USD, tự động ngăn thực thi và chuyển sang xử lý con người — đây là cơ chế thực thi ở TẦNG HỆ THỐNG (không phải mô hình), đảm bảo tuân thủ tuyệt đối vì hành động bị chặn về mặt kỹ thuật, không phụ thuộc vào việc mô hình có 'làm đúng' hay không.",
 "group": "errorhandling",
-"decisive": "intercept tool calls when the refund process amount exceeds $500"
+"decisive": "Implement a hook",
+"qKey": "guaranteed compliance",
+"noKey": false
 },
 {
 "num": 146,
@@ -5552,7 +5844,9 @@ const QUIZ_DATA = [
 "approachEn": "Enhance error responses with structured metadata. Include error_category (transient/retriable/permission), reason, and a description of what caused the failure.",
 "approachVi": "làm giàu phản hồi lỗi bằng metadata có cấu trúc gồm error_category (transient/retriable/permission), lý do và mô tả nguyên nhân — giúp agent phân biệt và chọn đúng hành động khắc phục cho từng loại lỗi cụ thể, giải quyết đúng nguyên nhân gốc là phản hồi lỗi hiện tại quá đồng nhất.",
 "group": "errorhandling",
-"decisive": "error_category (transient/retriable/permission)"
+"decisive": "structured metadata",
+"qKey": "uniform error responses",
+"noKey": false
 },
 {
 "num": 147,
@@ -5587,7 +5881,9 @@ const QUIZ_DATA = [
 "approachEn": "Return structured error metadata in MCP responses.",
 "approachVi": "trả về metadata lỗi có cấu trúc trong phản hồi MCP thay vì chỉ một thông báo chung chung 'Operation failed' giúp agent phân biệt được các loại lỗi khác nhau để có phản ứng phù hợp — giải quyết đúng nguyên nhân gốc.",
 "group": "errorhandling",
-"decisive": "Return structured error metadata"
+"decisive": "Return structured error metadata",
+"qKey": "cannot distinguish between error types",
+"noKey": false
 },
 {
 "num": 148,
@@ -5622,7 +5918,9 @@ const QUIZ_DATA = [
 "approachEn": "Consolidate semantically overlapping tools – merge issue_credit and process_refund into a single handle_promotions tool with an action parameter and fold check_delivery_status into lookup_order with an optional include_tracking flag.",
 "approachVi": "gộp trực tiếp các tool trùng lặp về ngữ nghĩa (issue_credit với process_refund, check_delivery_status với lookup_order) thành các tool hợp nhất là cách DUY NHẤT loại bỏ tận gốc sự chồng lấn, vì không còn hai lựa chọn riêng biệt để nhầm lẫn giữa chúng nữa.",
 "group": "tooldesign",
-"decisive": "merge issue_credit and process_refund into a single handle_promotions tool"
+"decisive": "Consolidate semantically overlapping tools",
+"qKey": "structurally eliminate the semantic overlap",
+"noKey": false
 },
 {
 "num": 149,
@@ -5657,7 +5955,9 @@ const QUIZ_DATA = [
 "approachEn": "Summarize key rendering findings, then spawn a sub-agent for physics exploration with that summary in its initial context.",
 "approachVi": "chắt lọc phát hiện rendering quan trọng vào một bản tóm tắt súc tích, rồi giao khám phá physics (miền mới) cho sub-agent với ngữ cảnh sạch + bản tóm tắt đó làm điểm khởi đầu — vừa tránh ngữ cảnh chính tiếp tục phình to/suy giảm, vừa đảm bảo sub-agent physics không bỏ lỡ các lớp cụ thể (VulkanPipeline, FrameGraph) cần tích hợp.",
 "group": "claudecode",
-"decisive": "spawn a sub-agent for physics exploration with that summary"
+"decisive": "spawn a sub-agent for physics exploration with that summary",
+"qKey": "reference \"typical rendering patterns\"",
+"noKey": false
 },
 {
 "num": 150,
@@ -5692,7 +5992,9 @@ const QUIZ_DATA = [
 "approachEn": "Read the library and wrapper modules to identify all exposed names for the function, then Grep for each name across the codebase.",
 "approachVi": "đọc thư viện và các module wrapper để liệt kê đầy đủ mọi tên hàm được export (kể cả tên đã đổi), rồi Grep riêng từng tên trên toàn bộ codebase — đây là cách duy nhất đảm bảo không bỏ sót lời gọi qua tên đã đổi.",
 "group": "claudecode",
-"decisive": "identify all exposed names for the function, then Grep for each name"
+"decisive": "identify all exposed names for the function, then Grep for each name",
+"qKey": "rename the function",
+"noKey": false
 },
 {
 "num": 151,
@@ -5727,7 +6029,9 @@ const QUIZ_DATA = [
 "approachEn": "Enhance the MCP tool descriptions to explain when each tool is preferable to text manipulation and clarify expected inputs and outputs.",
 "approachVi": "mở rộng mô tả tool để giải thích khi nào nên dùng tool chuyên dụng thay vì thao tác văn bản, cùng làm rõ input/output mong đợi — giải quyết đúng nguyên nhân gốc là mô tả quá sơ sài khiến agent không biết khi nào nên chọn tool này.",
 "group": "tooldesign",
-"decisive": "explain when each tool is preferable to text manipulation"
+"decisive": "explain when each tool is preferable to text manipulation",
+"qKey": "minimal description",
+"noKey": false
 },
 {
 "num": 152,
@@ -5762,7 +6066,9 @@ const QUIZ_DATA = [
 "approachEn": "Spawn a subagent to explore the remaining files, providing a summary of discovered patterns as its initial context.",
 "approachVi": "giao việc khám phá 7 file còn lại cho một sub-agent với ngữ cảnh sạch kèm tóm tắt các mẫu đã phát hiện, giữ phiên chính (đang tương tác với engineer) không bị suy giảm thêm, đồng thời sub-agent chỉ trả về kết quả cô đọng để tổng hợp.",
 "group": "claudecode",
-"decisive": "providing a summary of discovered patterns as its initial context"
+"decisive": "Spawn a subagent to explore the remaining files",
+"qKey": "forgetting previously discovered code patterns",
+"noKey": false
 },
 {
 "num": 153,
@@ -5797,7 +6103,9 @@ const QUIZ_DATA = [
 "approachEn": "Launch parallel subagents to explore different services simultaneously, then synthesize their findings into an architectural overview.",
 "approachVi": "với hệ thống trải rộng nhiều service độc lập ở quy mô lớn, sub-agent song song cho mỗi service (ngữ cảnh riêng, không lẫn lộn) rồi tổng hợp kết quả là cách tận dụng đúng lợi thế của kiến trúc đa agent mà Anthropic khuyến nghị cho nghiên cứu/khám phá phức tạp.",
 "group": "claudecode",
-"decisive": "parallel subagents to explore different services simultaneously"
+"decisive": "parallel subagents to explore different services simultaneously",
+"qKey": "800+ files across multiple services",
+"noKey": false
 },
 {
 "num": 154,
@@ -5832,7 +6140,9 @@ const QUIZ_DATA = [
 "approachEn": "Expand MCP tool descriptions and outputs–e.g., \"Builds dependency graph with list_imports, direct_circular_deps\"–to clearly distinguish dependencies and cycle analysis from Grep.",
 "approachVi": "mở rộng mô tả và làm rõ đầu ra cụ thể (dependency graph, phát hiện circular dependency) giúp agent thấy rõ khác biệt về khả năng so với Grep (chỉ tìm chuỗi văn bản) — sửa đúng nguyên nhân gốc.",
 "group": "tooldesign",
-"decisive": "clearly distinguish dependencies and cycle analysis from Grep"
+"decisive": "clearly distinguish dependencies and cycle analysis from Grep",
+"qKey": "continues to use Grep",
+"noKey": false
 },
 {
 "num": 155,
@@ -5867,7 +6177,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the model output field-level confidence scores, then calibrate review thresholds using a labeled validation set.",
 "approachVi": "điểm tin cậy theo từng trường, hiệu chỉnh ngưỡng bằng tập validation có nhãn (dựa trên dữ liệu lỗi thực tế) cho phép tập trung năng lực rà soát có hạn đúng vào các trường hợp có rủi ro cao nhất — hiệu quả hơn nhiều so với lấy mẫu ngẫu nhiên hay heuristic đơn giản.",
 "group": "extraction",
-"decisive": "calibrate review thresholds using a labeled validation set"
+"decisive": "field-level confidence scores",
+"qKey": "only 20% of extractions",
+"noKey": false
 },
 {
 "num": 156,
@@ -5902,7 +6214,9 @@ const QUIZ_DATA = [
 "approachEn": "Have the coordinator analyze each query dynamically and selectively route subagents based on the query's complexity and routing characteristics.",
 "approachVi": "coordinator tự đánh giá từng truy vấn và linh hoạt định tuyến dựa trên đặc điểm cụ thể là cách thích ứng tự nhiên nhất với phân bố truy vấn luôn tiến hoá, không cần huấn luyện lại hay bảo trì bộ quy tắc cố định.",
 "group": "orchestration",
-"decisive": "analyze each query dynamically and selectively route subagents"
+"decisive": "analyze each query dynamically and selectively route subagents",
+"qKey": "uneven and evolving",
+"noKey": false
 },
 {
 "num": 157,
@@ -5937,7 +6251,9 @@ const QUIZ_DATA = [
 "approachEn": "Instruct the agent to escalate when the customer requests a human, when the issue requires policy exceptions, or when the agent cannot make meaningful progress.",
 "approachVi": "hướng dẫn agent leo thang theo các tiêu chí có ý nghĩa thực chất (khách yêu cầu người, vượt thẩm quyền chính sách, không tiến triển được) tận dụng đúng khả năng phán đoán của mô hình về bản chất tình huống, đáng tin cậy hơn các proxy máy móc hay bảng quy tắc cứng.",
 "group": "support",
-"decisive": "when the agent cannot make meaningful progress"
+"decisive": "when the agent cannot make meaningful progress",
+"qKey": "genuinely require human intervention",
+"noKey": false
 },
 {
 "num": 158,
@@ -5972,7 +6288,9 @@ const QUIZ_DATA = [
 "approachEn": "The order details are added to the conversation and the model reasons about which action to take.",
 "approachVi": "kết quả tool (chi tiết đơn hàng) được thêm vào hội thoại, và chính mô hình suy luận dựa trên nội dung đó (nhận ra 45 ngày là ngoài hạn) để quyết định gọi process_refund hay escalate_to_human — đây là bản chất của vòng lặp agentic tiêu chuẩn.",
 "group": "tooldesign",
-"decisive": "the model reasons about which action to take"
+"decisive": "the model reasons about which action to take",
+"qKey": "how does the agentic loop determine",
+"noKey": false
 },
 {
 "num": 159,
@@ -6007,7 +6325,9 @@ const QUIZ_DATA = [
 "approachEn": "Acknowledge frustration, inform them this is resolvable now, and offer to complete it or escalate",
 "approachVi": "thừa nhận sự bực bội của khách, minh bạch cho biết vấn đề có thể giải quyết ngay bây giờ, và đưa ra lựa chọn hoàn tất luôn hoặc vẫn leo thang — vừa tôn trọng nguyện vọng ban đầu (muốn gặp người) vừa cho họ đường giải quyết nhanh nhất nếu họ muốn đổi ý.",
 "group": "support",
-"decisive": "offer to complete it or escalate"
+"decisive": "offer to complete it or escalate",
+"qKey": "within policy and eligible for immediate processing",
+"noKey": false
 },
 {
 "num": 160,
@@ -6042,7 +6362,9 @@ const QUIZ_DATA = [
 "approachEn": "Start a new session, inject a structured summary of the previous interaction (issue type, resolution steps, current status), then make fresh tool calls as needed.",
 "approachVi": "phiên mới với bản tóm tắt có cấu trúc (loại vấn đề, các bước đã xử lý, trạng thái hiện tại) tránh được rủi ro dữ liệu lỗi thời, đồng thời gọi tool mới đảm bảo lấy đúng trạng thái mới nhất — đây là hướng giải quyết đúng (được chọn làm đáp án chính thức, dù C diễn đạt cùng ý).",
 "group": "support",
-"decisive": "inject a structured summary of the previous interaction"
+"decisive": "Start a new session",
+"qKey": "returns 4 hours after",
+"noKey": false
 },
 {
 "num": 161,
@@ -6077,7 +6399,9 @@ const QUIZ_DATA = [
 "approachEn": "Spawn subagents to investigate specific questions (e.g., \"find all test files for payment processing\", \"trace refund flow dependencies\") while the main agent coordinates findings and preserves high-level understanding.",
 "approachVi": "giao các câu hỏi cụ thể (tìm test file, lần theo luồng hoàn tiền) cho các sub-agent khám phá trong ngữ cảnh sạch riêng, trong khi agent chính chỉ giữ và tổng hợp hiểu biết mức cao — đúng theo kiến trúc sub-agent mà Anthropic mô tả cho các tác vụ khám phá phức tạp, dài hạn.",
 "group": "claudecode",
-"decisive": "the main agent coordinates findings and preserves high-level understanding"
+"decisive": "Spawn subagents to investigate specific questions",
+"qKey": "forgetting previously discussed code patterns",
+"noKey": false
 },
 {
 "num": 162,
@@ -6112,7 +6436,9 @@ const QUIZ_DATA = [
 "approachEn": "Integrate an existing Jira MCP server that exposes tickets, comments, and metadata through discoverable tool interfaces.",
 "approachVi": "tích hợp MCP server Jira đã có sẵn, được xây dựng và kiểm chứng tốt, expose ticket/comment/metadata qua giao diện tool có thể khám phá — tận dụng hệ sinh thái MCP thay vì tự xây lại từ đầu cho một nhu cầu tích hợp chuẩn, phổ biến.",
 "group": "tooldesign",
-"decisive": "Integrate an existing Jira MCP server"
+"decisive": "Integrate an existing Jira MCP server",
+"qKey": "standard Jira ticket data",
+"noKey": false
 },
 {
 "num": 163,
@@ -6147,7 +6473,9 @@ const QUIZ_DATA = [
 "approachEn": "Redesign the review as a turn-limited agentic task where the model can read files and search the codebase via tools, following references to verify cross-file findings.",
 "approachVi": "chuyển sang thiết kế agentic (mô hình chủ động đọc file, tìm kiếm codebase bằng tool, lần theo tham chiếu để xác minh) giải quyết đúng nguyên nhân gốc: prompt tĩnh không thể bao gồm mọi file liên quan trước, nhưng một agent có tool có thể tự tìm bất cứ khi nào cần, không bị giới hạn bởi tập file định sẵn.",
 "group": "codereview",
-"decisive": "following references to verify cross-file findings"
+"decisive": "following references to verify cross-file findings",
+"qKey": "cross-file interactions",
+"noKey": false
 },
 {
 "num": 164,
@@ -6182,7 +6510,9 @@ const QUIZ_DATA = [
 "approachEn": "Expose each server's content catalog as MCP resources—issue summaries, documentation hierarchy, database schemas",
 "approachVi": "expose danh mục nội dung (tóm tắt issue, cây tài liệu, schema database) dưới dạng MCP Resources — đúng primitive được thiết kế sẵn trong giao thức MCP cho mục đích này — cho agent tầm nhìn tổng quan để lên kế hoạch truy vấn chính xác, giảm hẳn số lượt gọi dò dẫm.",
 "group": "tooldesign",
-"decisive": "Expose each server's content catalog as MCP resources"
+"decisive": "Expose each server's content catalog as MCP resources",
+"qKey": "lacks visibility into what content each server contains",
+"noKey": false
 },
 {
 "num": 165,
@@ -6217,7 +6547,9 @@ const QUIZ_DATA = [
 "approachEn": "Whether review feedback arriving up to 24 hours after PR creation remains actionable.",
 "approachVi": "độ trễ (lên tới 24 giờ) là đặc điểm cốt lõi phân biệt Batch API; yếu tố quyết định then chốt là liệu phản hồi đến muộn như vậy có còn hữu ích (actionable) hay không — đúng tiêu chí \"immediate responses are not required\" mà Anthropic nêu khi khuyến nghị dùng Batch API.",
 "group": "codereview",
-"decisive": "review feedback arriving up to 24 hours after PR creation remains actionable"
+"decisive": "review feedback arriving up to 24 hours after PR creation remains actionable",
+"qKey": "Reviews are non-blocking",
+"noKey": false
 },
 {
 "num": 166,
@@ -6252,7 +6584,9 @@ const QUIZ_DATA = [
 "approachEn": "Prompt chaining—break the review into sequential steps where each aspect (style, security, documentation) is analyzed separately, with outputs combined in a final synthesis step.",
 "approachVi": "vì ba khía cạnh (style, security, documentation) LUÔN CỐ ĐỊNH cho mọi PR (không thay đổi theo input), đây là tác vụ phân rã rõ ràng thành các bước cố định đã biết trước — đúng định nghĩa \"prompt chaining\" của Anthropic, đơn giản và dễ debug hơn orchestrator-workers cho trường hợp này.",
 "group": "codereview",
-"decisive": "break the review into sequential steps"
+"decisive": "Prompt chaining",
+"qKey": "same three-step workflow for every PR",
+"noKey": false
 },
 {
 "num": 167,
@@ -6287,7 +6621,9 @@ const QUIZ_DATA = [
 "approachEn": "Grep, to search for the import statement pattern across file contents",
 "approachVi": "Grep tìm kiếm theo mẫu văn bản của câu lệnh import trên NỘI DUNG mọi file, không phụ thuộc vào tên file/thư mục, là cách trực tiếp và chính xác nhất để tìm mọi nơi thực sự import package.",
 "group": "claudecode",
-"decisive": "search for the import statement pattern across file contents"
+"decisive": "search for the import statement pattern across file contents",
+"qKey": "import the @company/auth package",
+"noKey": false
 }
 ];
 
@@ -6340,9 +6676,8 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
 
 function renderQuestion(){
   const q = session[idx];
-  document.getElementById('qnum').textContent = 'Q' + q.num;
-  document.getElementById('qtext').innerHTML = highlightGeneric(q.question);
-  document.getElementById('qtextVi').textContent = QUESTION_VI[q.num] || '';
+  document.getElementById('qnum').innerHTML = 'Q' + q.num + noKeyBadge(q);
+  document.getElementById('qtext').innerHTML = highlightQKey(q.question, q);
   document.getElementById('progressNum').textContent = 'Câu ' + (idx+1) + '/' + session.length;
   document.getElementById('progressFill').style.width = ((idx)/session.length*100) + '%';
 
@@ -6352,7 +6687,7 @@ function renderQuestion(){
     const row = document.createElement('div');
     row.className = 'opt';
     row.dataset.label = opt.label;
-    row.innerHTML = '<div class="badge">'+opt.label+'</div><div class="otext">'+highlightGeneric(opt.text)+'</div>';
+    row.innerHTML = '<div class="badge">'+opt.label+'</div><div class="otext">'+(opt.label === q.correct ? highlightDecisive(opt.text, q.decisive) : highlightGeneric(opt.text))+'</div>';
     row.addEventListener('click', ()=> selectOption(opt.label));
     optsWrap.appendChild(row);
   });
@@ -6402,18 +6737,27 @@ function highlightGeneric(text){
   return escaped.replace(GENERIC_RE, '<span class="hl-term">$1</span>');
 }
 
-function highlightDecisive(text, decisivePhrase){
+function highlightDecisive(text, decisivePhrase, cls){
   if(!text) return '';
+  cls = cls || 'hl-decisive';
   const escaped = escapeHtml(text);
   if(!decisivePhrase) return escaped.replace(GENERIC_RE, '<span class="hl-term">$1</span>');
-  const decisiveRe = new RegExp('(' + escapeRegexChars(decisivePhrase) + ')', 'i');
+  const decisiveRe = new RegExp('(' + escapeRegexChars(escapeHtml(decisivePhrase)) + ')', 'i');
   const m = escaped.match(decisiveRe);
   if(!m) return escaped.replace(GENERIC_RE, '<span class="hl-term">$1</span>');
   const idx = m.index, len = m[0].length;
   const before = escaped.slice(0, idx).replace(GENERIC_RE, '<span class="hl-term">$1</span>');
   const mid = escaped.slice(idx, idx+len);
   const after = escaped.slice(idx+len).replace(GENERIC_RE, '<span class="hl-term">$1</span>');
-  return before + '<span class="hl-decisive">' + mid + '</span>' + after;
+  return before + '<span class="' + cls + '">' + mid + '</span>' + after;
+}
+
+// Keyword câu hỏi (luôn hiện) + nhãn No-Keyword
+function highlightQKey(text, q){
+  return highlightDecisive(text, q && q.qKey, 'hl-qkey');
+}
+function noKeyBadge(q){
+  return (q && q.noKey) ? '<span class="nokey-badge">No-Keyword</span>' : '';
 }
 
 function selectOption(label){
@@ -6502,7 +6846,7 @@ function showResult(){
     item.className = 'review-item';
     item.innerHTML =
       '<div class="review-head">'+
-        '<div class="review-q">Q'+q.num+'. '+highlightGeneric(truncate(q.question, 90))+'</div>'+
+        '<div class="review-q">Q'+q.num+noKeyBadge(q)+'. '+highlightQKey(truncate(q.question, 90), q)+'</div>'+
         '<div class="review-mark '+(a && a.correct ? 'good' : 'bad')+'">'+(a && a.correct ? 'ĐÚNG' : 'SAI')+'</div>'+
       '</div>'+
       '<div class="review-detail" id="detail-'+i+'"></div>';
@@ -6541,8 +6885,7 @@ function toggleDetail(i, q, a){
   oeHtml += '</div>';
 
   det.innerHTML =
-    '<div class="qtext" style="font-size:16px;margin-bottom:0;">'+highlightGeneric(q.question)+'</div>'+
-    '<div class="qtext-vi" style="margin-bottom:14px;">'+escapeHtml(QUESTION_VI[q.num] || '')+'</div>'+
+    '<div class="qtext" style="font-size:16px;margin-bottom:14px;">'+noKeyBadge(q)+highlightQKey(q.question, q)+'</div>'+
     optsHtml+
     '<div class="feedback show '+(a && a.correct ? 'correct':'wrong')+'" style="margin-top:16px;">'+
       '<div class="fb-title">Giải thích</div>'+
@@ -6658,7 +7001,7 @@ function renderReference(query){
       const item = document.createElement('div');
       item.className = 'ref-item';
       item.innerHTML =
-        '<div class="ref-qnum">Q'+q.num+'</div>'+
+        '<div class="ref-qnum">Q'+q.num+noKeyBadge(q)+'</div>'+
         '<div class="ref-req-en">'+highlightGeneric(q.reqEn)+'</div>'+
         '<div class="ref-req-vi">'+highlightGeneric(q.reqVi)+'</div>'+
         '<div class="ref-detail" id="ref-detail-'+q.num+'"></div>';
@@ -6697,7 +7040,7 @@ function toggleRefDetail(q){
 
   det.innerHTML =
     '<div class="ref-label">Câu hỏi đầy đủ / Full question</div>'+
-    '<div class="ref-qfull">'+highlightGeneric(q.question)+'</div>'+
+    '<div class="ref-qfull">'+highlightQKey(q.question, q)+'</div>'+
     '<div class="ref-label">Đáp án đúng: '+q.correct+' — Recommended approach</div>'+
     '<div class="ref-approach"><b>EN:</b> '+highlightDecisive(q.approachEn, q.decisive)+'</div>'+
     '<div class="ref-approach" style="margin-top:6px;"><b>VI:</b> '+highlightGeneric(q.approachVi)+'</div>'+
